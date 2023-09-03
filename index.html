@@ -46,7 +46,7 @@
 <div class="row">
     <div id="ec" class="col"></div>
 </div>
-    <script src="library/scripts/EventCalendar.min.js"></script>
+    <script src="library/javascript/EventCalendar.js"></script>
 
 <script type="text/javascript">
     let ec = new EventCalendar(document.getElementById('ec'), {         // ec is the id of div, where the calendar will be placed
@@ -54,10 +54,17 @@
         headerToolbar: {
             start: 'prev,next today',
             center: 'title',
-            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek resourceTimeGridWeek'
+            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek, resourceTimeGridDay'
         },
         buttonText: function (texts) {
-            texts.resourceTimeGridWeek = 'resources';
+            texts.resourceTimeGridWeek = 'Res. Woche';
+            texts.resourceTimeGridDay = 'Res. Tag';
+// dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day'
+            texts.dayGridMonth = "Monat";
+            texts.timeGridWeek = 'Woche';
+            texts.timeGridDay = "Tag";
+            texts.listWeek = "Liste";
+            texts.today = "heute";
             return texts;
         },
         resources: [
@@ -71,17 +78,19 @@
             resourceTimeGridWeek: {pointer: true}
         },
         // options
+        displayEventEnd: true,
         dayMaxEvents: true,
         nowIndicator: true,
         selectable: true,
         firstDay: 1,                                // 0 -> sunday, 1-> monday, etc.
-        date: new Date(),
+        date: new Date(),                           // selected start date
         editable: true,
         // events
         eventClick: onEventClick,
         eventDrop: dropEvent,
         dateClick: onDateClick,
         eventResizeStop: onEventResizeStop,
+        eventMouseEnter: onEventMouseEnter,
 
     });
     aggregateEvents();
@@ -100,6 +109,12 @@
     }
     function onEventResizeStop( ev ) {
         console.log( ev );
+    }
+    function onEventMouseEnter( ev ) {
+        console.log( ev );
+    }
+    function initClasses( args ) {
+        console.log( args );    
     }
     function createEvents() {
 
