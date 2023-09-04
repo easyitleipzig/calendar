@@ -2,26 +2,26 @@ class Calendar {
 	constructor( setup ) {
 		this.opt = {
 			pVar:               "",
-			Id:                 undefined,
-			cal: 				undefined,
 			evCal: 				undefined,
 			evCalId: 			"",
 			calView: 			'timeGridWeek', // dayGridMonth ....
 		}
 		Object.assign( this.opt, setup );
-		nj( this.opt.evCalId ).sDs("dvar", this.opt.evCal.toString() );
-		this.opt.evCal = new EventCalendar( nj().els( this.opt.evCalId ), {
+		nj( this.opt.evCalId ).sDs("dvar", this.opt.pVar );
+		this.evCal = new EventCalendar( nj().els( this.opt.evCalId ), {
     		view: this.opt.calView,
     		events: [
         		// your list of events
     		],
 	        dateClick: function(e) {
 	            // body...
-	            console.log( arguments.callee() );
-	            console.log( e, evCal, window[ evCal ] );
+	            console.log( e, window[ getDVar( e.dayEl ) ] );
 	        },
 
 		});
+	}
+	onDateClick = function( info ) {
+		console.log( "onDateClick", info );
 	}
 	refreshView = function( calArgs ) {
 		/*
