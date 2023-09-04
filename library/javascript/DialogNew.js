@@ -1,5 +1,6 @@
 //javascript
 //var oldY = 0, oldX = 0;
+var TEST_INNER_HTML ="<p><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'></p>"; 
 var setDialogPosOnScroll = function() {
     let els = nj().els( ".dialogBox:not(.boxHide)" );
     let l = els.length;
@@ -103,7 +104,6 @@ class DialogNew {
             this.opt.id = "#" + this.opt.dVar;
         }
         if( nj( this.opt.id + "_box" ).isE() ) return;
-        console.log( this.opt );
         this.opt.remindCenter = this.opt.center;
         loadCSS( PATH_TO_CSS + DEFAULT_CSS_FILE );
         let el = null;
@@ -231,9 +231,12 @@ class DialogNew {
         let el_dia;
         if( nj( this.opt.id ).isE() ) {
             el_dia = nj().els( this.opt.id );
+            if( nj( el_dia ).htm() === "" && this.opt.innerHTML !== "" )                 nj( el_dia ).htm( this.opt.innerHTML );
+
         } else {
             el_dia = nj().cEl( "div");
             el_dia.id = this.opt.id.substr( 1, this.opt.id.length );
+        console.log( this.opt.innerHTML );
             if( typeof this.opt.innerHTML !== "undefined" ) {
                 nj( el_dia ).htm( this.opt.innerHTML );
             }
@@ -321,7 +324,7 @@ class DialogNew {
         }
         nj( this.opt.target ).aCh( box );
         if( this.opt.canMove ) {
-            moverClass.init( "body", this.opt.id + "_headline" );
+            moverClass.init( "body", this.opt.id + "_box" );
         }
         if( this.opt.canResize ) {
             let dummyRes = nj().cEl("div");
