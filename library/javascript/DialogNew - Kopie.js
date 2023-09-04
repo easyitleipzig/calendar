@@ -48,6 +48,7 @@ const getDVar = function( el ) {
 class DialogNew {
       constructor( param ) {
         this.opt = {
+            dVar:               "", // necessary - string of dialog object var
             id:                 "", // necessary - id of dialog; if the element does not exists a new element will be created with this id
             boxId:              "", // id without # - do not set; is created by class
             innerHTML:          undefined, // optional - the start inner html; if the element of id not exists, this value is the content else it is the content of existing element with id
@@ -72,7 +73,7 @@ class DialogNew {
             remindCenter:       undefined, // a temporary value for saving start center
             title:              "Titel",  // necessary - string
             addClasses:         undefined, // optional - additional classes divide by " "
-            addClassFiles:      "dialog.css main.css", // optional - additional class files divide by " "
+            addClassFiles:      "DialogNew.css dialog.css main.css", // optional - additional class files divide by " "
             hasIcon:            false, // optional - true/false
             hasInfo:            false, // optional - true/false
             hasHelp:            false, // optional - true/false
@@ -89,7 +90,7 @@ class DialogNew {
             selectFirstButton:  true,
             selectFirstInput:   true,
             onShow:             undefined,
-            afterShow:          undefined,
+            afterShow:             undefined,
             onHide:             undefined,
             onSticky:           undefined,
             onRefreshHTML:      undefined,
@@ -103,7 +104,6 @@ class DialogNew {
             this.opt.id = "#" + this.opt.dVar;
         }
         if( nj( this.opt.id + "_box" ).isE() ) return;
-        console.log( this.opt );
         this.opt.remindCenter = this.opt.center;
         loadCSS( PATH_TO_CSS + DEFAULT_CSS_FILE );
         let el = null;
@@ -128,7 +128,6 @@ class DialogNew {
                 b = {};
                 b.title = "Okay";
                 b.action = function( el ){
-                    //console.log( getDVar( nj().els( el.target ) ) );
                     getDialogVar( getDVar( nj().els( el.target ) ) ).hide();
                 };
                 this.opt.buttons.push( b ); 
@@ -273,7 +272,6 @@ class DialogNew {
             let i = 0;
             while( i < l ) {
                 let b = nj().cEl( "button" );
-                //console.log(typeof this.opt.buttons[i] );
                 if( typeof this.opt.buttons[i] !== "undefined" ) {
                     nj( b ).htm( this.opt.buttons[i].title );
                     nj( b ).on( "click", this.opt.buttons[i].action );
@@ -314,7 +312,7 @@ class DialogNew {
         if( this.opt.hasInfo ) {
             let el_i = nj().cEl( "div" );
             nj( el_i ).htm('<iframe src="' + PATH_TO_INFO + "info_" + this.opt.boxId + '.php"></iframe>')
-            el_he.id = this.opt.boxId + "_info";
+            el_i.id = this.opt.boxId + "_info";
             nj( el_i ).aCl( CLASS_DIALOG_INFO );
             document.body.appendChild( el_i );
             this.opt.divInfo = new DialogNew( { dVar: this.opt.dVar + ".opt.divInfo", id: el_i.id, title: "Information", modal: true, autoOpen: false, center: false })
@@ -497,12 +495,17 @@ class DialogNew {
         let menSize = nj( this.opt.id + "_menu").gRe();
         let fooSize = nj( this.opt.id + "_footer").gRe();
         let minArea = nj("#dialogMinimizeArea").gCS( "bottom");
-        nj( this.opt.id + "_box" ).sty( { "left": "3px", "top": "3px", "width": window.innerWidth - getScrollbarWidth() - 7 + "px"/*, "height": window.innerHeight - getScrollbarHeight() - parseInt( minArea ) - 15 + "px"*/ } )
+        nj( this.opt.id + "_box" ).sty( { "left": "3px", "top": "3px", "width": window.innerWidth - getScrollbarWidth() - 7 + "px", "height": window.innerHeight - getScrollbarHeight() - parseInt( minArea ) - 15 + "px" } )
         let v = parseInt( hlSize.height + menSize.height + fooSize.height );
         let diaH = parseInt( nj( this.opt.id + "_box" ).gCS( "height") ) - v- 10;
+        console.log(diaH, v, hlSize.height,menSize.height,fooSize.height,nj( this.opt.id + "_box" ).sty( "height") );
+        //console.log( this.opt.dVar + "_box" );
+        //document.getElementById( this.opt.dVar + "_box").style['height']  = '500px';
         nj( this.opt.id + "_box" ).sty( { "height": window.innerHeight - 8 + "px"});
         let boxSize = nj( this.opt.id + "_box").gRe();
+        console.log( boxSize, boxSize.y - v + "px" );
         nj( this.opt.id ).sty( "height", boxSize.height - v - 11 + "px" );
+
         nj( this.opt.id + "_box > div ." + this.opt.classPraefix + "HLMax" ).rCl( "cbMax" );
         nj( this.opt.id + "_box > div ." + this.opt.classPraefix + "HLMax" ).aCl( "cbMaximized" );
         nj( this.opt.id + "_box" ).aCl( "maximized" );
@@ -511,7 +514,6 @@ class DialogNew {
         switch( p ) {
             case "correctCenterMaxZI":
                 let mi = maxZIndex();
-                console.log( this.opt.modal, mi );
                 if( this.opt.modal ) {
                     nj( this.opt.id + "_wrapper" ).sty( { "z-index" : mi + 1 } );
                     nj( this.opt.id + "_box" ).sty( { "z-index" : mi + 2 } );
@@ -552,14 +554,11 @@ class DialogNew {
                     v[0] = {};
                     v[0].title = "Okay";
                     v[0].action = function(){
-                        //console.log( getDVar( nj().els( this ) )  );
                         let df = getDVar( nj().els( this ) );
-                        console.log( df.split( "." )[0] );
                         window[ df.split( "." )[0] ].opt.divVar.hide();
                     }
                 }
                 nj( this.opt.id + "_footer" ).htm( "" );
-                //console.log( v );
                 let l = v.length;
                 let i = 0;
                 while( i < l ) {
