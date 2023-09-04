@@ -1,56 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+// javascript
+var cal, evCal;
+/* calendar definition 
 
-    <title>Event Calendar</title>
-
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="library/ressources/site.webmanifest">
-    <link rel="stylesheet" href="global.css">
-<!--
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.3.2/event-calendar.min.css">
--->
-    <link rel="stylesheet" href="library/css/EventCalendar.css">
-
-    <!--
-    <script src="https://cdn.jsdelivr.net/npm/@event-calendar/build@2.3.2/event-calendar.min.js"></script>
--->
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript" >
-        //(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        //    m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-        //(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-/*
-        ym(75029251, "init", {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true,
-            webvisor:true
-        });
-*/
-    </script>
-    <!--
-    <noscript><div><img src="https://mc.yandex.ru/watch/75029251" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
--->
-    <!-- /Yandex.Metrika counter -->
-</head>
-
-<body>
-
-<h4><a href="https://github.com/vkurko/calendar">Event Calendar</a> Demo</h4>
-<div class="row">
-    <div id="ec" class="col"></div>
-</div>
-    <script src="library/javascript/EventCalendar.js"></script>
-
-<script type="text/javascript">
     let ec = new EventCalendar(document.getElementById('ec'), {         // ec is the id of div, where the calendar will be placed
-        cVar: "ec",
         view: 'dayGridMonth',   // dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek
         headerToolbar: {
             start: 'prev,next today',
@@ -89,11 +41,7 @@
         // events
         eventClick: onEventClick,
         eventDrop: dropEvent,
-//        dateClick: onDateClick,
-        dateClick: function(e) {
-            // body...
-            console.log( e );
-        },
+        dateClick: onDateClick,
         eventResizeStop: onEventResizeStop,
         eventMouseEnter: onEventMouseEnter,
         /*### eventDidMount
@@ -102,9 +50,15 @@
 
         Callback function that is triggered right after the element has been added to the DOM. If the event data changes, this is not called again.
 
-*/
+
         eventDidMount: onEventDidMount,    
     });
+
+	end calendar definition
+
+*/
+/* functions for calendar events
+
     function onEventDidMount( info ){
         console.log( info.event );
     }
@@ -165,7 +119,11 @@
         let norm = Math.floor(Math.abs(num));
         return (norm < 10 ? '0' : '') + norm;
     }
-    /* add an event
+
+	end functions
+
+*/
+/* add an event
     ec.addEvent( {
     "allDay": false,
     "start": "2023-09-04T14:00:00.000Z",
@@ -176,10 +134,11 @@
                 "test": 1,
                 "id": 1234,
                 "participate": true,
+                ...
     },
     "backgroundColor": "#B29DD9",
     } )
 */
-</script>
-</body>
-</html>
+
+const init = function() {
+}

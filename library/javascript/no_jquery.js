@@ -165,6 +165,9 @@ function nj( p ) {
     _ds = function( v ) {
             return this.e.dataset[v];    
     }
+    _sDs = function( ds, v ) {
+            return this.e.dataset[ds] = v;    
+    }
     //set selected values
     _sSV = function( v, clearField ) {
         if( this.e == null ) return false;
@@ -638,6 +641,8 @@ function nj( p ) {
     this.rPr = _rPr;
     this.tag = _tag;
     this.ds = _ds;
+    this.sDs = _sDs;
+
     // classes
     this.aCl = _aCl;
     this.hCl = _hCl;
