@@ -1,6 +1,6 @@
 //javascript
 //var oldY = 0, oldX = 0;
-var TEST_INNER_HTML ="<p><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'><input value='abcd'></p>"; 
+var TEST_INNER_HTML ="<p><input value='abcd'></p>"; 
 var setDialogPosOnScroll = function() {
     let els = nj().els( ".dialogBox:not(.boxHide)" );
     let l = els.length;
@@ -464,7 +464,7 @@ class DialogNew {
         let l = els.length;
         let i = 0;
         while( i < l ) {
-            nj( els[i] ).sty( { "top": "0px", "left": 150 * i + "px", "width": "150px" } );
+            nj( els[i] ).sty( { "top": "-20px", "left": 150 * i -38 + "px", "width": "150px" } );
             i += 1;    
         }        
     }
@@ -475,6 +475,7 @@ class DialogNew {
         }
         nj( this.opt.id + "_box" ).m( this.opt.target );
         nj( this.opt.id + "_box" ).rCl( "minimized" );
+        nj( this.opt.id + "_box" ).sty( {"position": ""} );
         this.restorePosDim();
     }
     minimize = function(){
@@ -487,6 +488,7 @@ class DialogNew {
         }
         nj( this.opt.id + "_box" ).aCl( "minimized" );
         nj( this.opt.id + "_box" ).m( "#dialogMinimizeArea" );
+        nj( this.opt.id + "_box" ).sty( {"position": "relative"} );
         this.reorganizeMinimized()
     }
     restoreMax = function() {
