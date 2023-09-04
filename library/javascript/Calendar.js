@@ -4,14 +4,15 @@ class Calendar {
 	constructor( setup ) {
 		this.opt = {
 			pVar:               "",
-			evCal: 				undefined,
 			evCalId: 			"",
-			calView: 			'timeGridWeek', // dayGridMonth ....
+			calView: 			'timeGridWeek', // dayGridMonth ....,
+			firstDay: 			1,
 		}
 		Object.assign( this.opt, setup );
 		nj( this.opt.evCalId ).sDs("dvar", this.opt.pVar );
 		this.evCal = new EventCalendar( nj().els( this.opt.evCalId ), {
 	    		view: this.opt.calView,
+	    		firstDay: this.opt.firstDay, 
 	    		events: [
 	        		// your list of events
 	    		],
@@ -33,7 +34,7 @@ class Calendar {
 		        },
 
 			});
-		this.divEditEvent = new DialogNew( { dVar: this.opt.pVar +  ".divEditEvent", 
+		this.divEvent = new DialogNew( { dVar: this.opt.pVar +  ".divEditEvent", 
 				id: "#divEditEvent", 
 				autoOpen: false,
 				modal: true,
@@ -110,6 +111,14 @@ class Calendar {
 		onDayClick = async function(argument) {
 			// body...
 			console.log( arguments );
+		}
+		/**
+		 * get startdate and enddate for a given date, first day of week and viewtype 
+		 * 
+		 * return object { start: startdate, end: enddate}
+		*/
+		getDayForView = async function( cDate, fDayOfWeek, cView ) {
+
 		}
 		testFunction = async function(argument) {
 				await wait( 5000 );

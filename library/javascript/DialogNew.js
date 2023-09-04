@@ -236,7 +236,6 @@ class DialogNew {
         } else {
             el_dia = nj().cEl( "div");
             el_dia.id = this.opt.id.substr( 1, this.opt.id.length );
-        console.log( this.opt.innerHTML );
             if( typeof this.opt.innerHTML !== "undefined" ) {
                 nj( el_dia ).htm( this.opt.innerHTML );
             }
