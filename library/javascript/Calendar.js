@@ -1,5 +1,13 @@
 const DIV_EVENT_EDIT_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"><input type="datetime-local" id="evDateTime" value=""></div>';
 const DIV_EVENT_NEW_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"></div>';
+const calVar = "cal";
+/* not good but nessecary */
+const getDateRange = function (info) {
+	// body...
+	console.log( info );
+}
+
+/* */
 class Calendar {
 	constructor( setup ) {
 		this.opt = {
@@ -11,11 +19,26 @@ class Calendar {
 		Object.assign( this.opt, setup );
 		nj( this.opt.evCalId ).sDs("dvar", this.opt.pVar );
 		this.evCal = new EventCalendar( nj().els( this.opt.evCalId ), {
+
 	    		view: this.opt.calView,
+
 	    		firstDay: this.opt.firstDay, 
+
+        buttonText: function (texts) {
+            texts.resourceTimeGridWeek = 'Res. Woche';
+            texts.resourceTimeGridDay = 'Res. Tag';
+// dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day'
+            texts.dayGridMonth = "Monat";
+            texts.timeGridWeek = 'Woche';
+            texts.timeGridDay = "Tag";
+            texts.listWeek = "Liste";
+            texts.today = "heute";
+            return texts;
+        },
 	    		events: [
 	        		// your list of events
 	    		],
+
 		        dateClick: function( info ) {
 		            // body...
 		            console.log( e, window[ getDVar( info.dayEl ) ] );
@@ -33,7 +56,17 @@ class Calendar {
 		            }
 		        },
 
+		        datesSet: function ( info ) {
+		        	console.log( window[ calVar ] );
+		        	getDateRange( info );
+		        	return info;
+		        },
+
+
+
+
 			});
+
 		this.divEvent = new DialogNew( { dVar: this.opt.pVar +  ".divEditEvent", 
 				id: "#divEditEvent", 
 				autoOpen: false,
@@ -53,6 +86,20 @@ class Calendar {
 		}
 		// end constructor
 		// start functions
+
+		/**
+		 * evaluateData
+		 * 
+		 * basic processing for ajax request
+		 * 
+		 * data 			json string 	valid json string
+		 * 
+		 * return undefined
+		 * 
+		*/
+		evaluateData = async function( data ) {
+			
+		}
 		onDateClickWithCtrl = function( info ) {
 			console.log( "onDateClickWithCtrl", info );
 		}
@@ -108,18 +155,53 @@ class Calendar {
 			*/
 			this.opt.cal = new EventCalendar( nj().els( calArgs.id ), options);
 		}
-		onDayClick = async function(argument) {
-			// body...
-			console.log( arguments );
-		}
 		/**
-		 * get startdate and enddate for a given date, first day of week and viewtype 
+		 * getDayForView
+		 * 
+		 * get startdate and enddate for a given date, first day of week and viewtype
+		 * 
+		 * cDate 			date 			date in the current view
+		 * cView 			string 			current view
 		 * 
 		 * return object { start: startdate, end: enddate}
 		*/
-		getDayForView = async function( cDate, fDayOfWeek, cView ) {
-
+		getDaysForView = function( info ) {
+			/*
+			data.startDate = info.startStr.replace( "T", "" );
+			data.endDate = info.endStr.replace( "T", "" );
+			return data;
+			*/
 		}
+		/**
+		 * switchHeadline
+		 * 
+		 * switch the headline between easy and detailed
+		 * 
+		 * isEasy 			boolean 		true -> easy view, else detailed view
+		 * 
+		 * return boolean
+		*/
+		switchHeadline = function( isEasy ) {
+			if( isEasy ) {
+				this.evCal.setOption( "headerToolbar", {
+                        start: "title",
+                        center: "",
+                        end: "today prev,next"
+                    });
+			} else {
+				this.evCal.setOption( "headerToolbar", {
+		            start: 'prev,next today',
+		            center: 'title',
+		            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek, resourceTimeGridDay'
+		        });
+
+			}
+		}
+		/**
+		 * testfunction for async 
+		 * 
+		 * 
+		*/
 		testFunction = async function(argument) {
 				await wait( 5000 );
 				console.log( "neueFunktion" );
