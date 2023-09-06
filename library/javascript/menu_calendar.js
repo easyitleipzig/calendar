@@ -448,5 +448,11 @@ const correctSafariRepresentation = function() {
         }
     }
 }
+const setDraggableDialogs = function() {
+    // body...
+    let els = nj().els( "div.dialogBox.draggable" );
+    console.log( els );
+}
 correctSafariRepresentation();
+setDraggableDialogs();
 /* end correct safari representation */ 
