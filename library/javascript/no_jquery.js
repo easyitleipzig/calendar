@@ -514,6 +514,30 @@ function nj( p ) {
         }
         hr.send(f);
     }
+    /* beispiel
+
+
+const url = 'https://randomuser.me/api';
+
+let data = {
+  name: 'Sara'
+}
+
+var request = new Request(url, {
+    method: 'POST',
+    body: data,
+    headers: new Headers()
+});
+
+fetch(request)
+.then(function() {
+    // Handle response we get from the API
+})
+
+
+
+
+    */
     _fetchPost = function( url, d, cb ) {
         console.log( JSON.stringify( d ) );
         fetch( url, {

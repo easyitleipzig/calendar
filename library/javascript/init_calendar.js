@@ -1,5 +1,4 @@
 // javascript
-var cal, evCal;
 /* calendar definition 
 
     let ec = new EventCalendar(document.getElementById('ec'), {         // ec is the id of div, where the calendar will be placed
@@ -141,4 +140,11 @@ var cal, evCal;
 */
 
 const init = function() {
+    console.log( cal.evCal );
+    cal.evCal.setOption( "datesSet", function ( info ) {
+        console.log( info );
+                    console.log(  nj("*[data-dvar][data-ei_calendar]").atr("data-dvar")  );
+                    console.log( window[ nj("*[data-dvar][data-ei_calendar]").atr("data-dvar") ] );
+                    window[ nj("*[data-dvar][data-ei_calendar]").atr("data-dvar") ].getDaysForView( info )
+                });
 }

@@ -231,8 +231,8 @@ class DialogNew {
         let el_dia;
         if( nj( this.opt.id ).isE() ) {
             el_dia = nj().els( this.opt.id );
-            if( nj( el_dia ).htm() === "" && this.opt.innerHTML !== "" )                 nj( el_dia ).htm( this.opt.innerHTML );
-
+            if( nj( el_dia ).htm() === "" && this.opt.innerHTML !== "" )                 
+                nj( el_dia ).htm( this.opt.innerHTML );
         } else {
             el_dia = nj().cEl( "div");
             el_dia.id = this.opt.id.substr( 1, this.opt.id.length );
@@ -323,7 +323,7 @@ class DialogNew {
         }
         nj( this.opt.target ).aCh( box );
         if( this.opt.canMove ) {
-            moverClass.init( "body", this.opt.id + "_box" );
+            moverClass.init( "body", this.opt.id + "_headline" );
         }
         if( this.opt.canResize ) {
             let dummyRes = nj().cEl("div");

@@ -6,6 +6,27 @@ const getDateRange = function (info) {
 	// body...
 	console.log( info );
 }
+const evaluateCalData = function( data ) {
+		    console.log( data );
+		    let jsonobject;
+		    if( typeof data === "string" ) {
+		        jsonobject = JSON.parse( data );
+		    } else {
+		        jsonobject = data;
+		    }
+		    if( !isJ( jsonobject ) ) {
+		        throw "kein JSON-Objekt übergeben";
+		    }
+		    console.log( jsonobject );
+			switch( jsonobject.command ) {
+		        case "getEventsForView":
+		                //showNewMessage("Erinnerung", jsonobject.success, jsonobject.message, [ {title: "Okay", action: "dM.hide()"}, {title: "Beenden", action: "location.reload()"} ] );
+		                //dMNew.show( { title: "Erinnerung", type: jsonobject.success, text: jsonobject.message, buttons: [{"title": "Okay", action: function(){ dMNew.hide(); } }, {title: "Beenden", action: function(){ location.reload(); } } ] } );
+		        		console.log( jsonobject );
+		        break;
+				
+			}
+}
 
 /* */
 class Calendar {
@@ -15,26 +36,30 @@ class Calendar {
 			evCalId: 			"",
 			calView: 			'timeGridWeek', // dayGridMonth ....,
 			firstDay: 			1,
+			currentUserId: 		1,
+
 		}
 		Object.assign( this.opt, setup );
 		nj( this.opt.evCalId ).sDs("dvar", this.opt.pVar );
+		nj( this.opt.evCalId ).sDs("ei_calendar", "" );
 		this.evCal = new EventCalendar( nj().els( this.opt.evCalId ), {
+
+				cVar: this.opt.pVar,
 
 	    		view: this.opt.calView,
 
 	    		firstDay: this.opt.firstDay, 
 
-        buttonText: function (texts) {
-            texts.resourceTimeGridWeek = 'Res. Woche';
-            texts.resourceTimeGridDay = 'Res. Tag';
-// dayGridMonth: 'month', listDay: 'list', listMonth: 'list', listWeek: 'list', listYear: 'list', resourceTimeGridDay: 'day', resourceTimeGridWeek: 'week', timeGridDay: 'day'
-            texts.dayGridMonth = "Monat";
-            texts.timeGridWeek = 'Woche';
-            texts.timeGridDay = "Tag";
-            texts.listWeek = "Liste";
-            texts.today = "heute";
-            return texts;
-        },
+		        buttonText: function (texts) {
+		            texts.resourceTimeGridWeek = 'Res. Woche';
+		            texts.resourceTimeGridDay = 'Res. Tag';
+		            texts.dayGridMonth = "Monat";
+		            texts.timeGridWeek = 'Woche';
+		            texts.timeGridDay = "Tag";
+		            texts.listWeek = "Liste";
+		            texts.today = "heute";
+		            return texts;
+		        },
 	    		events: [
 	        		// your list of events
 	    		],
@@ -55,13 +80,12 @@ class Calendar {
 		            	window[ getDVar( info.dayEl ) ].onDateClick( info );		
 		            }
 		        },
-
+/*
 		        datesSet: function ( info ) {
-		        	console.log( window[ calVar ] );
-		        	getDateRange( info );
-		        	return info;
+		        	console.log(  nj("*[data-dvar][data-ei_calendar]").atr("data-dvar")  );
+		        	console.log( window[ nj("*[data-dvar][data-ei_calendar]").atr("data-dvar") ] );
 		        },
-
+*/
 
 
 
@@ -88,7 +112,7 @@ class Calendar {
 		// start functions
 
 		/**
-		 * evaluateData
+		 * evaluateCalData
 		 * 
 		 * basic processing for ajax request
 		 * 
@@ -97,8 +121,26 @@ class Calendar {
 		 * return undefined
 		 * 
 		*/
-		evaluateData = async function( data ) {
-			
+		evaluateCalData = function( data ) {
+		    console.log( data );
+		    let jsonobject;
+		    if( typeof data === "string" ) {
+		        jsonobject = JSON.parse( data );
+		    } else {
+		        jsonobject = data;
+		    }
+		    if( !isJ( jsonobject ) ) {
+		        throw "kein JSON-Objekt übergeben";
+		    }
+		    console.log( jsonobject );
+			switch( jsonobject.command ) {
+		        case "getEventsForView":
+		                //showNewMessage("Erinnerung", jsonobject.success, jsonobject.message, [ {title: "Okay", action: "dM.hide()"}, {title: "Beenden", action: "location.reload()"} ] );
+		                //dMNew.show( { title: "Erinnerung", type: jsonobject.success, text: jsonobject.message, buttons: [{"title": "Okay", action: function(){ dMNew.hide(); } }, {title: "Beenden", action: function(){ location.reload(); } } ] } );
+		        		console.log( jsonobject );
+		        break;
+				
+			}
 		}
 		onDateClickWithCtrl = function( info ) {
 			console.log( "onDateClickWithCtrl", info );
@@ -166,11 +208,14 @@ class Calendar {
 		 * return object { start: startdate, end: enddate}
 		*/
 		getDaysForView = function( info ) {
-			/*
-			data.startDate = info.startStr.replace( "T", "" );
-			data.endDate = info.endStr.replace( "T", "" );
-			return data;
-			*/
+			data = {};
+			data.command = "getEventsForView"; 
+			data.startDate = info.startStr.replace( "T", " " );
+			data.endDate = info.endStr.replace( "T", " " );
+			data.currentUser = this.currentUser;
+			data.isFetch = true;
+			console.log( data );
+    		nj().post("library/php/ajax_calendar.php", data, this.evaluateCalData );   
 		}
 		/**
 		 * switchHeadline

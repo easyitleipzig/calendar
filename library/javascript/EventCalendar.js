@@ -924,7 +924,6 @@ var EventCalendar = function() {
                         today: "today"
                     },
                     cVar: "",
-                    calVar: "",
                     date: new Date,
                     datesSet: void 0,
                     dayHeaderFormat: {
