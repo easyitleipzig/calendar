@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Draggable DEMO</title>
+    <link rel="stylesheet" href="library/css/EventCalendar.css">
+    <link rel="stylesheet" href="library/css/interact.css">
+
+</head>
+<body>
+  <p>// Use the header to drag the element</p>
+  <div id="element" class="el">
+    <div class="content">
+      <p>This is a draggable element</p>
+    </div>
+  </div>
+<script src="library/javascript/no_jquery.js"></script>
+<script src="library/javascript/easyit_helper_neu.js"></script>
+<script src="library/javascript/drag.js"></script>
+<script src="library/javascript/menu_calendar.js"></script>
+<script src="library/javascript/DialogNewInteract.js"></script>
+<script src="library/javascript/EventCalendar.js"></script>
+<script src="library/javascript/Calendar.js"></script>
+<script src="library/javascript/init_calendar.js"></script>
+<script>
+//var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } ), dDia1;
+var dDia1 = new DialogNew( { dVar: "dDia1", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML } );
+var dDia2 = new DialogNew( { dVar: "dDia2", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML } );
+docReady(function() {
+    //draggable('element');  
+    draggable("dDia1_box" );
+  
+    dDia1.show();
+})
+</script>
+  <script>
+  </script>
+</body>
+</html>

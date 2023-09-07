@@ -93,6 +93,7 @@ var latitude, longitude;
         }
     }
 })("docReady", window);
+
 /* evaluate tracking */
 var evaluateTracking = function( data ) {
     console.log( data );
