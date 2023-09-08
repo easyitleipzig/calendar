@@ -12,16 +12,14 @@
     height: 20px;
     overflow-x: hidden;
 }
-#test {
-    position: absolute;   /* must be absolute */
-}
 #parent {
     width: 200px;
     height: 100px;
     position: absolute;   /* must be absolute */
     background-color: salmon;
 }
-#test_headline {
+#test {
+    position: absolute;   /* must be absolute */
     width: 20px;
     height: 20px;
     background-color: blue;  
@@ -31,6 +29,7 @@
     height: 20px;
     background-color: aliceblue;  
 }
+#dDia2 { background-color:salmon; }
 </style>
 </head>
 <body>
@@ -44,15 +43,13 @@
   <div>12345</div>
   <div>12345</div>
   <div>12345</div>
-  <div id="footer">
-    <div id="test" style=""></div>
-    <div id="test_headline"></div>
-  </div>
+  <div id="test" style=""></div>
 </div>
 <div></div>
 <script src="library/javascript/no_jquery.js"></script>
 <script src="library/javascript/easyit_helper_neu.js"></script>
 <script src="library/javascript/DialogDrag_1Step.js"></script>
+<script src="library/javascript/DialogDrag_resize_step1.js"></script>
 <script src="library/javascript/menu_calendar.js"></script>
 <script src="library/javascript/DialogNewInteract.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
@@ -60,12 +57,15 @@
 <script src="library/javascript/init_calendar.js"></script>
 <script>
 //var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } ), dDia1;
-var dDia1 = new DialogNew( { dVar: "dDia1", modal: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML } );
-var dDia2 = new DialogNew( { dVar: "dDia2", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML, canResize: true } );
+// if you set canResize you must set an initial width and heigth
+var dDia1 = new DialogNew( { dVar: "dDia1", width: 300, height: 200, modal: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML, canResize: true  } );
+  var dDia2 = new DialogNew( { dVar: "dDia2", width: 500, height: 450, modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML, canResize: true } );
 docReady(function() {
     dDia1.show();
     dDia2.show();
-    draggable( "test" );
+    resizeable("dDia1_dummyRes" );
+    resizeable("dDia2_dummyRes" );
+    resizeable( "test" );
     draggable( "parent" );
 })
 </script>
