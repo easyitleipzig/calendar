@@ -33,7 +33,8 @@ function resizeable(e, position = "both" ) {
     e.classList.add("resizePoint");
     switch( position ) {
     case "both":
-            console.log( parent.left, parent.top );
+            nj( e ).aCl( "resBoth" );
+            console.log( "resBoth" );
             nj(e).sty({ left: parseInt( parent.width ) - parseInt( parent.left ) - 20 +"px", top: parseInt( parent.height ) - parseInt( parent.top ) - 20 +"px"} );
         break
     }
