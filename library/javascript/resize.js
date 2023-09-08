@@ -1,4 +1,4 @@
-
+"use strict";
 /*
 const store = function ( v, get = false ) {
     var storeValue;
@@ -27,12 +27,14 @@ function resizeable(e, position = "both" ) {
 */
         e = nj().els( "#" + e );
     parent = re_getElementSizeAndPosition( nj( e ).p() );
+    let correctObj = nj( );
     console.log( parent );
-    e.classList.add("draggable");
-    e.classList.add("dragPoint");
+    e.classList.add("resizeable");
+    e.classList.add("resizePoint");
     switch( position ) {
     case "both":
-            nj(e).sty({ left: parseInt( parent.width ) - 20 +"px", top: parseInt( parent.height ) - 20 +"px"} );
+            console.log( parent.left, parent.top );
+            nj(e).sty({ left: parseInt( parent.width ) - parseInt( parent.left ) - 20 +"px", top: parseInt( parent.height ) - parseInt( parent.top ) - 20 +"px"} );
         break
     }
     e.onmousedown = function () {
@@ -54,14 +56,15 @@ function re_preventDragOutsideScreen(e, t, n) {
 }
 function re_dragAction(e, t) {
         let n = re_getDragNewPosition(e.param[0], t);
+        let c = re_getElementSizeAndPosition( e.param[0].parentNode );
         let pos = store( null, true );
         //console.log( pos );
-        nj( e.param[0] ).sty( { left: pos.mPosX + "px", top: pos.mPosY + "px" } );
-        //console.log( re_getElementSizeAndPosition( e.param[0] ) );
+        nj( e.param[0] ).sty( { left: pos.mPosX - parseInt(  c.left ) + "px", top: pos.mPosY - parseInt( c.top ) + "px" } );
+        console.log( re_getElementSizeAndPosition( e.param[0].parentNode ) );
         // set new dialog size
         let el = nj().els( "#" + e.param[0].id ).parentNode;
-        console.log( el, pos, parseInt( pos.mPosX ) + 20 +"px", parseInt( pos.mPosY ) + 20 +"px" );
-        nj( el ).sty({ width: parseInt( pos.mPosX ) + 20 +"px", height: parseInt( pos.mPosY ) + 20 +"px"})
+        //console.log( el, pos, parseInt( pos.mPosX ) + 20 +"px", parseInt( pos.mPosY ) + 20 +"px" );
+        nj( el ).sty({ width: parseInt( pos.mPosX ) - parseInt(  c.left ) + 20 +"px", height: parseInt( pos.mPosY ) - parseInt( c.top ) + 20 +"px"})
 }
 function re_getElementSizeAndPosition(e) {
     let t = window.getComputedStyle(e);
