@@ -1,3 +1,5 @@
+
+/*
 const store = function ( v, get = false ) {
     var storeValue;
     function setStore( v ) {
@@ -12,16 +14,27 @@ const store = function ( v, get = false ) {
         setStore( v );
     }
 }
-function resizeable(e) {
-    //console.log( e );
+*/
+// TODO: add functionality for dialog
+// TODO: correct position resize element in the dialog
+// TODO: add functionality for res. top, res. left, res. bottom, res. right, res. both
+function resizeable(e, position = "both" ) {
+/*
     if( typeof e === "object" ) {
-
     } else {
         e = nj().els( "#" + e );
     }
+*/
+        e = nj().els( "#" + e );
+    parent = re_getElementSizeAndPosition( nj( e ).p() );
+    console.log( parent );
     e.classList.add("draggable");
     e.classList.add("dragPoint");
-    //let n = e;
+    switch( position ) {
+    case "both":
+            nj(e).sty({ left: parseInt( parent.width ) - 20 +"px", top: parseInt( parent.height ) - 20 +"px"} );
+        break
+    }
     e.onmousedown = function () {
         1 == event.which && re_trackMouseDragPlusAction({ action: "drag", param: [e] });
     };
@@ -44,7 +57,11 @@ function re_dragAction(e, t) {
         let pos = store( null, true );
         //console.log( pos );
         nj( e.param[0] ).sty( { left: pos.mPosX + "px", top: pos.mPosY + "px" } );
-        console.log( re_getElementSizeAndPosition( e.param[0] ) );
+        //console.log( re_getElementSizeAndPosition( e.param[0] ) );
+        // set new dialog size
+        let el = nj().els( "#" + e.param[0].id ).parentNode;
+        console.log( el, pos, parseInt( pos.mPosX ) + 20 +"px", parseInt( pos.mPosY ) + 20 +"px" );
+        nj( el ).sty({ width: parseInt( pos.mPosX ) + 20 +"px", height: parseInt( pos.mPosY ) + 20 +"px"})
 }
 function re_getElementSizeAndPosition(e) {
     let t = window.getComputedStyle(e);

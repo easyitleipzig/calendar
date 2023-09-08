@@ -5,24 +5,53 @@
     <link rel="stylesheet" href="library/css/EventCalendar.css">
     <link rel="stylesheet" href="library/css/interact.css">
 <style type="text/css">
-  #test {
+  #test1 /*, #test2, #test3 */ {
     width: 20px;
     height: 20px;
+/*
+    left: 380px;
+    top: 280px;
+*/
     background-color: blue;
     position: absolute;
   }
+  #dialog {
+    width: 400px;
+    height: 300px;
+    background-color: aliceblue;
+    position: absolute;
+  }
+#dialog_headline {
+    width: 20px;
+    height: 20px;
+    background-color: white;  
+}
 </style>
 </head>
 <body>
-  <div id="test" class="el">
-  </div>
+<div id="dialog">
+    <div id="dialog_headline"></div>
+    <p>uklhger aeugibgr EIGNOeÄ</p>
+    <p>KLÖNH OZITHNJM lomks ds+ühktr</p>
+    <div id="test1" class="el">
+</div>
+<!--
+<div id="test2" class="el"></div>
+<div id="test3" class="el"></div>
+-->
 <script src="library/javascript/no_jquery.js"></script>
 <script src="library/javascript/easyit_helper_neu.js"></script>
 <script src="library/javascript/resize.js"></script>
+<script src="library/javascript/DialogDrag_1Step.js"></script>
 <script src="library/javascript/menu_calendar.js"></script>
 <script>
-docReady(function() { 
-    resizeable("test" );
+docReady(function() {
+draggable("dialog"); 
+    resizeable("test1" );
+/*
+    resizeable("test2" );
+    resizeable("test3" );
+*/
 });
 </script>
   <script>
