@@ -47,6 +47,7 @@ const getDVar = function( el ) {
     }
 }
 /* end dialog helper */
+/* TODO: extract all not nessacary setup vars to intern vars */ 
 class DialogNew {
       constructor( param ) {
         this.opt = {
@@ -57,7 +58,6 @@ class DialogNew {
             menu:               undefined, // the html of the menu object
             classPraefix:       "d_", // optional - praefix for all classes
             dVar:               "", // necessary - must by the name of the object
-            waitForShow:        1000, // wait time for show in ms
             height:             undefined, // optional - can be a value for standard height or "dynamic" for dynamic according to the content size
             maxHeight:          undefined, // optional - can be a value for maximum height
             width:              undefined, // optional - can be a value for standard width
@@ -101,7 +101,7 @@ class DialogNew {
             onRefreshHTML:      undefined,
             variables:          undefined,
         }
-    let showOnInit = false;
+    let showOnInit = true;
         Object.assign( this.opt, param );
         if( this.opt.id === "" ) {
             let el = nj().cEl( "div" );
@@ -318,15 +318,15 @@ class DialogNew {
             el_he.id = this.opt.boxId + "_help";
             nj( el_he ).aCl( CLASS_DIALOG_HELP );
             document.body.appendChild( el_he );
-            this.opt.divHelp = new DialogNew( { dVar: this.opt.dVar + ".opt.divHelp", id: "#" + el_he.id, title: "Hilfe", modal: true, autoOpen: false, center: false })
+            this.opt.divHelp = new DialogNew( { dVar: this.opt.dVar + ".opt.divHelp", id: "#" + el_he.id, title: "Hilfe", modal: true, autoOpen: false, center: false, cascade: false })
         }
         if( this.opt.hasInfo ) {
             let el_i = nj().cEl( "div" );
-            nj( el_i ).htm('<iframe src="' + PATH_TO_INFO + "info_" + this.opt.boxId + '.php"></iframe>')
+            nj( el_i ).htm('<iframe src="' + PATH_TO_INFO + "info_" + this.opt.boxId + '.html"></iframe>')
             el_i.id = this.opt.boxId + "_info";
             nj( el_i ).aCl( CLASS_DIALOG_INFO );
             document.body.appendChild( el_i );
-            this.opt.divInfo = new DialogNew( { dVar: this.opt.dVar + ".opt.divInfo", id: "#" + el_i.id, title: "Information", modal: true, autoOpen: false, center: false })
+            this.opt.divInfo = new DialogNew( { dVar: this.opt.dVar + ".opt.divInfo", id: "#" + el_i.id, title: "Information", modal: true, autoOpen: false, center: false, cascade: false })
         }
         nj( this.opt.target ).aCh( box );
         if( this.opt.canMove ) {
@@ -342,8 +342,8 @@ class DialogNew {
             //resizeClass.init( document.getElementById( this.opt.id.substr( 1, this.opt.id.length - 1 ) + "_dummyRes" ) );
         }
         if( this.opt.cascade ) {
-            console.log( this.opt.cascade, "#" + this.opt.boxId );
-            nj( "#" + this.opt.boxId + "_box" ).sDs( "iscascade", "" );
+            console.log( this.opt.boxId );
+            nj( "#" + this.opt.boxId + "_box" ).sDs( "iscascade", "")
         }
         if( this.opt.autoOpen ) {
             this.showOnInit = true;
@@ -436,14 +436,11 @@ class DialogNew {
         nj( this.opt.id + "_box" ).rCl( "boxHidden");
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
-            console.log( (this.opt.id + "_box").replace("#", "") );
-            draggable( ( this.opt.id + "_box" ).replace("#", "") );
+        if( this.opt.canMove ) {
+            draggable( ( this.opt.id + "_box" ).replace("#", "") );            
+        }
 
         if( typeof this.opt.afterShow === "function" ) {
-/*
-            console.log( this.opt.id + "_box".replace("#", "") );
-            draggable( this.opt.id + "_box".replace("#", "") );
-*/
             this.opt.afterShow( this );
         }
     }

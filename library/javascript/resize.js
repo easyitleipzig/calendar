@@ -43,30 +43,34 @@ function changeVerticalMeasures(e, t, n, i) {
 }*/
 
 function draggable(e) {
-    console.log( e );
+    //console.log( e );
     if( typeof e === "object" ) {
 
     } else {
         e = nj().els( "#" + e );
     }
     e.classList.add("draggable");
-    console.log( e );
-    let tmp = e.id.replace( "_box", "" );
-    let t = nj().els( "#" + tmp + "_headline");
-    console.log( tmp + "_headline", t );
-    t.className = "dragPoint"/*, initialDragPointStyling(t)*/;
-    let n = e.firstChild;
+    e.classList.add("dragPoint");
+    //console.log( e );
+    //let tmp = e.id.replace( "_box", "" );
+    //let t = nj().els( "#" + tmp + "_headline");
+    //console.log( tmp + "_headline", t );
+    //t.className = "dragPoint"/*, initialDragPointStyling(t)*/;
+//    let n = e.firstChild;
+    let n = e;
+/*
     if ((null !== n ? e.insertBefore(t, n) : e.appendChild(t), e.classList.contains("resizable"))) {
         let n = e.parentElement;
-        n.classList.contains("parentResize") && (resizePointsStyling(e, t), (e = n));
+        n.classList.contains("parentResize") && (resizePointsStyling(e, e), (e = n));
     }
-    t.onmousedown = function () {
+*/
+    e.onmousedown = function () {
         1 == event.which && trackMouseDragPlusAction({ action: "drag", param: [e] });
     };
 }
-function getDragNewPosition(e, t) {
+function getDragNewPosition(e) {
     let n = getElementOffsetAndMeasures(e),
-        i = { x: n.left - t.x, y: n.top - t.y };
+        i = { x: n.left - e.x, y: n.top - e.y };
     return preventDragOutsideScreen(n, i, { left: i.x, top: i.y, right: i.x + n.width, bottom: i.y + n.height });
 }
 function getElementOffsetAndMeasures(e) {
@@ -78,8 +82,11 @@ function preventDragOutsideScreen(e, t, n) {
 }
 function dragAction(e, t) {
         let n = getDragNewPosition(e.param[0], t);
-        store( n );
-        (e.param[0].style.left = n.x + "px"), (e.param[0].style.top = n.y + "px");
+        let pos = store( null, true );
+        console.log( pos );
+        nj( e.param[0] ).sty( { left: pos.mPosX + "px", top: pos.mPosY + "px" } )
+        //(e.param[0].style.left = n.x + "px"), (e.param[0].style.top = n.y + "px");
+//        (e.style.left = n.x + "px"), (e.style.top = n.y + "px");
 }
 /*
 let count,
@@ -101,7 +108,7 @@ function getItemCountToFitElementByWidth(e, t) {
 let maxStorage = {};
 function getButton(e, t) {
     let n;
-    console.log( e, t );
+    //console.log( e, t );
     for (let i = 0, o = (n = e.classList.contains("draggable") ? e.firstElementChild.firstElementChild.childNodes : e.firstElementChild.childNodes).length; i < o; i++) if (n[i].classList.contains(t)) return n[i];
 }
 function getElementSizeAndPosition(e) {
@@ -115,19 +122,6 @@ function getElementSizeAndPosition(e) {
         gridRow: t.getPropertyValue("grid-template-rows"),
     };
 }
-/*
-function changeStackOrder() {
-    let e = document.getElementsByClassName("interactive");
-    for (let t = 0, n = e.length; t < n; t++)
-        e[t] == this
-            ? e[t].classList.contains("resizable")
-                ? (e[t].parentElement.style.zIndex = 2)
-                : (e[t].style.zIndex = 2)
-            : e[t].classList.contains("resizable")
-            ? (e[t].parentElement.style.zIndex = 1)
-            : (e[t].style.zIndex = "inherit");
-}
-*/
 function getDocumentBodyLimits() {
     return { left: 0, right: document.body.clientWidth, top: 0, bottom: document.body.clientHeight };
 }
@@ -138,6 +132,12 @@ function trackMouseDragPlusAction(e) {
         (document.onmousemove = function () {
             let i = event.clientX,
                 o = event.clientY;
+                //console.log( e, t, n, i, o );                           // e ->{ event: "drag", param: [0: resize el]
+                                                                        // t -> x offset of event in resize el
+                                                                        // n -> y offset of event in resize el
+                                                                        // i -> x coord of mousepointer
+                                                                        // o -> y coord of mousepointer
+            store( { mPosX: i, mPosY: o, elOffsetX: t, elOffsetY: n } );
             dragAction(e, { x: t - i, y: n - o }), (t = i), (n = o);
         });
 }
