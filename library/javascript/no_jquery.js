@@ -556,6 +556,16 @@ fetch(request)
             console.log( error )
         });
     }
+    _fetchPostNew = function( url, fetchData, callback ) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( fetchData )
+    };
+    fetch('library/php/fetch_post.php', requestOptions)
+        .then(response => response.json())
+        .then(data => callback( data ) );
+    }
     // others
     _ddS = function( k, v ) {
         document.documentElement.style.setProperty( k, v );
@@ -699,6 +709,7 @@ fetch(request)
     // AJAX
     this.post = _post;
     this.fetchPost = _fetchPost;
+    this.fetchPostNew = _fetchPostNew;
     // others
     this.ddS = _ddS;
     this.ddG = _ddG;

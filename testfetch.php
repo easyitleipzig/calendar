@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>My Event Calendar</title>
+    <title>Fetch Post</title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -17,23 +17,21 @@
     </style>
 </head>
 <body>
-<div class="row">
+<div id="parent">
+  <p id="test" style="">
+    
+    Testtext Link <input type="button" id="doFetch">
 
-    <div id="divCal" class="col"></div>
-
+  </p>
 </div>
-
 <script src="library/javascript/no_jquery.js"></script>
 <script src="library/javascript/easyit_helper_neu.js"></script>
-<script src="library/javascript/drag_drop.min.js"></script>
 <script src="library/javascript/menu_calendar.js"></script>
-<script src="library/javascript/DialogNew.js"></script>
-<script src="library/javascript/EventCalendar.js"></script>
-<script src="library/javascript/Calendar.js"></script>
-<script src="library/javascript/init_calendar.js"></script>
+<script src="library/javascript/fetch_post.js"></script>
+
 <script>
 
-
+initFetchPost();
 
 
 </script>
