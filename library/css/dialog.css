@@ -11,6 +11,9 @@
     height: 3px;
     background: transparent linear-gradient(90deg, #E30613 0%, #E84E0F 15%, #FEC700 34%, #BCCF00 49%, #009FE3 65%, #007BC4 80%, #B14191 100%) 0% 0% no-repeat padding-box;
 }
+.dialogFooter {
+    height: 50px;
+}
 .dialogBox > div:first-child > div:first-child {
     padding-right: 3px;
 } 
