@@ -342,8 +342,7 @@ class DialogDR {                    // dialog drag and resize
             //resizeClass.init( document.getElementById( this.opt.id.substr( 1, this.opt.id.length - 1 ) + "_dummyRes" ) );
         }
         if( this.opt.cascade ) {
-            console.log( this.boxId );
-            nj( "#" + this.boxId + "_box" ).sDs( "iscascade", "")
+            nj( "#" + this.boxId + "_box" ).aCl( "is_cascade", "")
         }
         if( this.opt.autoOpen ) {
             this.showOnInit = true;
@@ -360,12 +359,6 @@ class DialogDR {                    // dialog drag and resize
         nj( this.opt.id + "_box" ).sty( "z-index", ++mI )       
     }
     show = function( args ) {
-/*
-        if( this.canMove && !this.dragIsSet ) {
-            draggable("dDia1_box" );
-            this.dragIsSet = true;
-        }
-*/
         let mZI = maxZIndex();
         if( this.opt.modal ) {
             nj( this.opt.id + "_wrapper" ).rCl( "wrapperHide");
@@ -382,11 +375,6 @@ class DialogDR {                    // dialog drag and resize
         } else { 
                 x = "0px";
                 y = "0px";
-        }
-        if( this.opt.cascade ) {
-            let els = nj().els( "div.boxShow[data-iscascade]");
-            console.log( els );
-            //x = parseInt( x ) + this.opt.cascadeDiff + "px";
         }
         if( typeof this.opt.onShow === "function" ) this.opt.onShow( this );
         if( typeof args !== "undefined") {
@@ -439,7 +427,9 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.canMove ) {
             draggable( ( this.opt.id + "_box" ).replace("#", "") );            
         }
-
+        if( this.opt.canResize ) {
+            resizeable( ( this.opt.id + "_box" ).replace("#", "") );            
+        }
         if( typeof this.opt.afterShow === "function" ) {
             this.opt.afterShow( this );
         }

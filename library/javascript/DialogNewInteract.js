@@ -64,6 +64,8 @@ class DialogDR {                    // dialog drag and resize
             maxWidth:           undefined, // optional - can be a value for maximum width
             minHeight:          150, // min height for resizing
             minWidth:           300, // min width for resizing
+            left:               "0px", // initial left value if not center
+            top:                "0px", // initial top value if not center
             headlineHeight:     undefined, // do not use - is set by class
             menuHeigh:          undefined, // do not use - is set by class
             dialogHeight:       undefined, // do not use - is set by class
@@ -332,6 +334,10 @@ class DialogDR {                    // dialog drag and resize
             nj( boxEl ).aCh( dummyRes );
             //resizeClass.init( document.getElementById( this.opt.id.substr( 1, this.opt.id.length - 1 ) + "_dummyRes" ) );
         }
+        if( this.opt.cascade ) {
+            nj( "#" + this.boxId + "_box" ).aCl( "is_cascade" );
+            this.show();
+        }
         if( this.opt.autoOpen ) {
             this.showOnInit = true;
             this.show();
@@ -361,9 +367,8 @@ class DialogDR {                    // dialog drag and resize
             x = this.center().x; 
             y = this.center().y; 
         } else { 
-                x = "0px";
-                y = "0px";
-                this.opt.cascade = false;
+                x = this.opt.left;
+                y = this.opt.top;
         }
         if( typeof this.opt.onShow === "function" ) this.opt.onShow( this );
         if( typeof args !== "undefined") {
@@ -411,10 +416,8 @@ class DialogDR {                    // dialog drag and resize
         this.opt.footerHeight = nj( this.opt.id + "_footer" ).gRe().height;
         this.opt.remindCenter = this.opt.center;
         nj( this.opt.id + "_box" ).rCl( "boxHidden");
-        if( this.opt.cascade && this.opt.center ) {
-            console.log( boxDim );
+        if( this.opt.cascade ) {
             let tmpX, tmpY;
-            console.log( boxDim.width, boxDim.height );
             if( parseInt( x ) >= 0 && parseInt( y ) >= 0  ) {
                 
             } else {
@@ -429,21 +432,33 @@ class DialogDR {                    // dialog drag and resize
                 }else{
                     tmpY = this.opt.height;
                 }
-                console.log( ScreenLimits );
-                console.log( x = "1437px", y="50px", this.opt.center = false ); 
-                console.log( this.center().x, this.center().y );
+//                console.log( this.center().x, this.center().y );
+                // get cascading dialogs
+                let els = nj().els( "div.is_cascade[id*='_box']");
+                // check for same position
                 x = ScreenLimits.right / 2 - parseInt( this.center().x ) - tmpX + "px";
+                y = ScreenLimits.bottom / 2 - parseInt( this.center().y ) - tmpX + "px";
+                let l = els.length;
+                let i = 0;
+                while ( i < l ) {
+                    if( parseInt( nj( els[i] ).sty( "left" ) ) >= 0 && parseInt( nj( els[i] ).sty( "top" ) ) >= 0 ) {
+                        console.log( nj().els( els[i] ), nj( els[i] ).sty( "left" ), nj( els[i] ).sty( "top" ) );
+                        if( nj( els[i] ).sty( "left" ) === x && nj( els[i] ).sty( "top" ) === y ) {
+                            console.log( "same position" );
+                            x = parseInt( x ) + this.opt.cascadeDiff + "px";
+                            y = parseInt( y ) + this.opt.cascadeDiff + "px";
+                            nj( els[i] ).rCl( "is_cascade" );
+                        }    
+                    }
+                    
+                    i += 1;
+                }
             }
-        
-
         }
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
         if( this.opt.canMove ) {
             draggable( ( this.opt.id + "_box" ).replace("#", "") );            
-        }
-        if( this.opt.cascade ) {
-            //nj( this.opt.id + "_box" ).sty( { "left": "200px", "top": "400px", "z-index": ++mZI } );
         }
         if( typeof this.opt.afterShow === "function" ) {
             this.opt.afterShow( this );
@@ -459,7 +474,6 @@ class DialogDR {                    // dialog drag and resize
         //}
         nj( this.opt.id + "_box" ).rCl( "boxShow");
         nj( this.opt.id + "_box" ).aCl( "boxHide");
-        //this.opt.center = this.opt.rootCenter;
         if( typeof this.opt.onHide === "function" ) this.opt.onHide( this );
     }
     savePosDim = function() {

@@ -19,18 +19,11 @@ function draggable(e) {
         e = nj().els( "#" + e );
     }
     if( e === null ) return;
-    console.log( e );
     e.classList.add("draggable");
     let tmp = e.id.replace( "_box", "" );
     let t = nj().els( "#" + tmp + "_headline");
     t.className = "dragPoint"/*, initialDragPointStyling(t)*/;
     let n = e.firstChild;
-    /*
-    if ((null !== n ? e.insertBefore(t, n) : e.appendChild(t), e.classList.contains("resizable"))) {
-        let n = e.parentElement;
-        n.classList.contains("parentResize") && (resizePointsStyling(e, t), (e = n));
-    }
-    */
     t.onmousedown = function () {
         1 == event.which && trackMouseDragPlusAction({ action: "drag", param: [e] });
     };
