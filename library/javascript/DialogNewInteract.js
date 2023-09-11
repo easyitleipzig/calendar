@@ -85,7 +85,6 @@ class DialogDR {                    // dialog drag and resize
             hasClose:           true,
             canMove:            true,
             canResize:          false,
-            resizeIsSet:        false,
             buttons:            [],// {title: "Okay", action: function(){ let df = getDVar( this ); window[ df ].hide() } ],
             selectFirstButton:  true,
             selectFirstInput:   true,

@@ -18,6 +18,8 @@ function draggable(e) {
     } else {
         e = nj().els( "#" + e );
     }
+    if( e === null ) return;
+    console.log( e );
     e.classList.add("draggable");
     let tmp = e.id.replace( "_box", "" );
     let t = nj().els( "#" + tmp + "_headline");
@@ -94,6 +96,7 @@ function dragMouseStop(e) {
     (document.onmouseup = null), (document.onmousemove = null);
 }
 function resizeable(e, position = "both" ) {
+    if( typeof e !== "object" ) return;
     e = nj().els( "#" + e );
     parent = re_getElementSizeAndPosition( nj( e ).p() );
     let correctObj = nj(  e.parentNode );
@@ -150,6 +153,8 @@ function re_dragAction( e, t ) {
         nj().els( "#" + e.param[0].previousSibling.previousSibling.id  ).style.height = testvalue + "px";
 }
 function re_getElementSizeAndPosition(e) {
+    console.log( e );
+    if( !e ) return;
     let t = window.getComputedStyle(e);
     return {
         width: t.getPropertyValue("width"),
