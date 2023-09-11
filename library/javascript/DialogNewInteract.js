@@ -80,18 +80,13 @@ class DialogDR {                    // dialog drag and resize
             hasIcon:            false, // optional - true/false
             hasInfo:            false, // optional - true/false
             hasHelp:            false, // optional - true/false
-            divHelp:            undefined, // do not set
-            divInfo:            undefined, // do not set
             hasMin:             false,
             hasMax:             false,
-            hasSticky:          false,
             hasClose:           true,
             canMove:            true,
-            dragIsSet:          false,
             canResize:          false,
             resizeIsSet:        false,
             buttons:            [],// {title: "Okay", action: function(){ let df = getDVar( this ); window[ df ].hide() } ],
-            isOpen:             false,
             selectFirstButton:  true,
             selectFirstInput:   true,
             onShow:             undefined,
@@ -102,7 +97,12 @@ class DialogDR {                    // dialog drag and resize
             variables:          undefined,
         }
         let showOnInit = true,
-            boxId = "";
+            boxId = "",
+            minHeight = 150,
+            minWidth = 250,
+            variables = {},
+            divHelp,
+            divInfo;
 
 
         Object.assign( this.opt, param );
@@ -159,22 +159,13 @@ class DialogDR {                    // dialog drag and resize
         el_add = null;
         let el_ctrl = nj().cEl( "div" );
         el_add = nj().cEl( "div" );
-        if( this.opt.hasSticky ) {
-            nj( el_add ).aCl( this.opt.classPraefix + "HLSticky" );
-            nj( el_add ).on( "click", function( el ) {
-                if( typeof getDialogVar( getDVar( nj().els( el.target ) ) ).opt.onSticky === "function" ) {
-                    getDialogVar( getDVar( nj().els( el.target ) ) ).opt.onSticky();
-                }    
-            })
-            nj( el_ctrl ).aCh( el_add );
-        }
         el_add = null;
         el_add = nj().cEl( "div" );
         if( this.opt.hasHelp ) {
             nj( el_add ).aCl( "cbHelp iconButtMin " + this.opt.classPraefix + "HLHelp");
             nj( el_add ).on( "click", function( e ) {
                 e.stopPropagation();
-                getDialogVar( getDVar( nj().els( e.target ) ) ).opt.divHelp.show();    
+                getDialogVar( getDVar( nj().els( e.target ) ) ).divHelp.show();    
             });
             nj( el_ctrl ).aCh( el_add );
         }
@@ -184,7 +175,7 @@ class DialogDR {                    // dialog drag and resize
             nj( el_add ).aCl( "cbInfo iconButtMin " + this.opt.classPraefix + "HLInfo");
             nj( el_add ).on( "click", function( e ) {
                 e.stopPropagation();
-                getDialogVar( getDVar( nj().els( e.target ) ) ).opt.divInfo.show();    
+                getDialogVar( getDVar( nj().els( e.target ) ) ).divInfo.show();    
             });
             nj( el_ctrl ).aCh( el_add );
         }
@@ -319,7 +310,7 @@ class DialogDR {                    // dialog drag and resize
             el_he.id = this.boxId + "_help";
             nj( el_he ).aCl( CLASS_DIALOG_HELP );
             document.body.appendChild( el_he );
-            this.opt.divHelp = new DialogDR( { dVar: this.opt.dVar + ".opt.divHelp", id: "#" + el_he.id, title: "Hilfe", modal: true, autoOpen: false, center: false, cascade: false })
+            this.divHelp = new DialogDR( { dVar: this.opt.dVar + ".divHelp", id: "#" + el_he.id, title: "Hilfe", modal: true, autoOpen: false, center: false, cascade: false })
         }
         if( this.opt.hasInfo ) {
             let el_i = nj().cEl( "div" );
@@ -327,7 +318,7 @@ class DialogDR {                    // dialog drag and resize
             el_i.id = this.boxId + "_info";
             nj( el_i ).aCl( CLASS_DIALOG_INFO );
             document.body.appendChild( el_i );
-            this.opt.divInfo = new DialogDR( { dVar: this.opt.dVar + ".opt.divInfo", id: "#" + el_i.id, title: "Information", modal: true, autoOpen: false, center: false, cascade: false })
+            this.divInfo = new DialogDR( { dVar: this.opt.dVar + ".divInfo", id: "#" + el_i.id, title: "Information", modal: true, autoOpen: false, center: false, cascade: false })
         }
         nj( this.opt.target ).aCh( box );
         if( this.opt.canMove ) {
