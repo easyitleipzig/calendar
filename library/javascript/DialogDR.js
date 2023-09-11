@@ -2,8 +2,7 @@
 //var oldY = 0, oldX = 0;
 let cDia;
 var TEST_INNER_HTML ="<p><input value='abcd'></p>"; 
-
-const setDialogPosOnScroll = function() {
+var setDialogPosOnScroll = function() {
     let els = nj().els( ".dialogBox:not(.boxHide)" );
     let l = els.length;
     let i = 0;
@@ -103,8 +102,6 @@ class DialogDR {                    // dialog drag and resize
         }
         let showOnInit = true,
             boxId = "";
-
-
         Object.assign( this.opt, param );
         if( this.opt.id === "" ) {
             let el = nj().cEl( "div" );
@@ -137,6 +134,7 @@ class DialogDR {                    // dialog drag and resize
                 b = {};
                 b.title = "Okay";
                 b.action = function( el ){
+                    //console.log( getDVar( nj().els( el.target ) ) );
                     getDialogVar( getDVar( nj().els( el.target ) ) ).hide();
                 };
                 this.opt.buttons.push( b ); 
@@ -284,6 +282,7 @@ class DialogDR {                    // dialog drag and resize
             let i = 0;
             while( i < l ) {
                 let b = nj().cEl( "button" );
+                //console.log(typeof this.opt.buttons[i] );
                 if( typeof this.opt.buttons[i] !== "undefined" ) {
                     nj( b ).htm( this.opt.buttons[i].title );
                     nj( b ).on( "click", this.opt.buttons[i].action );
@@ -342,6 +341,10 @@ class DialogDR {                    // dialog drag and resize
             nj( boxEl ).aCh( dummyRes );
             //resizeClass.init( document.getElementById( this.opt.id.substr( 1, this.opt.id.length - 1 ) + "_dummyRes" ) );
         }
+        if( this.opt.cascade ) {
+            console.log( this.boxId );
+            nj( "#" + this.boxId + "_box" ).sDs( "iscascade", "")
+        }
         if( this.opt.autoOpen ) {
             this.showOnInit = true;
             this.show();
@@ -357,6 +360,12 @@ class DialogDR {                    // dialog drag and resize
         nj( this.opt.id + "_box" ).sty( "z-index", ++mI )       
     }
     show = function( args ) {
+/*
+        if( this.canMove && !this.dragIsSet ) {
+            draggable("dDia1_box" );
+            this.dragIsSet = true;
+        }
+*/
         let mZI = maxZIndex();
         if( this.opt.modal ) {
             nj( this.opt.id + "_wrapper" ).rCl( "wrapperHide");
@@ -373,7 +382,11 @@ class DialogDR {                    // dialog drag and resize
         } else { 
                 x = "0px";
                 y = "0px";
-                this.opt.cascade = false;
+        }
+        if( this.opt.cascade ) {
+            let els = nj().els( "div.boxShow[data-iscascade]");
+            console.log( els );
+            //x = parseInt( x ) + this.opt.cascadeDiff + "px";
         }
         if( typeof this.opt.onShow === "function" ) this.opt.onShow( this );
         if( typeof args !== "undefined") {
@@ -421,43 +434,15 @@ class DialogDR {                    // dialog drag and resize
         this.opt.footerHeight = nj( this.opt.id + "_footer" ).gRe().height;
         this.opt.remindCenter = this.opt.center;
         nj( this.opt.id + "_box" ).rCl( "boxHidden");
-        if( this.opt.cascade && this.opt.center ) {
-            console.log( boxDim );
-            let tmpX, tmpY;
-            console.log( boxDim.width, boxDim.height );
-            if( parseInt( x ) >= 0 && parseInt( y ) >= 0  ) {
-                
-            } else {
-                let ScreenLimits = getDocumentBodyLimits();
-                if( typeof this.opt.width === "undefined" ) {
-                    tmpX = boxDim.width;
-                }else{
-                    tmpX = this.opt.width;
-                }
-                if( typeof this.opt.height === "undefined" ) {
-                    tmpY = boxDim.height;
-                }else{
-                    tmpY = this.opt.height;
-                }
-                console.log( ScreenLimits );
-                console.log( x = "1437px", y="50px", this.opt.center = false ); 
-                console.log( this.center().x, this.center().y );
-                x = ScreenLimits.right / 2 - parseInt( this.center().x ) - tmpX + "px";
-            }
-        
-
-        }
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
         if( this.opt.canMove ) {
             draggable( ( this.opt.id + "_box" ).replace("#", "") );            
         }
-        if( this.opt.cascade ) {
-            //nj( this.opt.id + "_box" ).sty( { "left": "200px", "top": "400px", "z-index": ++mZI } );
-        }
+
         if( typeof this.opt.afterShow === "function" ) {
             this.opt.afterShow( this );
-        }        
+        }
     }
     hide = function() {
         if( this.opt.modal ) {
@@ -604,11 +589,14 @@ class DialogDR {                    // dialog drag and resize
                     v[0] = {};
                     v[0].title = "Okay";
                     v[0].action = function(){
+                        //console.log( getDVar( nj().els( this ) )  );
                         let df = getDVar( nj().els( this ) );
+                        console.log( df.split( "." )[0] );
                         window[ df.split( "." )[0] ].opt.divVar.hide();
                     }
                 }
                 nj( this.opt.id + "_footer" ).htm( "" );
+                //console.log( v );
                 let l = v.length;
                 let i = 0;
                 while( i < l ) {

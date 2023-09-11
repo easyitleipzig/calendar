@@ -102,7 +102,6 @@ function resizeable(e, position = "both" ) {
     switch( position ) {
     case "both":
             nj( e ).aCl( "resBoth" );
-            console.log( nj( e.previousElementSibling ).gRe().height );
             nj(e).sty({ left: parseInt( parent.width )  - 20 + "px", top: parseInt( parent.height ) + nj( e.previousElementSibling ).gRe().height + "px"} );  // + footer height
         break
     }
