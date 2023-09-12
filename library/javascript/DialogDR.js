@@ -136,7 +136,7 @@ class DialogDR {                    // dialog drag and resize
                 b = {};
                 b.title = "Okay";
                 b.action = function( el ){
-                    //console.log( getDVar( nj().els( el.target ) ) );
+                    //e.log( getDVar( nj().els( el.target ) ) );
                     getDialogVar( getDVar( nj().els( el.target ) ) ).hide();
                 };
                 this.opt.buttons.push( b ); 
@@ -284,7 +284,6 @@ class DialogDR {                    // dialog drag and resize
             let i = 0;
             while( i < l ) {
                 let b = nj().cEl( "button" );
-                //console.log(typeof this.opt.buttons[i] );
                 if( typeof this.opt.buttons[i] !== "undefined" ) {
                     nj( b ).htm( this.opt.buttons[i].title );
                     nj( b ).on( "click", this.opt.buttons[i].action );
@@ -381,18 +380,11 @@ class DialogDR {                    // dialog drag and resize
 
         let x, y;
         if( this.opt.center ) {
-            console.log( window.innerWidth, window.innerHeight );
             x = window.innerWidth / 2 + parseInt( this.center().x ) + "px"; 
             y = window.innerHeight / 2 + parseInt(this.center().y ) + "px";
-            console.log( x, y ); 
         } else { 
                 x = "0px";
                 y = "0px";
-        }
-        if( this.opt.cascade ) {
-            let els = nj().els( "div.boxShow[data-iscascade]");
-            console.log( els );
-            //x = parseInt( x ) + this.opt.cascadeDiff + "px";
         }
         if( typeof this.opt.onShow === "function" ) this.opt.onShow( this );
         if( typeof args !== "undefined") {
@@ -442,20 +434,16 @@ class DialogDR {                    // dialog drag and resize
         nj( this.opt.id + "_box" ).rCl( "boxHidden");
         if( this.opt.cascade ) {
             let els = nj().els( "div.cascade[id*='_box']");
-            console.log( els );
             let l = els.length;
             let i = 0;
             while ( i < l ) {
-                console.log( nj( els[i] ).sty( "left" ), this.opt.id, x );
                 if( nj( els[i] ).sty( "left" ) == x && nj( els[i] ).sty( "top" ) == y ) {
-                    console.log( this.opt.id );
                     x = parseInt( x ) + this.opt.cascadeDiff + "px";
                     y = parseInt( y ) + this.opt.cascadeDiff + "px";
                 }
                 i += 1;
             }
         }
-
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
         if( typeof this.opt.afterShow === "function" ) {
@@ -563,7 +551,6 @@ class DialogDR {                    // dialog drag and resize
         switch( p ) {
             case "correctCenterMaxZI":
                 let mi = maxZIndex();
-                console.log( this.opt.modal, mi );
                 if( this.opt.modal ) {
                     nj( this.opt.id + "_wrapper" ).sty( { "z-index" : mi + 1 } );
                     nj( this.opt.id + "_box" ).sty( { "z-index" : mi + 2 } );
@@ -604,14 +591,12 @@ class DialogDR {                    // dialog drag and resize
                     v[0] = {};
                     v[0].title = "Okay";
                     v[0].action = function(){
-                        //console.log( getDVar( nj().els( this ) )  );
                         let df = getDVar( nj().els( this ) );
-                        console.log( df.split( "." )[0] );
+                        e.log( df.split( "." )[0] );
                         window[ df.split( "." )[0] ].opt.divVar.hide();
                     }
                 }
                 nj( this.opt.id + "_footer" ).htm( "" );
-                //console.log( v );
                 let l = v.length;
                 let i = 0;
                 while( i < l ) {
