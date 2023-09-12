@@ -45,8 +45,8 @@
 <script>
 //var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } ), dDia1;
 // if you set canResize you must set an initial width and heigth
-var dDia1 = new DialogDR( { dVar: "dDia1", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia1" + TEST_INNER_HTML, canResize: true  } );
-  var dDia2 = new DialogDR( { dVar: "dDia2", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia2" + TEST_INNER_HTML, canResize: true } );
+var dDia1 = new DialogDR( { dVar: "dDia1", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia1" + TEST_INNER_HTML, canResize: false  } );
+  var dDia2 = new DialogDR( { dVar: "dDia2", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia2" + TEST_INNER_HTML, canResize: false } );
 var dDia3 = new DialogDR( { dVar: "dDia3", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia3" + TEST_INNER_HTML, canResize: true } );
 var dDia4 = new DialogDR( { dVar: "dDia4", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia4" + TEST_INNER_HTML, canResize: true } );
 docReady(function() {
@@ -54,10 +54,6 @@ docReady(function() {
     dDia2.show();
     dDia3.show();
     dDia4.show();
-    resizeable("dDia1_dummyRes" );
-    resizeable("dDia2_dummyRes" );
-    resizeable("dDia3_dummyRes" );
-    resizeable("dDia4_dummyRes" );
 })
 </script>
   <script>

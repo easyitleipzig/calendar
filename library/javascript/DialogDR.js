@@ -349,6 +349,9 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.canMove ) {
             draggable( ( this.opt.id + "_box" ).replace("#", "") );            
         }
+        if( this.opt.canResize ) {
+            resizeable( ( this.opt.id + "_dummyRes" ).replace("#", "") );            
+        }
         docReady(function(){
 
         })
