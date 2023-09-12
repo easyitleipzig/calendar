@@ -38,28 +38,27 @@
 <script src="library/javascript/easyit_helper_neu.js"></script>
 <script src="library/javascript/DropResize.js"></script>
 <script src="library/javascript/menu_calendar.js"></script>
-<script src="library/javascript/DialogNewInteract.js"></script>
+<script src="library/javascript/DialogDR.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
 <script src="library/javascript/Calendar.js"></script>
 <script src="library/javascript/init_calendar.js"></script>
 <script>
 //var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } ), dDia1;
 // if you set canResize you must set an initial width and heigth
-var dDia1 = new DialogDR( { dVar: "dDia1", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "<p>dDia1</p>" + TEST_INNER_HTML, canResize: true  } );
-  var dDia2 = new DialogDR( { dVar: "dDia2", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "<p>dDia2</p>" + TEST_INNER_HTML, canResize: true } );
-var dDia3 = new DialogDR( { dVar: "dDia3", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "<p>dDia3</p>" + TEST_INNER_HTML, canResize: true } );
-var dDia4 = new DialogDR( { dVar: "dDia4", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "<p>dDia4</p>" + TEST_INNER_HTML, canResize: true  } );
+var dDia1 = new DialogDR( { dVar: "dDia1", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia1" + TEST_INNER_HTML, canResize: true  } );
+  var dDia2 = new DialogDR( { dVar: "dDia2", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia2" + TEST_INNER_HTML, canResize: true } );
+var dDia3 = new DialogDR( { dVar: "dDia3", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia3" + TEST_INNER_HTML, canResize: true } );
+var dDia4 = new DialogDR( { dVar: "dDia4", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia4" + TEST_INNER_HTML, canResize: true } );
 docReady(function() {
     dDia1.show();
     dDia2.show();
     dDia3.show();
     dDia4.show();
-
     resizeable("dDia1_dummyRes" );
     resizeable("dDia2_dummyRes" );
     resizeable("dDia3_dummyRes" );
     resizeable("dDia4_dummyRes" );
-  })
+})
 </script>
   <script>
   </script>

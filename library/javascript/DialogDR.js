@@ -11,12 +11,14 @@ var setDialogPosOnScroll = function() {
         
         if( typeof df === "undefined" ) return;
         if( nj( df.opt.id + "_box").hCl( "minimized" ) ) return;
+/*
         if( df.opt.center ) {
             df.options("center");
         } else {
             //let res = {};
             //let pos = nj( df.opt.id + "_box").gRe();
         }
+*/
         i += 1;    
     }    
 }
@@ -342,8 +344,14 @@ class DialogDR {                    // dialog drag and resize
             //resizeClass.init( document.getElementById( this.opt.id.substr( 1, this.opt.id.length - 1 ) + "_dummyRes" ) );
         }
         if( this.opt.cascade ) {
-            nj( "#" + this.boxId + "_box" ).aCl( "is_cascade", "")
+            nj( "#" + this.boxId + "_box" ).aCl( "cascade" );
         }
+        if( this.opt.canMove ) {
+            draggable( ( this.opt.id + "_box" ).replace("#", "") );            
+        }
+        docReady(function(){
+
+        })
         if( this.opt.autoOpen ) {
             this.showOnInit = true;
             this.show();
@@ -370,11 +378,18 @@ class DialogDR {                    // dialog drag and resize
 
         let x, y;
         if( this.opt.center ) {
-            x = this.center().x; 
-            y = this.center().y; 
+            console.log( window.innerWidth, window.innerHeight );
+            x = window.innerWidth / 2 + parseInt( this.center().x ) + "px"; 
+            y = window.innerHeight / 2 + parseInt(this.center().y ) + "px";
+            console.log( x, y ); 
         } else { 
                 x = "0px";
                 y = "0px";
+        }
+        if( this.opt.cascade ) {
+            let els = nj().els( "div.boxShow[data-iscascade]");
+            console.log( els );
+            //x = parseInt( x ) + this.opt.cascadeDiff + "px";
         }
         if( typeof this.opt.onShow === "function" ) this.opt.onShow( this );
         if( typeof args !== "undefined") {
@@ -422,14 +437,24 @@ class DialogDR {                    // dialog drag and resize
         this.opt.footerHeight = nj( this.opt.id + "_footer" ).gRe().height;
         this.opt.remindCenter = this.opt.center;
         nj( this.opt.id + "_box" ).rCl( "boxHidden");
+        if( this.opt.cascade ) {
+            let els = nj().els( "div.cascade[id*='_box']");
+            console.log( els );
+            let l = els.length;
+            let i = 0;
+            while ( i < l ) {
+                console.log( nj( els[i] ).sty( "left" ), this.opt.id, x );
+                if( nj( els[i] ).sty( "left" ) == x && nj( els[i] ).sty( "top" ) == y ) {
+                    console.log( this.opt.id );
+                    x = parseInt( x ) + this.opt.cascadeDiff + "px";
+                    y = parseInt( y ) + this.opt.cascadeDiff + "px";
+                }
+                i += 1;
+            }
+        }
+
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
-        if( this.opt.canMove ) {
-            draggable( ( this.opt.id + "_box" ).replace("#", "") );            
-        }
-        if( this.opt.canResize ) {
-            resizeable( ( this.opt.id + "_box" ).replace("#", "") );            
-        }
         if( typeof this.opt.afterShow === "function" ) {
             this.opt.afterShow( this );
         }
@@ -439,12 +464,9 @@ class DialogDR {                    // dialog drag and resize
             nj( this.opt.id + "_wrapper" ).rCl( "wrapperShow");
             nj( this.opt.id + "_wrapper" ).aCl( "wrapperHide");
         }
-        //if( typeof this.opt.remindCenter !== "undefined" ) {
-            this.opt.center = this.opt.remindCenter;
-        //}
+        this.opt.center = this.opt.remindCenter;
         nj( this.opt.id + "_box" ).rCl( "boxShow");
         nj( this.opt.id + "_box" ).aCl( "boxHide");
-        //this.opt.center = this.opt.rootCenter;
         if( typeof this.opt.onHide === "function" ) this.opt.onHide( this );
     }
     savePosDim = function() {
