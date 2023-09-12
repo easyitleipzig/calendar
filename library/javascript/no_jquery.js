@@ -650,6 +650,37 @@ fetch(request)
     }
 
     // elements
+    // dialog
+    _gDV = function( ds = "dvar" ) {
+        let x = 1;
+        while (x == 1 ) {
+            if( this.e.dataset[ ds ] ) {
+                x = 0;
+                return this.e.dataset[ ds ];
+            } else {
+                this.e = this.e.parentNode;
+            }
+        }
+        return false;
+    }
+    _Dia = function( ds = "dvar" ) {
+        let dia = false, x = 1;
+        while (x == 1 ) {
+            if( this.e.dataset[ ds ] ) {
+                x = 0;
+                dia = this.e.dataset[ ds ];
+            } else {
+                this.e = this.e.parentNode;
+            }
+        }
+        if( !dia ) {
+            return false;    
+        } else {
+            return window[ dia ];
+        }
+        
+        
+    }
     this.els = _els;
     this.lEl = _lEl;
     this.fEl = _fEl;
@@ -722,5 +753,8 @@ fetch(request)
     this.rAE = _rAE;
     this.fEa = _fEa;
     //
+    // dialog
+    this.gDV = _gDV;
+    this.Dia = _Dia;
     return this
 }
