@@ -6,19 +6,16 @@ var setDialogPosOnScroll = function() {
     let els = nj().els( ".dialogBox:not(.boxHide)" );
     let l = els.length;
     let i = 0;
+    let dias = [];
     while( i < l ) {
-        let df = getDialogVar( nj( els[i] ).atr( "data-dVar" ) );
-        
-        if( typeof df === "undefined" ) return;
-        if( nj( df.opt.id + "_box").hCl( "minimized" ) ) return;
-/*
-        if( df.opt.center ) {
-            df.options("center");
-        } else {
-            //let res = {};
-            //let pos = nj( df.opt.id + "_box").gRe();
-        }
-*/
+        dias.push( nj( els[i] ).Dia() );
+        i += 1;    
+    }
+    //console.log( dias );  
+    i = 0;  
+    while( i < l ) {
+        console.log( nj( nj().els( dias[i].opt.id + "_box" ) ).gRe() );
+        console.log( window.scrollX, window.scrollY );
         i += 1;    
     }    
 }
@@ -136,8 +133,7 @@ class DialogDR {                    // dialog drag and resize
                 b = {};
                 b.title = "Okay";
                 b.action = function( el ){
-                    //e.log( getDVar( nj().els( el.target ) ) );
-                    getDialogVar( getDVar( nj().els( el.target ) ) ).hide();
+                    nj( el.target ).Dia().hide();
                 };
                 this.opt.buttons.push( b ); 
             }   
@@ -146,7 +142,7 @@ class DialogDR {                    // dialog drag and resize
         nj( el ).aCl( this.opt.classPraefix + "HL" );
         el.id = this.boxId + "_headline";
         nj( el ).on( "click", function( el ) {
-            getDialogVar( getDVar( nj().els( el.target ) ) ).setMaxZIndex();
+            nj( el.target ).Dia().setMaxZIndex();
         });
         let el_add  = nj().cEl( "div" );
         nj( el_add ).aCl( this.opt.classPraefix + "HLIcon" );
@@ -159,22 +155,13 @@ class DialogDR {                    // dialog drag and resize
         el_add = null;
         let el_ctrl = nj().cEl( "div" );
         el_add = nj().cEl( "div" );
-        if( this.opt.hasSticky ) {
-            nj( el_add ).aCl( this.opt.classPraefix + "HLSticky" );
-            nj( el_add ).on( "click", function( el ) {
-                if( typeof getDialogVar( getDVar( nj().els( el.target ) ) ).opt.onSticky === "function" ) {
-                    getDialogVar( getDVar( nj().els( el.target ) ) ).opt.onSticky();
-                }    
-            })
-            nj( el_ctrl ).aCh( el_add );
-        }
         el_add = null;
         el_add = nj().cEl( "div" );
         if( this.opt.hasHelp ) {
             nj( el_add ).aCl( "cbHelp iconButtMin " + this.opt.classPraefix + "HLHelp");
             nj( el_add ).on( "click", function( e ) {
-                e.stopPropagation();
-                getDialogVar( getDVar( nj().els( e.target ) ) ).opt.divHelp.show();    
+                //e.stopPropagation();
+                nj( e.target ).Dia().opt.divHelp.show();
             });
             nj( el_ctrl ).aCh( el_add );
         }
@@ -183,8 +170,7 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.hasInfo ) {
             nj( el_add ).aCl( "cbInfo iconButtMin " + this.opt.classPraefix + "HLInfo");
             nj( el_add ).on( "click", function( e ) {
-                e.stopPropagation();
-                getDialogVar( getDVar( nj().els( e.target ) ) ).opt.divInfo.show();    
+                nj( e.target ).Dia().opt.divInfo.show();    
             });
             nj( el_ctrl ).aCh( el_add );
         }
@@ -193,7 +179,7 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.hasMin ) {
             nj( el_add ).aCl( "cbMinimize iconButtMin " + this.opt.classPraefix + "HLMin" );
             nj( el_add ).on( "click", function( el ) {
-                let df = getDialogVar( getDVar( nj().els( el.target ) ) );
+                let df = nj( el.target ).Dia();
                 if( nj( df.opt.id + "_box" ).hCl( "minimized" ) ) {
                     df.restoreMin()
                 } else {
@@ -207,7 +193,7 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.hasMax ) {
             nj( el_add ).aCl( this.opt.classPraefix + "HLMax cbMax iconButtMin" );
             nj( el_add ).on( "click", function( el ) {
-                let df = getDialogVar( getDVar( nj().els( el.target ) ) );
+                let df = nj( el.target ).Dia();
                 if( nj( df.opt.id + "_box" ).hCl( "maximized" ) ) {
                     df.restoreMax()
                 } else {
@@ -221,7 +207,7 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.hasClose ) {
             nj( el_add ).aCl( "cbClose iconButtMin " + this.opt.classPraefix + "HLClose" );
             nj( el_add ).on( "click", function( el ) {
-                getDialogVar( getDVar( nj().els( el.target ) ) ).hide();    
+                nj( el.target ).Dia().hide();    
             });
             nj( el_ctrl ).aCh( el_add );
         }
@@ -303,7 +289,7 @@ class DialogDR {                    // dialog drag and resize
         nj( box ).atr( "tabindex", "0" );
         nj( box ).on( "keydown", function(e){
             if( e.keyCode == 27 ) {
-                getDialogVar( getDVar( nj().els( e.target ) ) ).hide();
+                nj( e.target ).Dia().hide();
             }
         });
         nj( box ).aCl( "boxHide " + this.opt.classPraefix + "Box " + CLASS_DIALOG_BOX );

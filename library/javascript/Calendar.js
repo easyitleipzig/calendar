@@ -1,6 +1,20 @@
-const DIV_EVENT_EDIT_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"><input type="datetime-local" id="evDateTime" value=""></div>';
+const DIV_EVENT_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"><input type="datetime-local" id="evDateTime" value=""></div>';
+//const DIV_EVENT_EDIT_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"><input type="datetime-local" id="evDateTime" value=""></div>';
 const DIV_EVENT_NEW_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"></div>';
 const calVar = "cal";
+
+const DIV_EVENT_EDIT_HTML = `
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
+
+Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   
+
+Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   
+
+Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer`
+
+
+
+
 /* not good but nessecary */
 const getDateRange = function (info) {
 	// body...
@@ -34,7 +48,7 @@ class Calendar {
 		this.opt = {
 			pVar:               "",
 			evCalId: 			"",
-			calView: 			'timeGridWeek', // dayGridMonth ....,
+			calView: 			'dayGridMonth', // timeGridWeek, timeGridDay, timeGridList ....,
 			firstDay: 			1,
 			currentUserId: 		1,
 
@@ -50,6 +64,12 @@ class Calendar {
 
 	    		firstDay: this.opt.firstDay, 
 
+        headerToolbar: {
+            start: 'prev,next today',
+            center: 'title',
+            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek, resourceTimeGridDay'
+        },
+
 		        buttonText: function (texts) {
 		            texts.resourceTimeGridWeek = 'Res. Woche';
 		            texts.resourceTimeGridDay = 'Res. Tag';
@@ -62,24 +82,45 @@ class Calendar {
 		        },
 	    		events: [
 	        		// your list of events
+	        		{
+    "allDay": false,
+    "start": "2023-09-04T14:00:00.000Z",
+    "end": "2023-09-05T06:00:00.000Z",
+    "title":{html: "<span id='ev_1234'><b>test</b></span>" },
+    "display": "auto",
+    "extendedProps": {
+                "test": 1,
+                "id": 1234,
+                "participate": true,
+    },
+    "backgroundColor": "#B29DD9",
+    }
 	    		],
 
 		        dateClick: function( info ) {
-		            // body...
-		            console.log( e, window[ getDVar( info.dayEl ) ] );
 		            if( info.jsEvent.ctrlKey ) {
-		            	console.log( "ctrlKey" );
-		            	window[ getDVar( info.dayEl ) ].onDateClickWithCtrl( info );
+		            	nj( info.dayEl ).Dia().onDateClickWithCtrl( info );
 		            } else if( info.jsEvent.altKey ) {
-		            	console.log( "altKey" );	
-		            	window[ getDVar( info.dayEl ) ].onDateClickWithAlt( info );	
+		            	nj( info.dayEl ).Dia().onDateClickWithAlt( info );	
 		            } else if( info.jsEvent.shiftKey ) {
-		            	console.log( "shiftKey" );	
-		            	window[ getDVar( info.dayEl ) ].onDateClickWithAlt( info );	
+		            	nj( info.dayEl ).Dia().onDateClickWithAlt( info );	
 		            } else {
-		            	window[ getDVar( info.dayEl ) ].onDateClick( info );		
+		            	nj( info.dayEl ).Dia().onDateClick( info );
 		            }
 		        },
+		        eventClick : function( info ) {
+		            nj( info.el ).Dia().onEventClick( info );
+		        },
+		        eventMouseEnter: function( info ) {
+		            nj( info.el ).Dia().onEventMouseEnter( info );
+		        },
+		        eventMouseLeave: function( info ) {
+		            nj( info.el ).Dia().onEventMouseLeave( info );
+		        },
+		        select: function( info ) {
+		            // body...
+		            console.log( info );
+		        }
 /*
 		        datesSet: function ( info ) {
 		        	console.log(  nj("*[data-dvar][data-ei_calendar]").atr("data-dvar")  );
@@ -91,22 +132,22 @@ class Calendar {
 
 			});
 
-		this.divEvent = new DialogNew( { dVar: this.opt.pVar +  ".divEditEvent", 
-				id: "#divEditEvent", 
+		this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", 
+				id: "#divEvent", 
 				autoOpen: false,
 				modal: true,
+				height: 400,
+				width: 300,
 				innerHTML: DIV_EVENT_EDIT_HTML,
 			
 			});
-		/*
-		this.divNewEvent = new DialogNew( { dVar: this.opt.pVar +  ".divNewEvent", 
+		this.divNewEvent = new DialogDR( { dVar: this.opt.pVar +  ".divNewEvent", 
 				id: "#divEditEvent", 
-				autoOpen: true,
+				autoOpen: false,
 				modal: true,
 				innerHTML: DIV_EVENT_NEW_HTML,
 			
 			});
-		*/
 		}
 		// end constructor
 		// start functions
@@ -142,17 +183,97 @@ class Calendar {
 				
 			}
 		}
+		/**
+		 * onDateClickWithCtrl
+		 * 
+		 * date click event with pressed Ctrl key
+		 * 
+		 * info 			info var 	info var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
 		onDateClickWithCtrl = function( info ) {
 			console.log( "onDateClickWithCtrl", info );
 		}
+		/**
+		 * onDateClickWithAlt
+		 * 
+		 * date click event with pressed Alt key
+		 * 
+		 * info 			info var 	info var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
 		onDateClickWithAlt = function( info ) {
 			console.log( "onDateClickWithAlt", info );
 		}
+		/**
+		 * onDateClickWithShift
+		 * 
+		 * date click event with pressed Shift key
+		 * 
+		 * info 			info var 	info var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
 		onDateClickWithShift = function( info ) {
 			console.log( "onDateClickWithShift", info );
 		}
+		/**
+		 * onDateClickWithShift
+		 * 
+		 * date click event with pressed Shift key
+		 * 
+		 * info 			info var 	info var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
 		onDateClick = function( info ) {
 			console.log( "onDateClick", info );
+		}
+		/**
+		 * onEventClick
+		 * 
+		 * event click 
+		 * 
+		 * info 			info var 	info var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
+		onEventClick = function( info ) {
+			console.log( "onEventClick", info );
+			this.divEvent.show();
+		}
+		/**
+		 * onEventMouseEnter
+		 * 
+		 * event mouse enter 
+		 * 
+		 * info 			event var 	event var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
+		onEventMouseEnter = function( info ) {
+			console.log( "onEventMouseEnter", info );
+		}
+		/**
+		 * onEventMouseLeave
+		 * 
+		 * event mouse leave 
+		 * 
+		 * info 			event var 	event var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
+		onEventMouseLeave = function( info ) {
+			console.log( "onEventMouseLeave", info );
 		}
 		refreshView = function( calArgs ) {
 			/*

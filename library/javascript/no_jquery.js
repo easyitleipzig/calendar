@@ -676,10 +676,16 @@ fetch(request)
         if( !dia ) {
             return false;    
         } else {
-            return window[ dia ];
-        }
-        
-        
+            let tmp = dia.split( "." );
+            let m = tmp.length;
+            let j = 1;
+            let tmpVar = window[ tmp[0] ];
+            while( j < m ) {
+                tmpVar = tmpVar[tmp[j]];
+                j += 1;
+            }
+            return tmpVar;
+        }        
     }
     this.els = _els;
     this.lEl = _lEl;
