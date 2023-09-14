@@ -25,15 +25,15 @@
 
 <script src="library/javascript/no_jquery.js"></script>
 <script src="library/javascript/easyit_helper_neu.js"></script>
-<script src="library/javascript/interact.js"></script>
 <script src="library/javascript/menu_calendar.js"></script>
-<script src="library/javascript/DialogNewInteract.js"></script>
+<script src="library/javascript/DropResize.js"></script>
+<script src="library/javascript/DialogDR.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
 <script src="library/javascript/Calendar.js"></script>
 <script src="library/javascript/init_calendar.js"></script>
 <script>
 var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } ), dDia1;
-var dDia1 = new DialogNew( { dVar: "dDia1", modal: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML } );
+var dDia1 = new DialogDR( { dVar: "dDia1", modal: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML } );
 docReady(function() {
     init();
     dDia1.show();
