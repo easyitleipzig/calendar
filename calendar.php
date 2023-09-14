@@ -10,10 +10,14 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="library/ressources/site.webmanifest">
-    <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="library/css/global.css">
     <link rel="stylesheet" href="library/css/EventCalendar.css">
     <style type="text/css">
         #dDia { background-color:lightblue }
+        .fc-1 {
+            background-color: orange;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -32,12 +36,10 @@
 <script src="library/javascript/Calendar.js"></script>
 <script src="library/javascript/init_calendar.js"></script>
 <script>
-var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } ), dDia1;
-var dDia1 = new DialogDR( { dVar: "dDia1", modal: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: TEST_INNER_HTML } );
+var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } );
 docReady(function() {
     init();
-    dDia1.show();
-})
+});
 </script>
 </body>
 </html>

@@ -20,8 +20,7 @@ nj( document ).on( "keypress", function( e ) {
 			cal.evCal.setOption("duration", { year: 1 } );	
 		} else {
 			cal.evCal.setOption("duration", { months: 1 } );	
-		}
-		
+		}		
 	}
 
 })
@@ -76,9 +75,8 @@ class Calendar {
 
 	    		firstDay: this.opt.firstDay, 
 
-	    		//duration:{year:1},
+	    		editable: true,
 
-	    		eventColor: "red",
 
         headerToolbar: {
             start: 'prev,next today',
@@ -108,8 +106,8 @@ class Calendar {
                 "test": 1,
                 "id": 1234,
                 "participate": true,
+                "format": "fc-2",
     },
-    "backgroundColor": "#B29DD9",
     }
 	    		],
 
@@ -133,42 +131,46 @@ class Calendar {
 		        eventMouseLeave: function( info ) {
 		            nj( info.el ).Dia().onEventMouseLeave( info );
 		        },
+		        eventResize: function( info ) {
+		            nj( info.jsEvent.target).Dia().onEventResize( info );
+		        },
+		        eventDidMount: function( info ) {
+		        	console.log( info );
+		        	nj( info.el ).aCl( info.event.extendedProps.format );
+		        },
+		        /*
+		        dateFromPoint(x,y) {
+		        	console.log( x,y );
+		        },
+				*/
+
+		        eventDragStart: function( info ) {
+		        	nj( info.jsEvent.target ).Dia().onEventDragStart( info );
+		        },
+		        eventDragStop: function( info ) {
+		        	nj( info.jsEvent.target ).Dia().onEventDragStop( info );
+		        },
+
+
 		        select: function( info ) {
 		            // body...
 		            console.log( info );
 		        },
-		        datesSet: function ( info ) {
-		        	console.log(  nj("*[data-dvar][data-ei_calendar]").atr("data-dvar")  );
-		        	console.log( window[ nj("*[data-dvar][data-ei_calendar]").atr("data-dvar") ] );
-		        },
-
 
 
 			});
-
-		this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", 
-				id: "#divEvent", 
-				autoOpen: false,
-				modal: true,
-				height: 400,
-				width: 300,
-				canResize: true,
-				cascade: false,
-				innerHTML: DIV_EVENT_EDIT_HTML,
-			
-			});
-		this.divNewEvent = new DialogDR( { dVar: this.opt.pVar +  ".divNewEvent", 
-				id: "#divEditEvent", 
-				autoOpen: false,
-				modal: true,
-				canResize: true,
-				innerHTML: DIV_EVENT_NEW_HTML,
-			
-			});
+			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", autoOpen: false, afterShow: function(){ nj( this.id).Dia().options('center')} } );
 		}
 		// end constructor
+		
 		// start functions
-
+		/**
+		 * evArray
+		 * 
+		 * array  		contains the assignment between the calendar id and the evCalendar id ('{generated-[n]}')
+		 * 
+		*/
+		evArray = [];
 		/**
 		 * evaluateCalData
 		 * 
@@ -289,6 +291,68 @@ class Calendar {
 		onEventMouseLeave = function( info ) {
 			console.log( "onEventMouseLeave", info );
 		}
+		/**
+		 * onEventResize
+		 * 
+		 * event is resized
+		 * 
+		 * info 			event var 	event var from EventCalendar
+		 * 
+		 * return undefined
+		 * 
+		*/
+		onEventResize = function( info ) {
+			console.log( "onEventResize", info );
+		}
+		/**
+		 * onEventDidMount
+		 * 
+		 * event 
+		 * 
+		 * info 			event var 	Callback function that is triggered right after the element has been added to the DOM. If the event data changes, this is not called again.
+		 * 
+		 * return undefined
+		 * 
+		*/
+		onEventDidMount = function( info ) {
+			console.log( "onEventDidMount", info );
+		}
+		/**
+		 * onEventDragStart
+		 * 
+		 * event 
+		 * 
+		 * info 			event var 	fires if event is drag start
+		 * 
+		 * return undefined
+		 * 
+		*/
+		onEventDragStart = function( info ) {
+			console.log( "onEventDragStart", info );
+		}
+		/**
+		 * onEventDragStop
+		 * 
+		 * event 
+		 * 
+		 * info 			event var 	fires if event is drag end
+		 * 
+		 * return undefined
+		 * 
+		*/
+		onEventDragStop = function( info ) {
+			console.log( "onEventDragStart", info );
+		}
+		/**
+		 * refreshView
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		*/
 		refreshView = function( calArgs ) {
 			/*
 				calArgs: {
@@ -385,5 +449,30 @@ class Calendar {
 		testFunction = async function(argument) {
 				await wait( 5000 );
 				console.log( "neueFunktion" );
+		}
+		addEvent = function(ev) {
+			ev = {
+						    "allDay": false,
+						    "start": "2023-09-14T14:00:00.000Z",
+						    "end": "2023-09-14T16:00:00.000Z",
+						    "title":{html: "<span id='1235'><b>test</b></span>" },
+						    "display": "auto",
+						    "extendedProps": {
+						        "test": 2,
+								"id": 1235,
+								"participate": true,
+								"format": "fc-1",
+							    },
+						}
+			this.evCal.addEvent( ev )
+			/*
+			let hinweis = document.getElementById(ev.extendedProps.id);
+    hinweis.classList.add("fc-1");
+			//console.log( document.getElementById(  ).classList );
+			//nj( "#" + ev.extendedProps.id ).aCl("fc-1");
+			//document.getElementById( ev.extendedProps.id ).classList.add(  );
+			let el = nj().els("#" + ev.extendedProps.id );
+			console.log( el );
+			*/
 		}
 }	

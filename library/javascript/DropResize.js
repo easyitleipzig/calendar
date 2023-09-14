@@ -43,7 +43,8 @@ function getElementOffsetAndMeasures(e) {
 }
 function preventDragOutsideScreen(e, t, n) {
     let i = getDocumentBodyLimits();
-    return n.left < i.left && (t.x = e.left), n.top < i.top && (t.y = e.top), n.right > i.right && (t.x = e.left), n.bottom > i.bottom && (t.y = e.top), t;
+    let borderLeftWidth = 2;
+    return n.left < i.left + borderLeftWidth && (t.x = e.left), n.top < i.top && (t.y = e.top), n.right > i.right && (t.x = e.left), n.bottom > i.bottom && (t.y = e.top), t;
 }
 function dragAction(e, t) {
         let n = getDragNewPosition(e.param[0], t);
