@@ -430,6 +430,7 @@ class DialogDR {                    // dialog drag and resize
                 i += 1;
             }
         }
+        console.log( x, y );
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
         if( typeof this.opt.afterShow === "function" ) {
@@ -550,6 +551,7 @@ class DialogDR {                    // dialog drag and resize
             break;
             case "center":
                 let res = this.center();
+                console.log( this.opt.id );
                 nj( this.opt.id + "_box" ).sty( { "left" : res.x, "top": res.y } );
             break;
             case "scroll":

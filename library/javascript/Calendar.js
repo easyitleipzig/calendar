@@ -12,7 +12,19 @@ Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lo
 
 Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer`
 
+nj( document ).on( "keypress", function( e ) {
+	e.stopImmediatePropagation();
+	if( e.key = "y" && e.ctrlKey ) {
+		console.log( cal.evCal );
+		if( cal.evCal.getOption("duration").months === 1 ) {
+			cal.evCal.setOption("duration", { year: 1 } );	
+		} else {
+			cal.evCal.setOption("duration", { months: 1 } );	
+		}
+		
+	}
 
+})
 
 
 /* not good but nessecary */
@@ -63,6 +75,10 @@ class Calendar {
 	    		view: this.opt.calView,
 
 	    		firstDay: this.opt.firstDay, 
+
+	    		//duration:{year:1},
+
+	    		eventColor: "red",
 
         headerToolbar: {
             start: 'prev,next today',
@@ -120,13 +136,11 @@ class Calendar {
 		        select: function( info ) {
 		            // body...
 		            console.log( info );
-		        }
-/*
+		        },
 		        datesSet: function ( info ) {
 		        	console.log(  nj("*[data-dvar][data-ei_calendar]").atr("data-dvar")  );
 		        	console.log( window[ nj("*[data-dvar][data-ei_calendar]").atr("data-dvar") ] );
 		        },
-*/
 
 
 
@@ -138,6 +152,8 @@ class Calendar {
 				modal: true,
 				height: 400,
 				width: 300,
+				canResize: true,
+				cascade: false,
 				innerHTML: DIV_EVENT_EDIT_HTML,
 			
 			});
@@ -145,6 +161,7 @@ class Calendar {
 				id: "#divEditEvent", 
 				autoOpen: false,
 				modal: true,
+				canResize: true,
 				innerHTML: DIV_EVENT_NEW_HTML,
 			
 			});
@@ -173,11 +190,8 @@ class Calendar {
 		    if( !isJ( jsonobject ) ) {
 		        throw "kein JSON-Objekt übergeben";
 		    }
-		    console.log( jsonobject );
 			switch( jsonobject.command ) {
 		        case "getEventsForView":
-		                //showNewMessage("Erinnerung", jsonobject.success, jsonobject.message, [ {title: "Okay", action: "dM.hide()"}, {title: "Beenden", action: "location.reload()"} ] );
-		                //dMNew.show( { title: "Erinnerung", type: jsonobject.success, text: jsonobject.message, buttons: [{"title": "Okay", action: function(){ dMNew.hide(); } }, {title: "Beenden", action: function(){ location.reload(); } } ] } );
 		        		console.log( jsonobject );
 		        break;
 				

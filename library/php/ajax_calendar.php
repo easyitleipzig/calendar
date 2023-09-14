@@ -78,8 +78,12 @@ foreach ( $_POST as &$str) {
 }
 switch( $_POST["command"]) {
     case "getEventsForView":
-                            if( $_POST["isFetch"] ) {
-                                echo "test";
+                            if( $_POST["isFetch"] === "true" ) {
+                                $return -> value = "test";
+                                $return -> wasFetch = true;
+                                $return -> success = true;
+                                $return -> message = "Die Termine wurden erfolgreich geladen.";                                
+                                print_r( json_encode( $return ));    
                             } else {
                                 $return -> success = true;
                                 $return -> message = "Die Termine wurden erfolgreich geladen.";                                
