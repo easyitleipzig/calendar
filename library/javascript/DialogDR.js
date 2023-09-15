@@ -433,6 +433,7 @@ class DialogDR {                    // dialog drag and resize
         console.log( x, y );
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
+        nj( this.opt.id ).sty( "display", "block" );
         if( typeof this.opt.afterShow === "function" ) {
             this.opt.afterShow( this );
         }

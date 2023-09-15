@@ -159,7 +159,7 @@ class Calendar {
 
 
 			});
-			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", autoOpen: false, afterShow: function(){ nj( this.id).Dia().options('center')} } );
+			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: 400, autoOpen: false, afterShow: function(){ nj( this.id).Dia().options('center')} } );
 		}
 		// end constructor
 		
