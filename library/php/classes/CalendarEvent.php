@@ -1,5 +1,22 @@
 <?php
 class CalendarEvent {
+    
+    public function getEventsForView( $pdo, $startDate, $endDate, $userId ) {
+        $query = "SELECT * FROM event where start_date >= '$startDate' and end_date < '$endDate'";
+        $stm = $pdo -> query( $query );
+        $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+        $events = [];
+        $l = count( $result );
+        $i = 0;
+        while( $i < $l ) {
+            $ev = new \stdClass();
+            $ev -> title = $result[$i][$title];
+            
+            $i += 1;
+        }
+        
+        return $result;        
+    }
     public function getMaxGroupId( $pdo ) {
         $query = "SELECT MAX(group_id) AS max_group_id FROM event";
         $stm = $pdo -> query( $query );
@@ -52,7 +69,7 @@ class CalendarEvent {
                 $query_user = "SELECT firstname, lastname, email, opt_in FROM user WHERE id = " . $result[$i]["user_id"];
                 $stm = $pdo -> query( $query_user );
                 $result_user = $stm -> fetchAll(PDO::FETCH_ASSOC);
-                informUserDeleteEvent( $pdo, $evTitle,  $dateTime, $result[$i]["user_id"], $result_user[$i]["firstname"], $result_user[$i]["lastname"], $result_user[$i]["email"], $result_user[$i]["opt_in"], $message_behavior );
+                informUserDeleteEvent( $pdo, $evTitle,  $dateTime, $result[0]["user_id"], $result_user[0]["firstname"], $result_user[0]["lastname"], $result_user[0]["email"], $result_user[0]["opt_in"], $message_behavior );
             }
             $query = "DELETE FROM event WHERE id = $event_id";
             $pdo -> query( $query );
@@ -647,11 +664,17 @@ class CalendarEvent {
     $q = "SELECT CONCAT( firstname, ' ', lastname ) AS name FROM user WHERE id = " . $_SESSION["user_id"];
     $stm = $pdo -> query( $q );
     $result_participator = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    $query = "SELECT CONCAT( firstname, ' ', lastname ) AS name FROM user, event_participate WHERE user.id = event_participate.user_id AND user.id <> " . $_SESSION["user_id"] . " AND event_id = $event_id";
+    $query = "SELECT CONCAT( firstname, ' ', lastname ) AS name FROM user, event_participate WHERE user.id = event_participate.user_id AND event_id = $event_id";
     $stm = $pdo -> query( $query );
     $result_otherParticipators = $stm -> fetchAll(PDO::FETCH_ASSOC);
-
-    $content = "<p>Der Nutzer „" . $result_participator[0]["name"] . "” hat dem Termin " . $result_event[0]["title"] . " am/um " . date( "d.m.Y", time() ) . " zugesagt.</p>";
+    if( $result_event[0]["start_time"] === "00:00:00" ) {
+        $tmpTime = strtotime( $result_event[0]["start_date"] );
+        $tmpTime = date( "d.m.Y", strtotime( $result_event[0]["start_date"] ) );
+    } else {
+        $tmpTime = strtotime( $result_event[0]["start_date"] . " " . $result_event[0]["start_time"] );
+        $tmpTime = date( "d.m.Y G:i", $tmpTime ) . " Uhr";
+    }
+    $content = "<p>Der Nutzer „" . $result_participator[0]["name"] . "” hat dem Termin „" . $result_event[0]["title"] . "” für den $tmpTime am " . date( "d.m.Y", time() ) . " zugesagt.</p>";
     $content .= "<p>Es nehmen nun teil:</p>";
     $content .= "<ul>";
     for( $i = 0; $i < count( $result_otherParticipators ); $i++ ) {
@@ -691,7 +714,15 @@ class CalendarEvent {
     $query = "SELECT CONCAT( firstname, ' ', lastname ) AS name FROM user WHERE id = " . $_SESSION["user_id"];
     $stm = $pdo -> query( $query );
     $result_participator = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    $content = "<p>Der Nutzer „" . $result_participator[0]["name"] . "” hat dem Termin " . $result_event[0]["title"] . " am/um " . date( "d.m.Y", time() ) . " abgesagt.</p>";
+    if( $result_event[0]["start_time"] === "00:00:00" ) {
+        $tmpTime = strtotime( $result_event[0]["start_date"] );
+        $tmpTime = date( "d.m.Y", strtotime( $result_event[0]["start_date"] ) );
+    } else {
+        $tmpTime = strtotime( $result_event[0]["start_date"] . " " . $result_event[0]["start_time"] );
+        $tmpTime = date( "d.m.Y G:i", $tmpTime ) . " Uhr";
+    }
+    $content = "<p>Der Nutzer „" . $result_participator[0]["name"] . "” hat dem Termin „" . $result_event[0]["title"] . "” für den $tmpTime am " . date( "d.m.Y", time() ) . " abgesagt.</p>";
+    $content .= "<p>Es nehmen nun teil:</p>";
     $iu -> sendUserInfo( "Terminabsage", "Terminabsage", $content, $content );
 /*
             require_once( "functions.php" );
@@ -761,6 +792,23 @@ class CalendarEvent {
         } catch (Exception $e ) {
             $return -> success = false;    
             $return -> message = "Beim Löschen der Anzahl der Teilnahmer ist folgender Fehler aufgetreten: " . $e -> getMessage();            
+        }
+        return $return;
+    }
+    public function exportEvEMail( $pdo ) {
+        $return = new \stdClass();
+        try{
+            require_once( "classes/InformUser.php" );
+            $iu = new \InformUser( $pdo, "email", 27, 0, 0, $_SESSION["user_id"], true, [ "tmp/export_events_" . $_SESSION["user_id"] . ".ics, DeineTerminDatei.ics" ] );
+            $content ="Als Anhang zu dieser E-Mail erhälst die die von dir exportierten Termine. Öffne deine Termin-App und lade diese Datei, damit du diese Termine übernehmen kannst.";
+            $title = "Deine Termine im Anhang";
+            $iu -> sendUserInfo( $title, $title, $content, $content );
+            $return -> success = true;    
+            $return -> message = "Die E-Mail wurde erfolgreich versand.";
+            
+        } catch (Exception $e ) {
+            $return -> success = false;    
+            $return -> message = "Beim Versenden der E-Mail ist folgender Fehler aufgetreten: " . $e -> getMessage();            
         }
         return $return;
     }
