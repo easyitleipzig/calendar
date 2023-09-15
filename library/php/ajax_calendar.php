@@ -78,13 +78,19 @@ foreach ( $_POST as &$str) {
 }
 switch( $_POST["command"]) {
     case "getEventsForView":
-                            if( $_POST["isFetch"] === "true" ) {
-                                $return -> value = "test";
+                            if( $_POST["isFetch"] === "1" ) { // 1 is true
+                                require_once( "classes/CalendarEvent.php");
+                                $ev = new \CalendarEvent();
+                                $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
                                 $return -> wasFetch = true;
                                 $return -> success = true;
                                 $return -> message = "Die Termine wurden erfolgreich geladen.";                                
                                 print_r( json_encode( $return ));    
                             } else {
+                                $return -> wasFetch = false;
+                                require_once( "classes/CalendarEvent.php");
+                                $ev = new \CalendarEvent();
+                                $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
                                 $return -> success = true;
                                 $return -> message = "Die Termine wurden erfolgreich geladen.";                                
                                 print_r( json_encode( $return ));    

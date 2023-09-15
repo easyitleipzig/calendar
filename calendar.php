@@ -300,6 +300,9 @@ $event_string = substr( $event_string, 0, -1 );
 <script src="library/javascript/Calendar.js"></script>
 <script src="library/javascript/init_calendar.js"></script>
 <script>
+<?php
+    echo "var currentUser = " . $_SESSION['user_id'] . ";\n";
+?>
 var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } );
 docReady(function() {
     init();

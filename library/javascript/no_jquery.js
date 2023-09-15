@@ -562,7 +562,7 @@ fetch(request)
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify( fetchData )
     };
-    fetch('library/php/fetch_post.php', requestOptions)
+    fetch(url, requestOptions)
         .then(response => response.json())
         .then(data => callback( data ) );
     }

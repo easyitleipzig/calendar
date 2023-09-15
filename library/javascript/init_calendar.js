@@ -140,6 +140,15 @@
 */ 
 const init = function() {
     cal.evCal.setOption( "datesSet", function ( info ) {
-        window[ nj("*[data-dvar][data-ei_calendar]").atr("data-dvar") ].getDaysForView( info )
+        cal.removeAllEventsFromView();
+        cal.getDaysForView( info )
     });
+    data = {};
+    data.command = "getEventsForView"; 
+    data.startDate = cal.evCal.view.activeStart.addDays(1).toISOString().split("T")[0];
+    data.endDate = cal.evCal.view.activeEnd.addDays(1).toISOString().split("T")[0];
+    data.userId = currentUser;
+    data.isFetch = true;
+    console.log( data );
+    nj().post("library/php/ajax_calendar.php", data, cal.evaluateCalData );   
 }

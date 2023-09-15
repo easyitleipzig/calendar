@@ -9,13 +9,60 @@ class CalendarEvent {
         $l = count( $result );
         $i = 0;
         while( $i < $l ) {
-            $ev = new \stdClass();
-            $ev -> title = $result[$i][$title];
+            /*
+                "start": "2023-09-04T14:00:00.000Z",
+    "end": "2023-09-05T06:00:00.000Z",
+    "title":{html: "<span id='ev_1234'><b>test</b></span>" },
+    "display": "auto",
+    "extendedProps": {
+                "test": 1,
+                "id": 1234,
+                "participate": true,
+                ...
+    },
+*/
             
+            $ev = new \stdClass();
+            $ev -> title = $result[$i]["title"];
+            $ev -> start = $result[$i]["start_date"] . "T" . $result[$i]["start_time"];
+            $ev -> end = $result[$i]["end_date"] . "T" . $result[$i]["end_time"];
+            $ev -> display = "auto";
+            $exPro = new \stdClass();
+            $exPro -> id = $result[$i]["id"];
+            $exPro -> groupId = $result[$i]["group_id"];
+            $exPro -> place = $result[$i]["place"];
+            $exPro -> registration_deadline = $result[$i]["registration_deadline"];
+            $exPro -> url = $result[$i]["url"];
+            $exPro -> inner_url = $result[$i]["inner_url"];
+            $exPro -> inner_url_text = $result[$i]["inner_url_text"];
+            $exPro -> description = $result[$i]["description"];
+            $exPro -> notice = $result[$i]["notice"];
+            $exPro -> class = $result[$i]["class"];
+            $exPro -> creator = $result[$i]["creator"];
+            $q = "select * from event_participate where event_id = " . $result[$i]["id"] . " and user_id = $userId";
+            $s = $pdo -> query( $q );
+            $result_part = $s -> fetchAll(PDO::FETCH_ASSOC);
+            if( count( $result_part ) > 0 ) {
+                if( $result_part[0]["user_id"] > 0 ) $exPro -> participate = true;
+                $exPro -> remindMe = $result_part[0]["remind_me"];
+                $exPro -> countPart = $result_part[0]["count_part"];
+            } else {
+                $exPro -> participate = null;
+                $exPro -> remindMe = null;
+                $exPro -> countPart = null;
+                
+            }
+            
+            
+            //var_dump()
+            //$exPro -> creator -> $result[$i]["class"];
+            
+            $ev -> extendedProps = $exPro;
+            $events[] = $ev;
             $i += 1;
         }
         
-        return $result;        
+        return $events;        
     }
     public function getMaxGroupId( $pdo ) {
         $query = "SELECT MAX(group_id) AS max_group_id FROM event";

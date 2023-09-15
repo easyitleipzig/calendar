@@ -97,9 +97,9 @@ class Calendar {
 	    		events: [
 	        		// your list of events
 	        		{
-    "allDay": false,
+    "allDay": true,
     "start": "2023-09-04T14:00:00.000Z",
-    "end": "2023-09-05T06:00:00.000Z",
+    "end": "2023-09-06T00:00:00.000Z",
     "title":{html: "<span id='ev_1234'><b>test</b></span>" },
     "display": "auto",
     "extendedProps": {
@@ -136,7 +136,7 @@ class Calendar {
 		        },
 		        eventDidMount: function( info ) {
 		        	console.log( info );
-		        	nj( info.el ).aCl( info.event.extendedProps.format );
+		        	//nj( info.el ).aCl( info.event.extendedProps.format );
 		        },
 		        /*
 		        dateFromPoint(x,y) {
@@ -182,6 +182,7 @@ class Calendar {
 		 * 
 		*/
 		evaluateCalData = function( data ) {
+    		let l, i;
 		    console.log( data );
 		    let jsonobject;
 		    if( typeof data === "string" ) {
@@ -192,11 +193,25 @@ class Calendar {
 		    if( !isJ( jsonobject ) ) {
 		        throw "kein JSON-Objekt übergeben";
 		    }
+		    console.log( jsonobject );
 			switch( jsonobject.command ) {
+				case "getDaysForView":
+					l = jsonobject.data.length;
+					i = 0;
+					while ( i < l ) {
+						console.log( jsonobject.data[i] );
+						i += 1;
+					}
+					break;
 		        case "getEventsForView":
-		        		console.log( jsonobject );
+	        		l = jsonobject.data.length;
+	        		i = 0;
+	        		while ( i < l ) {
+	        			//console.log( jsonobject.data[i] );
+	        			cal.addEvent( jsonobject.data[i] )
+	        			i += 1;
+	        		}
 		        break;
-				
 			}
 		}
 		/**
@@ -344,6 +359,25 @@ class Calendar {
 			console.log( "onEventDragStart", info );
 		}
 		/**
+		 * removeAllEventsFromView
+		 * 
+		 * function 
+		 * 
+		 * remove all events from calendar
+		 * 
+		 * return undefined
+		 * 
+		*/
+		removeAllEventsFromView = function() {
+			let tmp = this.evCal.getEvents();
+			let l = tmp.length;
+			let i = 0;
+			while ( i < l ) {
+				this.evCal.removeEventById( this.evCal.getEvents()[0].id)
+				i += 1;
+			}		
+		}
+		/**
 		 * refreshView
 		 * 
 		 * 
@@ -407,11 +441,12 @@ class Calendar {
 		 * return object { start: startdate, end: enddate}
 		*/
 		getDaysForView = function( info ) {
+			console.log( this.opt.currentUserId );
 			data = {};
 			data.command = "getEventsForView"; 
 			data.startDate = info.startStr.replace( "T", " " );
 			data.endDate = info.endStr.replace( "T", " " );
-			data.currentUser = this.currentUser;
+			data.userId = this.opt.currentUserId;
 			data.isFetch = true;
 			console.log( data );
     		nj().post("library/php/ajax_calendar.php", data, this.evaluateCalData );   
@@ -451,6 +486,7 @@ class Calendar {
 				console.log( "neueFunktion" );
 		}
 		addEvent = function(ev) {
+			/*
 			ev = {
 						    "allDay": false,
 						    "start": "2023-09-14T14:00:00.000Z",
@@ -464,6 +500,7 @@ class Calendar {
 								"format": "fc-1",
 							    },
 						}
+			*/
 			this.evCal.addEvent( ev )
 			/*
 			let hinweis = document.getElementById(ev.extendedProps.id);
