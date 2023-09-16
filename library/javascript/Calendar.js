@@ -94,22 +94,7 @@ class Calendar {
 		            texts.today = "heute";
 		            return texts;
 		        },
-	    		events: [
-	        		// your list of events
-	        		{
-    "allDay": true,
-    "start": "2023-09-04T14:00:00.000Z",
-    "end": "2023-09-06T00:00:00.000Z",
-    "title":{html: "<span id='ev_1234'><b>test</b></span>" },
-    "display": "auto",
-    "extendedProps": {
-                "test": 1,
-                "id": 1234,
-                "participate": true,
-                "format": "fc-2",
-    },
-    }
-	    		],
+	    		events: [],
 
 		        dateClick: function( info ) {
 		            if( info.jsEvent.ctrlKey ) {
@@ -136,7 +121,7 @@ class Calendar {
 		        },
 		        eventDidMount: function( info ) {
 		        	console.log( info );
-		        	//nj( info.el ).aCl( info.event.extendedProps.format );
+		        	nj( info.el ).aCl( info.event.extendedProps.class );
 		        },
 		        /*
 		        dateFromPoint(x,y) {
