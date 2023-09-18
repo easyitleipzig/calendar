@@ -58,6 +58,12 @@ $event_string = substr( $event_string, 0, -1 );
             box-shadow: 5px 5px 10px 1px #737373;
             margin-bottom: 5px;
         }
+        .eventHasAppendix {
+            background-image: url(library/css/icons/bueroklammer.png);
+            background-repeat: no-repeat;
+            background-size: 12px 20px;
+            background-position-x: right;            
+        }
     </style>
 </head>
 <body>
