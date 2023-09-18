@@ -100,7 +100,8 @@ class DialogDR {                    // dialog drag and resize
             variables:          undefined,
         }
         let showOnInit = true,
-            boxId = "";
+            boxId = "",
+            tmpClasses = "";
         Object.assign( this.opt, param );
         if( this.opt.id === "" ) {
             let el = nj().cEl( "div" );
@@ -354,6 +355,23 @@ class DialogDR {                    // dialog drag and resize
         }
         nj( this.opt.id + "_box" ).sty( "z-index", ++mI )       
     }
+    /**
+     * show
+     * 
+     * shows the dialog
+     * 
+     * args     arguments as object { center: [true/false], onShow: function ...}
+     *  center      centers the dilaog
+     *  onShow      function onShow
+     *  innerHTML   inner html
+     *  buttons     buttons as button array
+     *  width       dialog width as integer
+     *  heigth      dialog heigth as integer
+     *  x           left position as integer
+     *  y           top position as integer
+     *  tmpClasses  additional classes divided by " "
+     *  arguments   additional arguments 
+     */ 
     show = function( args ) {
         let mZI = maxZIndex();
         if( this.opt.modal ) {
@@ -402,11 +420,15 @@ class DialogDR {                    // dialog drag and resize
             }
 
             if( typeof args.x !== "undefined" ) {
-                x = args.x;
+                x = args.x + "px";
             }
             if( typeof args.y !== "undefined" ) {
-                y = args.y;
+                y = args.y + "px";
             }
+            if( typeof args.tmpClasses !== "undefined" ) {
+                this.tmpClasses = args.tmpClasses;
+                nj().els( this.opt.id + "_box" ).classes += this.tmpClasses;
+            } 
             if( typeof args.variables !== "undefined" ) {
                 this.opt.variables = args.variables;
             } 
@@ -430,7 +452,7 @@ class DialogDR {                    // dialog drag and resize
                 i += 1;
             }
         }
-        console.log( x, y );
+        //console.log( x, y );
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
         nj( this.opt.id ).sty( "display", "block" );
@@ -446,6 +468,17 @@ class DialogDR {                    // dialog drag and resize
         this.opt.center = this.opt.remindCenter;
         nj( this.opt.id + "_box" ).rCl( "boxShow");
         nj( this.opt.id + "_box" ).aCl( "boxHide");
+        // remove tmpClasses
+        if( typeof this.tmpClasses !== "undefined") {        
+            let cCl = this.tmpClasses.split(" ");
+            let l = cCl.length;
+            let i = 0;
+            while ( i < l ) {
+                nj( this.opt.id + "_box" ).rCl( cCl[i] );
+                i += 1;
+            }
+        }
+        //
         if( typeof this.opt.onHide === "function" ) this.opt.onHide( this );
     }
     savePosDim = function() {

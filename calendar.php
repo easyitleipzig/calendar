@@ -53,6 +53,11 @@ $event_string = substr( $event_string, 0, -1 );
             background-color: orange;
             color: white;
         }
+        .fc-participate {
+            border: 1px black solid;
+            box-shadow: 5px 5px 10px 1px #737373;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +72,18 @@ $event_string = substr( $event_string, 0, -1 );
     <label>Titel</label>
     <input id="editTitle" type="text">
     <div>
+    <select id="usePattern">
+        <option value="0" selected>ohne</option>
+<?php
+    $query = "SELECT id, name FROM event_pattern where id > 0 order by name";
+    $stm = $db_pdo -> query( $query );
+    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+    for( $i = 0; $i < count( $result ); $i++ ) {
+        echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["name"] . "</option>";
+    }     
+?>
+    
+    </select>
     <label>Ort</label>
 <?php
     $query = "SELECT * FROM event_place";
@@ -296,6 +313,7 @@ $event_string = substr( $event_string, 0, -1 );
 <script src="library/javascript/menu_calendar.js"></script>
 <script src="library/javascript/DropResize.js"></script>
 <script src="library/javascript/DialogDR.js"></script>
+<script src="library/javascript/Message.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
 <script src="library/javascript/Calendar.js"></script>
 <script src="library/javascript/init_calendar.js"></script>

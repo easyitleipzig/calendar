@@ -78,11 +78,11 @@ class Calendar {
 	    		editable: true,
 
 
-        headerToolbar: {
-            start: 'prev,next today',
-            center: 'title',
-            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek, resourceTimeGridDay'
-        },
+		        headerToolbar: {
+		            start: 'prev,next today',
+		            center: 'title',
+		            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek, resourceTimeGridDay'
+		        },
 
 		        buttonText: function (texts) {
 		            texts.resourceTimeGridWeek = 'Res. Woche';
@@ -122,6 +122,9 @@ class Calendar {
 		        eventDidMount: function( info ) {
 		        	console.log( info );
 		        	nj( info.el ).aCl( info.event.extendedProps.class );
+		        	if( info.event.extendedProps.participate ) {
+		        		nj( info.el ).aCl( "fc-participate" );
+		        	}
 		        },
 		        /*
 		        dateFromPoint(x,y) {
@@ -262,8 +265,13 @@ class Calendar {
 		 * 
 		*/
 		onEventClick = function( info ) {
-			console.log( "onEventClick", info );
-			this.divEvent.show();
+			console.log( "onEventClick", info.jsEvent.ctrlKey );
+			if( info.jsEvent.ctrlKey ) {
+				dMNew.show({ title: "Termin löschen", type: "question", text: "Willst Du diesen Termin löschen?", width: 220, buttons: [ { title: "Ja", action: function () {dMNew.hide();} }, { title: "Nein", action: function () {dMNew.hide();} } ] } );
+			} else {
+				this.divEvent.show();
+			}
+
 		}
 		/**
 		 * onEventMouseEnter
