@@ -373,6 +373,7 @@ class DialogDR {                    // dialog drag and resize
      *  arguments   additional arguments 
      */ 
     show = function( args ) {
+        console.log( args );
         let mZI = maxZIndex();
         if( this.opt.modal ) {
             nj( this.opt.id + "_wrapper" ).rCl( "wrapperHide");
@@ -432,6 +433,7 @@ class DialogDR {                    // dialog drag and resize
             if( typeof args.variables !== "undefined" ) {
                 this.opt.variables = args.variables;
             } 
+            if( typeof args.onShow === "function" ) args.onShow( this, args.variables );
         }
         let boxDim = nj( this.opt.id + "_box" ).gRe();
         this.opt.headlineHeight = nj( this.opt.id + "_headline" ).gRe().height;
@@ -585,7 +587,6 @@ class DialogDR {                    // dialog drag and resize
             break;
             case "center":
                 let res = this.center();
-                console.log( this.opt.id );
                 nj( this.opt.id + "_box" ).sty( { "left" : res.x, "top": res.y } );
             break;
             case "scroll":

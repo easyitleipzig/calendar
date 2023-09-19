@@ -329,7 +329,8 @@ function nj( p ) {
     }
     _sty = function( s, v ) {
         if( this.e == null ) return false;
-        if( NodeList.prototype.isPrototypeOf( this.e ) ) {
+        if( NodeList.prototype.isPrototypeOf( this.e ) || HTMLCollection.prototype.isPrototypeOf( this.e ) ) {
+            console.log( this.e );
             let l = this.e.length;
             let i = 0;
             while( i < l ) {

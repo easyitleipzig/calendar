@@ -120,7 +120,6 @@ class Calendar {
 		            nj( info.jsEvent.target).Dia().onEventResize( info );
 		        },
 		        eventDidMount: function( info ) {
-		        	console.log( info );
 		        	nj( info.el ).aCl( info.event.extendedProps.class );
 		        	if( info.event.extendedProps.participate ) {
 		        		nj( info.el ).aCl( "fc-participate" );
@@ -150,7 +149,12 @@ class Calendar {
 			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: 400, autoOpen: false, afterShow: function(){ nj( this.id).Dia().options('center')} } );
 		}
 		// end constructor
-		
+		// variables declaration
+
+		divEventType = "";
+
+		// end variables declaration
+
 		// start functions
 		/**
 		 * evArray
@@ -269,7 +273,12 @@ class Calendar {
 			if( info.jsEvent.ctrlKey ) {
 				dMNew.show({ title: "Termin löschen", type: "question", text: "Willst Du diesen Termin löschen?", width: 220, buttons: [ { title: "Ja", action: function () {dMNew.hide();} }, { title: "Nein", action: function () {dMNew.hide();} } ] } );
 			} else {
-				this.divEvent.show();
+				this.divEvent.show( {variables: { divType: "edit", event: info.event }, onShow: function(){
+					console.log( arguments );
+					if( arguments[0].divType === "edit" ) {
+						console.log( "editDialog" );
+					}
+				}});
 			}
 
 		}
