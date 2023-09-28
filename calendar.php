@@ -413,6 +413,7 @@ $event_string = substr( $event_string, 0, -1 );
 <script src="library/javascript/menu_calendar.js"></script>
 <script src="library/javascript/DropResize.js"></script>
 <script src="library/javascript/DialogDR.js"></script>
+<script src="library/javascript/touchmove.js"></script>
 <script src="library/javascript/Message.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
 <script src="library/javascript/Calendar.js"></script>

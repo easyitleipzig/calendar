@@ -38,15 +38,35 @@
     <noscript><div><img src="https://mc.yandex.ru/watch/75029251" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 -->
     <!-- /Yandex.Metrika counter -->
+    <style type="text/css">
+        #touchTarget {
+            width: 100px;
+            height: 100px;
+            background-color: aliceblue;
+            position: absolute;
+        }
+        #touchBasis {
+            heigth: 20px;
+            width: 100%;
+            background-color: blue;
+            position: absolute;
+        }
+    </style>
 </head>
 
 <body>
+<div id="touchTarget">
+    <div id="touchBasis">&nbsp;</div>
 
+</div>
 <h4><a href="https://github.com/vkurko/calendar">Event Calendar</a> Demo</h4>
 <div class="row">
     <div id="ec" class="col"></div>
 </div>
     <script src="library/javascript/EventCalendar.js"></script>
+    <script src="library/javascript/touchmove.js"></script>
+    <script src="library/javascript/no_jquery.js"></script>
+    <script src="library/javascript/easyit_helper_neu.js"></script>
 
 <script type="text/javascript">
     let ec = new EventCalendar(document.getElementById('ec'), {         // ec is the id of div, where the calendar will be placed
@@ -180,6 +200,7 @@
     "backgroundColor": "#B29DD9",
     } )
 */
+    dialogTouchMove( "#touchBasis" );
 </script>
 </body>
 </html>

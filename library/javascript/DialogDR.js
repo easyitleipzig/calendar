@@ -331,7 +331,8 @@ class DialogDR {                    // dialog drag and resize
             nj( "#" + this.boxId + "_box" ).aCl( "cascade" );
         }
         if( this.opt.canMove ) {
-            draggable( ( this.opt.id + "_box" ).replace("#", "") );            
+            draggable( ( this.opt.id + "_box" ).replace("#", "") );
+            dialogTouchMove( this.opt.id + "_headline" );            
         }
         if( this.opt.canResize ) {
             resizeable( ( this.opt.id + "_dummyRes" ).replace("#", "") );            
