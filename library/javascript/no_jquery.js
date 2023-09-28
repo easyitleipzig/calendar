@@ -58,8 +58,8 @@ function nj( p ) {
         return document.createElement( t );
     }
     _htm = function( v ) {
-        if( this.e == null ) return false;
-        if( NodeList.prototype.isPrototypeOf( this.e ) ) {
+        if( this.e === null ) return false;
+        if( NodeList.prototype.isPrototypeOf( this.e ) || HTMLCollection.prototype.isPrototypeOf( this.e ) ) {
             let l = this.e.length;
             let i = 0;
             while( i < l ) {
@@ -74,8 +74,25 @@ function nj( p ) {
             this.e.innerHTML = v;
         }
     }
+    _txt = function( v ) {
+        if( this.e === null ) return false;
+        if( NodeList.prototype.isPrototypeOf( this.e ) || HTMLCollection.prototype.isPrototypeOf( this.e ) ) {
+            let l = this.e.length;
+            let i = 0;
+            while( i < l ) {
+                this.e[i].textContent = v;
+                i += 1;    
+            }
+            return;
+        }
+        if( typeof( v ) == "undefined" ) {
+            return this.e.textContent;
+        } else {
+            this.e.textContent = v;
+        }
+    }
     _oHt = function( v ) {
-        if( NodeList.prototype.isPrototypeOf( this.e ) ) {
+        if( NodeList.prototype.isPrototypeOf( this.e ) || HTMLCollection.prototype.isPrototypeOf( this.e ) ) {
             let l = this.e.length;
             let i = 0;
             while( i < l ) {
@@ -88,7 +105,7 @@ function nj( p ) {
         }
     }
     _oTx = function( v ) {
-        if( NodeList.prototype.isPrototypeOf( this.e ) ) {
+        if( NodeList.prototype.isPrototypeOf( this.e ) || HTMLCollection.prototype.isPrototypeOf( this.e ) ) {
             let l = this.e.length;
             let i = 0;
             while( i < l ) {
@@ -98,14 +115,6 @@ function nj( p ) {
             return;
         } else {
             this.e.outerText = v;
-        }
-    }
-    _txt = function( v ) {
-        if( this.e == null ) return false;
-        if( typeof( v ) == "undefined" ) {
-            return this.e.textContent;
-        } else {
-            this.e.textContent = v;
         }
     }
     _v = function( v ) {
@@ -220,7 +229,7 @@ function nj( p ) {
     }
     _chk = function( v ) {
         if( this.e == null ) return false;
-        if( typeof( v ) != "undefined" ) {
+        if( typeof( v ) !== "undefined" ) {
             this.e.checked = v;
         } else {
             return this.e.checked;
@@ -330,7 +339,6 @@ function nj( p ) {
     _sty = function( s, v ) {
         if( this.e == null ) return false;
         if( NodeList.prototype.isPrototypeOf( this.e ) || HTMLCollection.prototype.isPrototypeOf( this.e ) ) {
-            console.log( this.e );
             let l = this.e.length;
             let i = 0;
             while( i < l ) {

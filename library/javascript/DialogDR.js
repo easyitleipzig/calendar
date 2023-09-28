@@ -20,9 +20,6 @@ var setDialogPosOnScroll = function() {
     }    
 }
 registerOnResize( setDialogPosOnScroll );
-const getRootObject = function( el ) {
-    return window[ getDVar( el ).split(".")[0] ];
-}
 const getDialogVar = function( dVar ) {
     let tmp = dVar.split( "." );
     let m = tmp.length;
@@ -88,10 +85,11 @@ class DialogDR {                    // dialog drag and resize
             dragIsSet:          false,
             canResize:          false,
             resizeIsSet:        false,
-            buttons:            [],// {title: "Okay", action: function(){ let df = getDVar( this ); window[ df ].hide() } ],
+            buttons:            [],// [ {title: "Okay", action: function(){ nj( this ).Dia().hide() }, {title: "", action: function(){} }, ... ],
             isOpen:             false,
             selectFirstButton:  true,
             selectFirstInput:   true,
+            onInit:             undefined,
             onShow:             undefined,
             afterShow:          undefined,
             onHide:             undefined,
@@ -341,6 +339,7 @@ class DialogDR {                    // dialog drag and resize
         docReady(function(){
 
         })
+        if( typeof this.opt.onInit === "function" ) this.opt.onInit( this );
         if( this.opt.autoOpen ) {
             this.showOnInit = true;
             this.show();
@@ -373,7 +372,6 @@ class DialogDR {                    // dialog drag and resize
      *  arguments   additional arguments 
      */ 
     show = function( args ) {
-        console.log( args );
         let mZI = maxZIndex();
         if( this.opt.modal ) {
             nj( this.opt.id + "_wrapper" ).rCl( "wrapperHide");

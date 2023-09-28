@@ -32,6 +32,10 @@ function draggable(e) {
     t.onmousedown = function () {
         1 == event.which && trackMouseDragPlusAction({ action: "drag", param: [e] });
     };
+    t.ontouchstart = function () {
+        1 == event.which && trackMouseDragPlusAction({ action: "drag", param: [e] });
+    };
+
 }
 function getDragNewPosition(e, t) {
     let n = getElementOffsetAndMeasures(e),
@@ -89,10 +93,17 @@ function trackMouseDragPlusAction(e) {
                 o = event.clientY;
             dragAction(e, { x: t - i, y: n - o }), (t = i), (n = o);
         });
+    (document.ontouchend = dragMouseStop),
+        (document.touchmove = function () {
+            let i = event.clientX,
+                o = event.clientY;
+            dragAction(e, { x: t - i, y: n - o }), (t = i), (n = o);
+        });
 }
 function dragMouseStop(e) {
     //console.log( store( null, true ) );
     (document.onmouseup = null), (document.onmousemove = null);
+    (document.ontochend = null), (document.ontouchmove = null);
 }
 function resizeable(e, position = "both" ) {
     e = nj().els( "#" + e );

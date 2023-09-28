@@ -161,9 +161,13 @@
 }
 
 .ec-body {
+    /*
     position: relative;
     overflow-x: hidden;
     overflow-y: auto
+    */
+    width: 1000px;
+    margin: 0 auto;
 }
 
 .ec:not(.ec-list) .ec-body {

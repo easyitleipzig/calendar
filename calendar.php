@@ -44,9 +44,9 @@ $event_string = substr( $event_string, 0, -1 );
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="library/ressources/site.webmanifest">
     <link rel="stylesheet" href="library/css/global.css">
     <link rel="stylesheet" href="library/css/EventCalendar.css">
+    <link rel="stylesheet" href="library/css/calendar.css">
     <style type="text/css">
         #dDia { background-color:lightblue }
         .fc-1 {
@@ -62,9 +62,109 @@ $event_string = substr( $event_string, 0, -1 );
             background-image: url(library/css/icons/bueroklammer.png);
             background-repeat: no-repeat;
             background-size: 12px 20px;
-            background-position-x: right;            
+            background-position-x: right;
         }
+#dPartic {
+    background-color: #333;
+    color: #E086D3;
+    border-radius: 9px;
+    padding: 5px;
+    width: 200px;
+}
+#dPartic::before {
+  content: " ";
+  width: 0;
+  height: 0;
+  
+  border-style: solid;
+  border-width: 12px 12.5px 0 12.5px;
+  border-color: #333 transparent transparent transparent;
+
+  position: absolute;
+  left: 5px;
+  top: -5px;
+  transform: rotate(180deg);
+}
+#dPartic_box {
+    box-shadow: unset;
+    background-color: transparent;    
+    border: none !important;
+}
+.dParticBox {
+}
+.dParticHL, .dParticMenu {
+    display: none !important;
+}
+#dPartic_headline, #dPartic_menu, #dPartic_footer {
+    display: none !important;
+}
+.accordion>div>input{
+  display: none;
+}
+
+.accordion .panel {
+  margin: 0 auto;
+  height: 0;
+  overflow:hidden;
+  background-color: white;
+  line-height: 1.4;
+  padding: 0 20px;
+  box-sizing: border-box;
+  transition: all 0.5s;
+}
+
+.accordion input:checked~.panel {
+  height: auto;
+  color: #333;
+  padding: 10px;
+  transition: all 0.5s;
+  min-height: 280px;
+}
+.panelHL {
+    border-radius: 5px;
+    padding-left: 0.3em;
+    border-color: aliceblue;
+    border: 3px solid #0c97e2;
+}
+.panelHL > label {
+    z-index: 1;
+    position: relative;
+    cursor: pointer;
+    color: #0c97e2;
+    font-size: 14px;
+    font-weight: 600;
+    top: -1px;
+}
+/* styles event dialog */
+    #editEvent label {
+        display: block;
+    }
+    #editId, #editGroupId {
+        display: none;
+    }
+/* end styles event dialog */
+
     </style>
+    <script>
+        <?php
+            echo "let optPlace = '";
+            $query = "SELECT * FROM event_place";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            for( $i = 0; $i < count( $result ); $i++ ) {
+                echo '<option value="' . $result[$i]["id"] . '">' . $result[$i]["place"] . "</option>";
+            }
+            echo ";'\n";
+            echo "let optPattern = '<option value=\"0\" selected>ohne</option>";                        
+            $query = "SELECT id, name FROM event_pattern where id > 0 order by name";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            for( $i = 0; $i < count( $result ); $i++ ) {
+                echo '<option value="' . $result[$i]["id"] . '">' . $result[$i]["name"] . "</option>";
+            }     
+            echo ";'\n";
+    ?>    
+    </script>
 </head>
 <body>
 <div id="editEvent" style="display: none;">
@@ -78,20 +178,12 @@ $event_string = substr( $event_string, 0, -1 );
     <label>Titel</label>
     <input id="editTitle" type="text">
     <div>
-    <select id="usePattern">
-        <option value="0" selected>ohne</option>
-<?php
-    $query = "SELECT id, name FROM event_pattern where id > 0 order by name";
-    $stm = $db_pdo -> query( $query );
-    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    for( $i = 0; $i < count( $result ); $i++ ) {
-        echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["name"] . "</option>";
-    }     
-?>
-    
-    </select>
+        <select id="usePattern"></select>
+    </div>
     <label>Ort</label>
+    <select id="meeting_point"></select>
 <?php
+/*
     $query = "SELECT * FROM event_place";
     $stm = $db_pdo -> query( $query );
     $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
@@ -99,7 +191,9 @@ $event_string = substr( $event_string, 0, -1 );
     for( $i = 0; $i < count( $result ); $i++ ) {
         echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["place"] . "</option>";
     }     
-    print_r( "</select></div><div><label>Kategorie</label>");
+    print_r( "</select></div>");
+*/
+    print_r( "<div><label>Kategorie</label>");
     $query = "SELECT * FROM event_format";
     $stm = $db_pdo -> query( $query );
     $result = $stm -> fetchAll(PDO::FETCH_ASSOC);

@@ -139,6 +139,10 @@
     } )
 */ 
 const init = function() {
+    // set select options
+        nj( "#meeting_point" ).htm( optPlace );
+        nj( "#usePattern" ).htm( optPattern );
+    // end set select options
     cal.evCal.setOption( "datesSet", function ( info ) {
         cal.removeAllEventsFromView();
         cal.getDaysForView( info )

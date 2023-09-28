@@ -62,6 +62,8 @@ class Calendar {
 			calView: 			'dayGridMonth', // timeGridWeek, timeGridDay, timeGridList ....,
 			firstDay: 			1,
 			currentUserId: 		1,
+			divEvWidth:  		290,
+			divEvHeight:  		440,
 
 		}
 		Object.assign( this.opt, setup );
@@ -81,7 +83,8 @@ class Calendar {
 		        headerToolbar: {
 		            start: 'prev,next today',
 		            center: 'title',
-		            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek, resourceTimeGridDay'
+		            end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+		            //end: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek, resourceTimeGridWeek, resourceTimeGridDay'
 		        },
 
 		        buttonText: function (texts) {
@@ -124,6 +127,9 @@ class Calendar {
 		        	if( info.event.extendedProps.participate ) {
 		        		nj( info.el ).aCl( "fc-participate" );
 		        	}
+		        	if( info.event.extendedProps.inner_url ) {
+		        		nj( info.el ).aCl( "eventHasAppendix" );
+		        	}
 		        },
 		        /*
 		        dateFromPoint(x,y) {
@@ -146,7 +152,8 @@ class Calendar {
 
 
 			});
-			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: 400, autoOpen: false, afterShow: function(){ nj( this.id).Dia().options('center')} } );
+			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, afterShow: function(){ nj( this.id).Dia().options('center')} } );
+			this.dPartic = new DialogDR( { dVar: this.opt.pVar + ".dPartic", id: "#dPartic", modal: false, /* onShow: function(){ nj( this.id).Dia().options('center') }*/ } );
 		}
 		// end constructor
 		// variables declaration
@@ -174,7 +181,7 @@ class Calendar {
 		 * 
 		*/
 		evaluateCalData = function( data ) {
-    		let l, i;
+    		let l, i, tmp;
 		    console.log( data );
 		    let jsonobject;
 		    if( typeof data === "string" ) {
@@ -204,6 +211,17 @@ class Calendar {
 	        			i += 1;
 	        		}
 		        break;
+		    case "showParticipants":
+		    	if( jsonobject.data.length > 0 ) {
+			    	tmp = "";
+			    	l = jsonobject.data.length;
+			    	i = 0;
+			    	while ( i < l ) {
+			    		tmp += "<div>" + jsonobject.data[i].participant + "</div>"
+			    		i += 1;
+			    	}
+			    	cal.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
+		    	}
 			}
 		}
 		/**
@@ -273,12 +291,16 @@ class Calendar {
 			if( info.jsEvent.ctrlKey ) {
 				dMNew.show({ title: "Termin löschen", type: "question", text: "Willst Du diesen Termin löschen?", width: 220, buttons: [ { title: "Ja", action: function () {dMNew.hide();} }, { title: "Nein", action: function () {dMNew.hide();} } ] } );
 			} else {
-				this.divEvent.show( {variables: { divType: "edit", event: info.event }, onShow: function(){
-					console.log( arguments );
-					if( arguments[0].divType === "edit" ) {
-						console.log( "editDialog" );
-					}
-				}});
+				if( info.jsEvent.altKey ) {
+					window.open( info.event.extendedProps.inner_url, "_blank" );
+				} else {
+					this.divEvent.show( {variables: { divType: "edit", event: info.event }, onShow: function(){
+						console.log( arguments );
+						if( arguments[0].divType === "edit" ) {
+							console.log( "editDialog" );
+						}
+					}});
+				}
 			}
 
 		}
@@ -294,6 +316,12 @@ class Calendar {
 		*/
 		onEventMouseEnter = function( info ) {
 			console.log( "onEventMouseEnter", info );
+			data.command = "showParticipants";
+			data.event_id = info.event.extendedProps.id;
+			console.log( this );
+			data.x = info.jsEvent.screenX;
+			data.y = info.jsEvent.screenY;
+			nj().post("../../regenbogen/library/php/ajax_calendar.php", data, this.evaluateCalData );
 		}
 		/**
 		 * onEventMouseLeave
@@ -307,6 +335,7 @@ class Calendar {
 		*/
 		onEventMouseLeave = function( info ) {
 			console.log( "onEventMouseLeave", info );
+			cal.dPartic.hide();
 		}
 		/**
 		 * onEventResize
