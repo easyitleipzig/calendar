@@ -370,7 +370,7 @@ class DialogDR {                    // dialog drag and resize
      *  x           left position as integer
      *  y           top position as integer
      *  tmpClasses  additional classes divided by " "
-     *  arguments   additional arguments 
+     *  variables   additional arguments 
      */ 
     show = function( args ) {
         let mZI = maxZIndex();
@@ -453,7 +453,6 @@ class DialogDR {                    // dialog drag and resize
                 i += 1;
             }
         }
-        //console.log( x, y );
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
         nj( this.opt.id ).sty( "display", "block" );
