@@ -1,6 +1,47 @@
 <?php
 class CalendarEvent {
     
+    public function getEventForId( $pdo, $id ) {
+        $query = "SELECT * FROM event where id = $id";
+        $stm = $pdo -> query( $query );
+        $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+        $i = 0;
+        $ev = new \stdClass();
+        $ev -> title = $result[$i]["title"];
+        $ev -> start = $result[$i]["start_date"] . "T" . $result[$i]["start_time"];
+        $ev -> end = $result[$i]["end_date"] . "T" . $result[$i]["end_time"];
+        $ev -> display = "auto";
+        $exPro = new \stdClass();
+        $exPro -> id = $result[$i]["id"];
+        $exPro -> groupId = $result[$i]["group_id"];
+        $exPro -> place = $result[$i]["place"];
+        $exPro -> registration_deadline = $result[$i]["registration_deadline"];
+        $exPro -> url = $result[$i]["url"];
+        $exPro -> inner_url = $result[$i]["inner_url"];
+        $exPro -> inner_url_text = $result[$i]["inner_url_text"];
+        $exPro -> description = $result[$i]["description"];
+        $exPro -> notice = $result[$i]["notice"];
+        $exPro -> class = $result[$i]["class"];
+        $exPro -> creator = $result[$i]["creator"];
+        $q = "select * from event_participate where event_id = " . $result[$i]["id"] . " and user_id = $userId";
+        $s = $pdo -> query( $q );
+        $result_part = $s -> fetchAll(PDO::FETCH_ASSOC);
+        if( count( $result_part ) > 0 ) {
+            if( $result_part[0]["user_id"] > 0 ) $exPro -> participate = true;
+            $exPro -> remindMe = $result_part[0]["remind_me"];
+            $exPro -> countPart = $result_part[0]["count_part"];
+            $exPro -> participateAs = $result_part[0]["count_part"];
+        } else {
+            $exPro -> participate = null;
+            $exPro -> remindMe = null;
+            $exPro -> countPart = null;
+            $exPro -> participateAs = null;
+            
+        }
+        $ev -> extendedProps = $exPro;
+        return $ev;        
+
+    }
     public function getEventsForView( $pdo, $startDate, $endDate, $userId ) {
         $query = "SELECT * FROM event where start_date >= '$startDate' and end_date < '$endDate'";
         $stm = $pdo -> query( $query );
@@ -9,19 +50,6 @@ class CalendarEvent {
         $l = count( $result );
         $i = 0;
         while( $i < $l ) {
-            /*
-                "start": "2023-09-04T14:00:00.000Z",
-    "end": "2023-09-05T06:00:00.000Z",
-    "title":{html: "<span id='ev_1234'><b>test</b></span>" },
-    "display": "auto",
-    "extendedProps": {
-                "test": 1,
-                "id": 1234,
-                "participate": true,
-                ...
-    },
-*/
-            
             $ev = new \stdClass();
             $ev -> title = $result[$i]["title"];
             $ev -> start = $result[$i]["start_date"] . "T" . $result[$i]["start_time"];
@@ -54,11 +82,6 @@ class CalendarEvent {
                 $exPro -> participateAs = null;
                 
             }
-            
-            
-            //var_dump()
-            //$exPro -> creator -> $result[$i]["class"];
-            
             $ev -> extendedProps = $exPro;
             $events[] = $ev;
             $i += 1;

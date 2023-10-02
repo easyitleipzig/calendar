@@ -19,7 +19,7 @@ var setDialogPosOnScroll = function() {
         i += 1;    
     }    
 }
-registerOnResize( setDialogPosOnScroll );
+//registerOnResize( setDialogPosOnScroll );
 const getDialogVar = function( dVar ) {
     let tmp = dVar.split( "." );
     let m = tmp.length;
@@ -384,8 +384,13 @@ class DialogDR {                    // dialog drag and resize
 
         let x, y;
         if( this.opt.center ) {
+/*
             x = window.innerWidth / 2 + parseInt( this.center().x ) + "px"; 
             y = window.innerHeight / 2 + parseInt(this.center().y ) + "px";
+*/
+            x = this.center().x; 
+            y = this.center().y;
+        console.log( this.opt.dVar, this.center().x, this.center().y );
         } else { 
                 x = "0px";
                 y = "0px";
@@ -453,6 +458,7 @@ class DialogDR {                    // dialog drag and resize
                 i += 1;
             }
         }
+        console.log( x, y );
         nj( this.opt.id + "_box" ).sty( { "left": x, "top": y, "z-index": ++mZI } );
         nj( this.opt.id + "_box" ).aCl( "boxShow");
         nj( this.opt.id ).sty( "display", "block" );

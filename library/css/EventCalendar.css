@@ -122,10 +122,6 @@
     border: 1px solid #dadce0
 }
 
-.ec-header {
-    display: flex;
-    flex-shrink: 0
-}
 
 .ec-header .ec-resource {
     flex-direction: column
@@ -160,15 +156,6 @@
     padding-bottom: 4px
 }
 
-.ec-body {
-    /*
-    position: relative;
-    overflow-x: hidden;
-    overflow-y: auto
-    */
-    width: 1000px;
-    margin: 0 auto;
-}
 
 .ec:not(.ec-list) .ec-body {
     border-top: none
@@ -577,4 +564,15 @@
 
 .ec-resizing-x {
     cursor: ew-resize !important
+}
+@media screen (min-width: 1920px) {
+    .ec-body {
+        /*
+        position: relative;
+        overflow-x: hidden;
+        overflow-y: auto
+        */
+        width: 1000px;
+        margin: 0 auto;
+    }
 }

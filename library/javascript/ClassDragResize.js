@@ -4,10 +4,10 @@ class DragResize {
             id:                 "", // necessary - id of element
         }
         Object.assign( this.opt, param );
-        draggable = function( el ) {
+        draggable = function() {
             
         }
-        resizeable = function( el ) {
+        resizeable = function() {
             
         }
 }

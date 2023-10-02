@@ -3,16 +3,12 @@ class Storage{
 		store:  	{} 							// the store variable
 	}
 	addKey = function( key ){
-		let vKey = new Array();
-		store[ key ] = vKey
+		store[ key ] = {}
 	} 
-	addValue = function( key, value ){
-		//let vKey = new Array();
-		store[ key ] = value;
+	addValue = function( key, name, value ){
+		store[key][name] = value;
 	} 
-	getValue = function( key ){
-		let vKey = new Array();
-		return store[ key ];
+	getValue = function( key, name ){
 	} 
 	setStore = function( key, variable, value ){
 

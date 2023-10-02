@@ -137,11 +137,20 @@
     },
     "backgroundColor": "#B29DD9",
     } )
-*/ 
+*/
+let dD = new DialogDR({ dVar: "dD", center: true, modal: false});
+
 const init = function() {
+    nj( "#openDialog" ).on( "click", function(){dD.show() } );
+    nj( "#openMessage" ).on( "click", function(){dMNew.show() } );
+    //dM = new MessageDR();
     // set select options
         nj( "#meeting_point" ).htm( optPlace );
         nj( "#usePattern" ).htm( optPattern );
+
+        // times
+        nj( "#editStartTimeMinutes").htm( getTime( "editStartTimeHour", "editStartTimeMinutes" ) );
+        nj( "#editEndTimeMinutes").htm( getTime( "editEndTimeHour", "editEndTimeMinutes" ) );
     // end set select options
     cal.evCal.setOption( "datesSet", function ( info ) {
         cal.removeAllEventsFromView();

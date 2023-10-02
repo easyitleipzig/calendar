@@ -50,3 +50,10 @@ body {
 		height: 800px;
 	}
 }
+@media (min-width: 1920px) {
+	.ec.ec-day-grid {
+		height: 800px;
+		width: 1000px;
+	}
+
+}

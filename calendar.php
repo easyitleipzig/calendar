@@ -47,6 +47,7 @@ $event_string = substr( $event_string, 0, -1 );
     <link rel="stylesheet" href="library/css/global.css">
     <link rel="stylesheet" href="library/css/EventCalendar.css">
     <link rel="stylesheet" href="library/css/calendar.css">
+    <link rel="stylesheet" href="library/css/global.css">
     <style type="text/css">
         #dDia { background-color:lightblue }
         .fc-1 {
@@ -163,10 +164,29 @@ $event_string = substr( $event_string, 0, -1 );
                 echo '<option value="' . $result[$i]["id"] . '">' . $result[$i]["name"] . "</option>";
             }     
             echo ";'\n";
-    ?>    
+            echo "let optCategory = '<option value=\"fc-0\" selected>ohne</option>";                        
+            $query = "SELECT * FROM event_format";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            for( $i = 0; $i < count( $result ); $i++ ) {
+                echo '<option value="fc-' . $result[$i]["id"] . '">' . $result[$i]["name"] . '</option>';
+            }     
+            echo ";'\n";
+    ?>
+    const getTime = function( idTime, idMinutes ) {
+        let content = "";
+        content += '<select id="' + idTime + '"><option selected value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option></select>';
+        content += '<select id="' + idMinutes + '"><option value="00" selected>00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select>';
+        content += '&nbsp;<label style="position: relative; top: 10px">Uhr</label>';
+        return content;
+    }     
     </script>
 </head>
 <body>
+<a href="#" id="openDialog">openDialog</a>
+<a href="#" id="openMessage">openMessage</a>
+<a href="#" id="openMessageNews">openMessageNews</a>
+
 <div id="editEvent" style="display: none;">
     <div class="accordion">          
        <div>
@@ -182,6 +202,8 @@ $event_string = substr( $event_string, 0, -1 );
     </div>
     <label>Ort</label>
     <select id="meeting_point"></select>
+    <label>Kategorie</label>
+    <select id="category"></select>
 <?php
 /*
     $query = "SELECT * FROM event_place";
@@ -193,7 +215,6 @@ $event_string = substr( $event_string, 0, -1 );
     }     
     print_r( "</select></div>");
 */
-    print_r( "<div><label>Kategorie</label>");
     $query = "SELECT * FROM event_format";
     $stm = $db_pdo -> query( $query );
     $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
@@ -202,7 +223,7 @@ $event_string = substr( $event_string, 0, -1 );
     for( $i = 0; $i < count( $result ); $i++ ) {
         echo "<option value='fc-" . $result[$i]["id"] . "'>" . $result[$i]["name"] . "</option>";
     }     
-    print_r( "</select></div>");
+    print_r( "</select>");
 ?>
     <label>Ansprechpartner</label>
 <?php
@@ -227,6 +248,8 @@ $event_string = substr( $event_string, 0, -1 );
     </div>
     <div style="display: inline-flex;">
         <input type="date" id="editDetailDateFrom" class="date">
+        <div id="editStartTimeMinutes" style="display: inline-flex;"></div>
+        <!--
          <select id="editStartTimeHour">
             <option selected value="00">00</option>
             <option value="01">01</option>
@@ -261,6 +284,7 @@ $event_string = substr( $event_string, 0, -1 );
         </select>
         &nbsp;
         <label>Uhr</label>
+    -->
     </div>
     <div class="startDateTime">    
         <div>Ende</div>
@@ -268,6 +292,8 @@ $event_string = substr( $event_string, 0, -1 );
     </div>
     <div style="display: inline-flex;">
         <input type="date" id="editDetailDateTo" class="date">
+        <div id="editEndTimeMinutes" style="display: inline-flex;"></div>
+        <!--
         <select id="editEndTimeHour">
             <option value="00" selected>00</option>
             <option value="01">01</option>
@@ -302,6 +328,7 @@ $event_string = substr( $event_string, 0, -1 );
         </select>
         &nbsp;
         <label>Uhr</label>
+    -->
     </div>
      <label>Anmeldeschluss</label>
     <input id="editDeadline" type="date" class="date">  <input type="button" id="editDeleteDeadline" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anmeldeschluss löschen"><br>
@@ -407,14 +434,18 @@ $event_string = substr( $event_string, 0, -1 );
     <div id="divCal" class="col"></div>
 
 </div>
-
+<input id="test">
+<input id="test_small">
 <script src="library/javascript/no_jquery.js"></script>
 <script src="library/javascript/easyit_helper_neu.js"></script>
 <script src="library/javascript/menu_calendar.js"></script>
 <script src="library/javascript/DropResize.js"></script>
 <script src="library/javascript/DialogDR.js"></script>
+<!--
 <script src="library/javascript/touchmove.js"></script>
-<script src="library/javascript/Message.js"></script>
+-->
+<script src="library/javascript/MessageDR.js"></script>
+<script src="library/javascript/MessagesNewsDR.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
 <script src="library/javascript/Calendar.js"></script>
 <script src="library/javascript/init_calendar.js"></script>

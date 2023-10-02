@@ -21,6 +21,7 @@ function draggable(e) {
     e.classList.add("draggable");
     let tmp = e.id.replace( "_box", "" );
     let t = nj().els( "#" + tmp + "_headline");
+    //dialogTouchMove( t );
     t.className = "dragPoint"/*, initialDragPointStyling(t)*/;
     let n = e.firstChild;
     /*
@@ -197,4 +198,17 @@ function re_dragMouseStop(e) {
     nj().els( e.target.nextElementSibling ).style.left = parseInt( e.target.nextElementSibling.style.left ) + 10 + "px";
     // end correct terget position
     (document.onmouseup = null), (document.onmousemove = null);
+}
+const dialogTouchMove = function ( el ) {
+    var touchLocation, posBasis, diffX, diffY, pEl = nj( el ).p();
+    nj( el ).on( "touchstart", function ( e ) {
+        posBasis = nj( pEl ).gRe();
+        diffX = posBasis.x - e.targetTouches[0].pageX;
+        diffY = posBasis.y - e.targetTouches[0].pageY;
+    } );
+    nj( el ).on( "touchmove", function ( e ) {
+        touchLocation = e.targetTouches[0];
+        console.log( touchLocation, posBasis );
+        nj( pEl ).sty( { left: touchLocation.pageX + diffX + "px", top: touchLocation.pageY + diffY + "px" } );
+    } );
 }
