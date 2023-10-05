@@ -696,6 +696,18 @@ fetch(request)
             return tmpVar;
         }        
     }
+    _gRO = function( ds = "dvar" ) {
+        let dia = false, x = 1;
+        while (x == 1 ) {
+            if( this.e.dataset[ ds ] ) {
+                x = 0;
+                dia = this.e.dataset[ ds ];
+            } else {
+                this.e = this.e.parentNode;
+            }
+        }
+        return window[ dia.split(".")[0] ];
+    }
     this.els = _els;
     this.lEl = _lEl;
     this.fEl = _fEl;
@@ -771,5 +783,6 @@ fetch(request)
     // dialog
     this.gDV = _gDV;
     this.Dia = _Dia;
+    this.gRO = _gRO;
     return this
 }

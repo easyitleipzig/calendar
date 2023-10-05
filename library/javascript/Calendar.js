@@ -27,6 +27,7 @@ nj( document ).on( "keypress", function( e ) {
 
 
 /* not good but nessecary */
+/*
 const getDateRange = function (info) {
 	// body...
 	console.log( info );

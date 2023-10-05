@@ -14,7 +14,7 @@ Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming 
 
 nj( document ).on( "keypress", function( e ) {
 	e.stopImmediatePropagation();
-	if( e.key = "y" && e.ctrlKey ) {
+	if( e.key = "y" && e.ctrlKey  && e.altKey ) {
 		console.log( cal.evCal );
 		if( cal.evCal.getOption("duration").months === 1 ) {
 			cal.evCal.setOption("duration", { year: 1 } );	
@@ -27,6 +27,7 @@ nj( document ).on( "keypress", function( e ) {
 
 
 /* not good but nessecary */
+/*
 const getDateRange = function (info) {
 	// body...
 	console.log( info );

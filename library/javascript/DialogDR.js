@@ -20,28 +20,6 @@ var setDialogPosOnScroll = function() {
     }    
 }
 //registerOnResize( setDialogPosOnScroll );
-const getDialogVar = function( dVar ) {
-    let tmp = dVar.split( "." );
-    let m = tmp.length;
-    let j = 1;
-    let tmpVar = window[ tmp[0] ];
-    while( j < m ) {
-        tmpVar = tmpVar[tmp[j]];
-        j += 1;
-    }
-    return tmpVar;
-}
-const getDVar = function( el ) {
-    let x = 1;
-    while (x == 1 ) {
-        if( nj( el ).hAt( "data-dVar" ) ) {
-            x = 0;
-            return nj( el ).atr( "data-dVar" )
-        } else {
-            el = nj( el ).p();
-        }
-    }
-}
 /* end dialog helper */
 /* TODO: extract all not nessacary setup vars to intern vars */ 
 class DialogDR {                    // dialog drag and resize
@@ -131,8 +109,12 @@ class DialogDR {                    // dialog drag and resize
             if( this.opt.buttons.length == 0 ) {
                 b = {};
                 b.title = "Okay";
-                b.action = function( el ){
-                    nj( el.target ).Dia().hide();
+                b.action = function( e ){
+                    if( typeof nj( e.target ).gRO().id === "string" ) {
+                        executeCode( nj( e.target ).gRO().id + ".hide()" );
+                    } else {
+                        nj( e.target ).Dia().hide();
+                    }
                 };
                 this.opt.buttons.push( b ); 
             }   
@@ -159,8 +141,12 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.hasHelp ) {
             nj( el_add ).aCl( "cbHelp iconButtMin " + this.opt.classPraefix + "HLHelp");
             nj( el_add ).on( "click", function( e ) {
-                //e.stopPropagation();
-                nj( e.target ).Dia().opt.divHelp.show();
+//                nj( e.target ).Dia().opt.divHelp.show();
+                if( typeof nj( e.target ).gRO().id === "string" ) {
+                    executeCode( nj( e.target ).gRO().id + ".opt.divHelp.show()" );
+                } else {
+                    nj( e.target ).Dia().opt.divHelp.show();
+                }
             });
             nj( el_ctrl ).aCh( el_add );
         }
@@ -178,7 +164,13 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.hasMin ) {
             nj( el_add ).aCl( "cbMinimize iconButtMin " + this.opt.classPraefix + "HLMin" );
             nj( el_add ).on( "click", function( el ) {
-                let df = nj( el.target ).Dia();
+                let df;
+                /*
+                console.log( nj( el.target ).gRO().id );
+                executeCode( "df = " + nj( el.target ).gRO().id );
+                console.log( df );
+                */
+                df = nj( el.target ).Dia();
                 if( nj( df.opt.id + "_box" ).hCl( "minimized" ) ) {
                     df.restoreMin()
                 } else {
@@ -205,8 +197,12 @@ class DialogDR {                    // dialog drag and resize
         el_add = nj().cEl( "div" );
         if( this.opt.hasClose ) {
             nj( el_add ).aCl( "cbClose iconButtMin " + this.opt.classPraefix + "HLClose" );
-            nj( el_add ).on( "click", function( el ) {
-                nj( el.target ).Dia().hide();    
+            nj( el_add ).on( "click", function( e ) {
+                if( typeof nj( e.target ).gRO().id === "string" ) {
+                    executeCode( nj( e.target ).gRO().id + ".hide()" );
+                } else {
+                    nj( e.target ).Dia().hide();
+                }
             });
             nj( el_ctrl ).aCh( el_add );
         }
@@ -325,7 +321,6 @@ class DialogDR {                    // dialog drag and resize
             nj( dummyRes ).aCl( "dummyRes" );
             const boxEl = nj().els( box );
             nj( boxEl ).aCh( dummyRes );
-            //resizeClass.init( document.getElementById( this.opt.id.substr( 1, this.opt.id.length - 1 ) + "_dummyRes" ) );
         }
         if( this.opt.cascade ) {
             nj( "#" + this.boxId + "_box" ).aCl( "cascade" );
@@ -618,9 +613,7 @@ class DialogDR {                    // dialog drag and resize
                     v[0] = {};
                     v[0].title = "Okay";
                     v[0].action = function(){
-                        let df = getDVar( nj().els( this ) );
-                        e.log( df.split( "." )[0] );
-                        window[ df.split( "." )[0] ].opt.divVar.hide();
+                        nj( nj().els( this ) ).gRO().opt.divVar.hide();
                     }
                 }
                 nj( this.opt.id + "_footer" ).htm( "" );

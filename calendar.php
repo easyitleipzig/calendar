@@ -183,7 +183,8 @@ $event_string = substr( $event_string, 0, -1 );
     </script>
 </head>
 <body>
-<a href="#" id="openDialog">openDialog</a>
+<a href="#" id="openDialog1">openDialog1</a>
+<a href="#" id="openDialog2">openDialog2</a>
 <a href="#" id="openMessage">openMessage</a>
 <a href="#" id="openMessageNews">openMessageNews</a>
 

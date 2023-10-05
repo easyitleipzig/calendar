@@ -138,11 +138,13 @@
     "backgroundColor": "#B29DD9",
     } )
 */
-let dD = new DialogDR({ dVar: "dD", center: true, modal: false});
-
+let dDia1 = new DialogDR( { dVar: "dDia1", id: "#dDia1", modal: false, hasMin: true, hasMax: true, hasInfo: true, hasHelp: true } );
+let dDia2 = new DialogDR( { dVar: "dDia2", id: "#dDia2", modal: false  } );
 const init = function() {
-    nj( "#openDialog" ).on( "click", function(){dD.show() } );
+    nj( "#openDialog1" ).on( "click", function(){dDia1.show() } );
+    nj( "#openDialog2" ).on( "click", function(){dDia2.show() } );
     nj( "#openMessage" ).on( "click", function(){dMNew.show() } );
+    nj( "#openMessageNews" ).on( "click", function(){dMN.show() } );
     //dM = new MessageDR();
     // set select options
         nj( "#meeting_point" ).htm( optPlace );

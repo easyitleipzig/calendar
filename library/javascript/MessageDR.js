@@ -54,7 +54,7 @@ class Message {
                     b = {};
                     b.title = "Okay";
                     b.action = function( el ){
-                        nj( nj().els( el.target ) ).Dia().hide();
+                        nj( this ).Dia().hide();
                     };
                     this.opt.buttons.push( b ); 
                 args.buttons = this.opt.buttons;
@@ -107,10 +107,8 @@ class Message {
                 args.innerHTML = args.innerHTML.replace( "[content]", args.text ) 
             }
         }
-        //console.log( args );       
         this.opt.divMess.show( args );
         nj( "#mess_footer>button:last-child").f();        
-        //this.opt.divMess.options( "correctCenterMaxZI" );
     }
     hide = function() {
         this.opt.divMess.hide();        

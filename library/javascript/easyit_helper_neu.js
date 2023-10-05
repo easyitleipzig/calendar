@@ -676,3 +676,8 @@ function replaceElement (source, tagname) {
     element.appendChild(range.extractContents()); 
     source.parentNode.replaceChild(element, source); 
 } 
+function executeCode(code) {
+    // A safer approach would be using Function constructor
+    const myFunction = new Function(code);
+    myFunction();
+}

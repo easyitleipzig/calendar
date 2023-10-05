@@ -146,17 +146,15 @@ var initShow = function( dF ) {
 var getContent = function( e ) {
     if( typeof e === "undefined" ) return;
     data.command = "get";
-    data.dVar = getRootObject( nj().els( e.target ) ).opt.dVar;
-    data.type = nj( "#" + getRootObject( nj().els( e.target ) ).opt.fieldPraefix + "_type" ).v();
+    data.dVar = nj( nj().els( e.target ) ).gRO().opt.dVar;
+    data.type = nj( "#" + nj( nj().els( e.target ) ).gRO().opt.fieldPraefix + "_type" ).v();
     nj().post("library/php/ajax_mess_news.php", data, evaluateMessNews );
 }
 var prevRecord = function( e ) {
-    console.log("prevRecord", e);
-    getRootObject( nj().els( e.target ) ).prev();
+    nj( nj().els( e.target )  ).gRO().prev();
 }       
 var nextRecord = function( e ) {
-    console.log("nextRecord", e);
-    getRootObject( nj().els( e.target ) ).next();
+    nj( nj().els( e.target )  ).gRO().next();
 }
 
 class MessagesNewsDR {
@@ -189,7 +187,6 @@ class MessagesNewsDR {
             nj( this.opt.bellElement ).atr("data-dVar", this.opt.dVar );
             nj( this.opt.bellElement + "_small" ).atr("data-dVar", this.opt.dVar );
         }
-        console.log( this.opt.addClassFiles );
         this.opt.divVar = new DialogDR( {
             dVar: this.opt.dVar + ".opt.divVar", 
             id: this.opt.id, 
@@ -212,14 +209,13 @@ class MessagesNewsDR {
                 , {
                     title:'Liste', 
                     action:function(e){ 
-                        getRootObject( nj().els( e.target ) ).hide();
-                        getRootObject( nj().els( e.target ) ).opt.divVarList.show();
-
+                        nj( this ).Dia().hide();
+                        nj( this ).gRO().opt.divVarList.show();
                         } 
                     } 
                 , {
                     title:'Schließen', 
-                    action:function(e){ getRootObject( nj().els( e.target ) ).hide();} } 
+                    action:function(){ nj( this ).gRO().hide();} } 
                     ] 
             } );
         this.opt.divVarList =new DialogDR({
@@ -243,8 +239,8 @@ class MessagesNewsDR {
             buttons: [{
                     title:'Formular', 
                     action:function(e){ 
-                        getRootObject( nj().els( e.target ) ).opt.divVarList.hide();
-                        getRootObject( nj().els( e.target ) ).opt.divVar.show();
+                        nj( nj().els( e.target ) ).gRO().opt.divVarList.hide();
+                        nj( nj().els( e.target ) ).gRO().opt.divVar.show();
 
                         } 
                     } 
@@ -252,15 +248,15 @@ class MessagesNewsDR {
                     title:'Gelesen', 
                     action:function(e){
                         data.command = "readAll";
-                        data.dVar = getRootObject( nj().els( e.target ) ).opt.dVar;
-                        data.type = nj( "#" + getRootObject( nj().els( e.target ) ).opt.divVarList.opt.fieldPraefix + "_typeList" ).v();
+                        data.dVar = nj( nj().els( e.target ) ).gRO().opt.dVar;
+                        data.type = nj( "#" + nj( nj().els( e.target ) ).gRO().opt.divVarList.opt.fieldPraefix + "_typeList" ).v();
                         nj().post("library/php/ajax_mess_news.php", data, evaluateMessNews);
                     } 
                 }                
                 , {
                     title:'Schließen', 
                     action:function(e){
-                        getRootObject( nj().els( e.target ) ).opt.divVarList.hide();
+                        nj( nj().els( e.target ) ).gRO().opt.divVarList.hide();
                     } 
                 } ]
 
