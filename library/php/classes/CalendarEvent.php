@@ -65,7 +65,7 @@ class CalendarEvent {
             $exPro -> inner_url_text = $result[$i]["inner_url_text"];
             $exPro -> description = $result[$i]["description"];
             $exPro -> notice = $result[$i]["notice"];
-            $exPro -> class = $result[$i]["class"];
+            $exPro -> class = "fc-" . $result[$i]["category"];
             $exPro -> creator = $result[$i]["creator"];
             $q = "select * from event_participate where event_id = " . $result[$i]["id"] . " and user_id = $userId";
             $s = $pdo -> query( $q );

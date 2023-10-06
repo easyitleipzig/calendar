@@ -110,10 +110,10 @@ class DialogDR {                    // dialog drag and resize
                 b = {};
                 b.title = "Okay";
                 b.action = function( e ){
-                    if( typeof nj( e.target ).gRO().id === "string" ) {
-                        executeCode( nj( e.target ).gRO().id + ".hide()" );
+                    if( typeof nj( this ).gRO().id === "string" ) {
+                        executeCode( nj( this ).gRO().id + ".hide()" );
                     } else {
-                        nj( e.target ).Dia().hide();
+                        nj( this ).Dia().hide();
                     }
                 };
                 this.opt.buttons.push( b ); 
@@ -122,8 +122,14 @@ class DialogDR {                    // dialog drag and resize
         el = nj().cEl( "div" );
         nj( el ).aCl( this.opt.classPraefix + "HL" );
         el.id = this.boxId + "_headline";
-        nj( el ).on( "click", function( el ) {
-            nj( el.target ).Dia().setMaxZIndex();
+        nj( el ).on( "click", function() {
+            if( typeof nj( this ).gRO().id === "string" ) {
+                executeCode( nj( this ).gRO().id + ".setMaxZIndex()" );
+            } else {
+                nj( this ).Dia().setMaxZIndex();
+            }
+
+            
         });
         let el_add  = nj().cEl( "div" );
         nj( el_add ).aCl( this.opt.classPraefix + "HLIcon" );
@@ -141,7 +147,6 @@ class DialogDR {                    // dialog drag and resize
         if( this.opt.hasHelp ) {
             nj( el_add ).aCl( "cbHelp iconButtMin " + this.opt.classPraefix + "HLHelp");
             nj( el_add ).on( "click", function( e ) {
-//                nj( e.target ).Dia().opt.divHelp.show();
                 if( typeof nj( e.target ).gRO().id === "string" ) {
                     executeCode( nj( e.target ).gRO().id + ".opt.divHelp.show()" );
                 } else {
@@ -163,14 +168,9 @@ class DialogDR {                    // dialog drag and resize
         el_add = nj().cEl( "div" );
         if( this.opt.hasMin ) {
             nj( el_add ).aCl( "cbMinimize iconButtMin " + this.opt.classPraefix + "HLMin" );
-            nj( el_add ).on( "click", function( el ) {
+            nj( el_add ).on( "click", function() {
                 let df;
-                /*
-                console.log( nj( el.target ).gRO().id );
-                executeCode( "df = " + nj( el.target ).gRO().id );
-                console.log( df );
-                */
-                df = nj( el.target ).Dia();
+                df = nj( this ).Dia();
                 if( nj( df.opt.id + "_box" ).hCl( "minimized" ) ) {
                     df.restoreMin()
                 } else {
