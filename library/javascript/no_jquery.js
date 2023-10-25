@@ -5,22 +5,21 @@ function nj( p ) {
         return this;
     } else if ( Node.prototype.isPrototypeOf( p ) || NodeList.prototype.isPrototypeOf( p ) || typeof( p ) == "object" ) {
         this.e = p;
-    } else if( p.substr( 0, 1 ) == "#" && p.indexOf( " " ) == - 1 && p.indexOf( "," ) == - 1 && p.indexOf( "[" ) == - 1 && p.indexOf( ":" ) == - 1) {
+    } else if( p.substr( 0, 1 ) === "#" && p.indexOf( " " ) === - 1 && p.indexOf( "," ) === - 1 && p.indexOf( "[" ) === - 1 && p.indexOf( ":" ) === - 1) {
         this.e = document.getElementById( p.substr( 1, p.length - 1 ) );    
-    } else if( p.substr( 0, 1 ) == "." && p.indexOf( " " ) == - 1 && p.indexOf( "," ) == - 1 && p.indexOf( "[" ) == - 1 && p.indexOf( ":" ) == - 1) {
+    } else if( p.substr( 0, 1 ) === "." && p.indexOf( " " ) === - 1 && p.indexOf( "," ) === - 1 && p.indexOf( "[" ) === - 1 && p.indexOf( ":" ) === - 1) {
         this.e = document.getElementsByClassName( p.substr( 1, p.length - 1 ) );    
     } else {
         this.e = document.querySelectorAll( p );
     }
-    // elements
     _els = function( p ) {
-        if( p == "" || typeof( p ) == "undefined" ) {
+        if( p === "" || typeof( p ) === "undefined" ) {
             return null;
         } else if ( Node.prototype.isPrototypeOf( p ) || NodeList.prototype.isPrototypeOf( p ) ) {
             return p;
-        } else if( p.substr( 0, 1 ) == "#" && p.indexOf( " " ) == - 1 && p.indexOf( "," ) == - 1 && p.indexOf( "[" ) == - 1 && p.indexOf( ":" ) == - 1) {
+        } else if( p.substr( 0, 1 ) === "#" && p.indexOf( " " ) === - 1 && p.indexOf( "," ) === - 1 && p.indexOf( "[" ) === - 1 && p.indexOf( ":" ) === - 1) {
             return document.getElementById( p.substr( 1, p.length - 1 ) );    
-        } else if( p.substr( 0, 1 ) == "." && p.indexOf( " " ) == - 1 && p.indexOf( "," ) == - 1 && p.indexOf( "[" ) == - 1 && p.indexOf( ":" ) == - 1) {
+        } else if( p.substr( 0, 1 ) === "." && p.indexOf( " " ) === - 1 && p.indexOf( "," ) === - 1 && p.indexOf( "[" ) === - 1 && p.indexOf( ":" ) === - 1) {
             return document.getElementsByClassName( p.substr( 1, p.length - 1 ) );    
         } else {
             return document.querySelectorAll( p );
@@ -607,7 +606,10 @@ fetch(request)
            return true;
         }
 
-        
+    _exC = function( code ) {
+        const myFunction = new Function(code);
+        myFunction();
+    }    
 
     // objects
     _oEx = function(a, b) {
@@ -773,6 +775,7 @@ fetch(request)
     this.ddG = _ddG;
     this.cEq = _cEq;
     this.gBr = _gBr;
+    this.exC = _exC; 
     // objects
     this.oEx = _oEx;
     this.isJ = _isJ;

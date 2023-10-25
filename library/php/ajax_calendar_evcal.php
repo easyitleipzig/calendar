@@ -1,4 +1,5 @@
 <?php
+define( "PATH_TO_APPENDIX", "library/documents/" );
 // ajax file for calendar.php and calendar_editable.php
 session_start();
 error_reporting( E_ALL ^E_NOTICE );
@@ -79,7 +80,7 @@ foreach ( $_POST as &$str) {
 switch( $_POST["command"]) {
     case "getEventsForView":
                             if( $_POST["isFetch"] === "1" ) { // 1 is true
-                                require_once( "classes/CalendarEvent.php");
+                                require_once( "classes/CalendarEventEvCal.php");
                                 $ev = new \CalendarEvent();
                                 $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
                                 $return -> wasFetch = true;
@@ -225,64 +226,6 @@ switch( $_POST["command"]) {
                                 $return -> message = "Für die gewählten Kriterien sind keine Termine vorhanden.";                                
                             }
                             print_r( json_encode( $return ));                                   
-    break;
-    case "savePlace":
-                            require_once( "classes/CalendarEvent.php");
-                            $ev = new \CalendarEvent();                            
-                            $return -> result = $ev -> savePlace( $db_pdo, $_POST["id"], $_POST["place"]);
-                            $return -> success = $return -> result -> success;
-                            $return -> message = $return -> result -> message;
-                            //$return -> data = $return -> data;
-                            print_r( json_encode( $return ));    
-    break;
-    case "newPlace":
-                            require_once( "classes/CalendarEvent.php");
-                            $ev = new \CalendarEvent();                            
-                            $return -> result = $ev -> newPlace( $db_pdo, $_POST["place"]);
-                            $return -> newId = $return -> result -> newId;
-                            $return -> success = $return -> result -> success;
-                            $return -> message = $return -> result -> message;
-                            //$return -> data = $return -> data;
-                            print_r( json_encode( $return ));    
-    
-    
-    break;
-    case "deletePlace":
-                            require_once( "classes/CalendarEvent.php");
-                            $ev = new \CalendarEvent();
-                            $return -> placeId = $_POST["id"];
-                            $return -> result = $ev -> deletePlace( $db_pdo, $_POST["id"]);
-                            $return -> success = $return -> result -> success;
-                            $return -> message = $return -> result -> message;
-                            //$return -> data = $return -> data;
-                            print_r( json_encode( $return ));    
-    break;
-    case "saveFormat":
-                            require_once( "classes/CalendarEvent.php");
-                            $ev = new \CalendarEvent();                           
-                            $return -> result = $ev -> saveFormat( $db_pdo, $_POST["id"], $_POST["name"], $_POST["background"], $_POST["font"]);
-                            $return -> success = $return -> result -> success;
-                            $return -> message = $return -> result -> message;
-                            //$return -> data = $return -> data;
-                            print_r( json_encode( $return ));    
-    break;
-    case "newFormat":
-                            require_once( "classes/CalendarEvent.php");
-                            $ev = new \CalendarEvent();
-                            $result = $ev -> newFormat( $db_pdo, $_POST["name"], $_POST["background"], $_POST["font"]);
-                            $return -> newId = $result -> newId;
-                            $return -> success = $result -> success;
-                            $return -> message = $result -> message;
-                            print_r( json_encode( $return ));    
-    break;
-    case "deleteFormat":
-                            require_once( "classes/CalendarEvent.php");
-                            $ev = new \CalendarEvent();
-                            $return -> formatId = $_POST["id"];
-                            $return -> result = $ev -> deleteFormat( $db_pdo, $_POST["id"]);
-                            $return -> success = $return -> result -> success;
-                            $return -> message = $return -> result -> message;
-                            print_r( json_encode( $return ));    
     break;
     case "getPlaces":
                             require_once( "classes/CalendarEvent.php");

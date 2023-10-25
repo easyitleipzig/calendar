@@ -23,6 +23,10 @@ Date.prototype.addDays = function(days) {
     date.setDate(date.getDate() + days);
     return date;
 }
+Date.prototype.addHours = function( hours ) {
+    this.setHours(this.getHours() + hours );
+    return this;
+}
 Date.prototype.daysDiff = function( date ) {
     var dateFrom = new Date(this.valueOf());
     let tmp = date - dateFrom;
@@ -38,8 +42,13 @@ Date.prototype.getGermanDateString = function( widthMinutes ) {
         return ( "0" + this.getDate() ).substr(-2) + "." + ( "0" + ( this.getMonth() + 1 ) ).substr(-2) + "." + this.getFullYear() + " " + ("0" + this.getHours()).substr( - 2 ) + ":" + ("0" + this.getMinutes() ).substr( -2 );
     }        
 }
-Date.prototype.getMySQLDateString = function() {
-    return this.getFullYear() + "-" + ( "0" + ( this.getMonth() + 1 ) ).substr(-2) + "-" + ( "0" + this.getDate() ).substr(-2);    
+Date.prototype.getMySQLDateString = function( widthMinutes = false ) {
+    console.log( widthMinutes );
+    if( widthMinutes ) {
+        return this.getFullYear() + "-" + ( "0" + ( this.getMonth() + 1 ) ).substr(-2) + "-" + ( "0" + this.getDate() ).substr(-2) + " " + ( "0" + ( this.getHours() ) ).substr(-2) + ":" + ( "0" + ( this.getMinutes() ) ).substr(-2);
+    } else {
+        return this.getFullYear() + "-" + ( "0" + ( this.getMonth() + 1 ) ).substr(-2) + "-" + ( "0" + this.getDate() ).substr(-2);    
+    }
 }
 Date.prototype.getFirstDayOfWeek = function() {
     const date = new Date(this);
@@ -680,4 +689,14 @@ function executeCode(code) {
     // A safer approach would be using Function constructor
     const myFunction = new Function(code);
     myFunction();
+}
+/**
+ * @param {String} HTML representing a single element
+ * @return {Element}
+ */
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
 }

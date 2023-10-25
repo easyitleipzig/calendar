@@ -45,106 +45,20 @@ $event_string = substr( $event_string, 0, -1 );
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="stylesheet" href="library/css/global.css">
-    <link rel="stylesheet" href="library/css/EventCalendar.css">
-    <link rel="stylesheet" href="library/css/calendar.css">
-    <link rel="stylesheet" href="library/css/global.css">
-    <style type="text/css">
-        #dDia { background-color:lightblue }
-        .fc-1 {
-            background-color: orange;
-            color: white;
-        }
-        .fc-participate {
-            border: 1px black solid;
-            box-shadow: 5px 5px 10px 1px #737373;
-            margin-bottom: 5px;
-        }
-        .eventHasAppendix {
-            background-image: url(library/css/icons/bueroklammer.png);
-            background-repeat: no-repeat;
-            background-size: 12px 20px;
-            background-position-x: right;
-        }
-#dPartic {
-    background-color: #333;
-    color: #E086D3;
-    border-radius: 9px;
-    padding: 5px;
-    width: 200px;
-}
-#dPartic::before {
-  content: " ";
-  width: 0;
-  height: 0;
-  
-  border-style: solid;
-  border-width: 12px 12.5px 0 12.5px;
-  border-color: #333 transparent transparent transparent;
-
-  position: absolute;
-  left: 5px;
-  top: -5px;
-  transform: rotate(180deg);
-}
-#dPartic_box {
-    box-shadow: unset;
-    background-color: transparent;    
-    border: none !important;
-}
-.dParticBox {
-}
-.dParticHL, .dParticMenu {
-    display: none !important;
-}
-#dPartic_headline, #dPartic_menu, #dPartic_footer {
-    display: none !important;
-}
-.accordion>div>input{
-  display: none;
-}
-
-.accordion .panel {
-  margin: 0 auto;
-  height: 0;
-  overflow:hidden;
-  background-color: white;
-  line-height: 1.4;
-  padding: 0 20px;
-  box-sizing: border-box;
-  transition: all 0.5s;
-}
-
-.accordion input:checked~.panel {
-  height: auto;
-  color: #333;
-  padding: 10px;
-  transition: all 0.5s;
-  min-height: 280px;
-}
-.panelHL {
-    border-radius: 5px;
-    padding-left: 0.3em;
-    border-color: aliceblue;
-    border: 3px solid #0c97e2;
-}
-.panelHL > label {
-    z-index: 1;
-    position: relative;
-    cursor: pointer;
-    color: #0c97e2;
-    font-size: 14px;
-    font-weight: 600;
-    top: -1px;
-}
-/* styles event dialog */
-    #editEvent label {
-        display: block;
+    <style>
+/* start event formats */
+<?php 
+    $q = "select id, bckg_color, font from event_format where id > 0;";
+    $s = $db_pdo -> query( $q );
+    $r = $s -> fetchALL( PDO::FETCH_ASSOC );
+    $l = count( $r );
+    $i = 0;
+    while ( $i < $l ) {
+        print_r( ".fc-" . $r[$i]["id"] . " {background-color: " . $r[$i]["bckg_color"] . "; color: " . $r[$i]["font"] . "}" . "\n" );
+        $i += 1;
     }
-    #editId, #editGroupId {
-        display: none;
-    }
-/* end styles event dialog */
-
+?>
+/* end event formats */
     </style>
     <script>
         <?php
@@ -164,13 +78,51 @@ $event_string = substr( $event_string, 0, -1 );
                 echo '<option value="' . $result[$i]["id"] . '">' . $result[$i]["name"] . "</option>";
             }     
             echo ";'\n";
-            echo "let optCategory = '<option value=\"fc-0\" selected>ohne</option>";                        
+            echo "let optCategory = '<option value=\"0\" selected>ohne</option>";                        
             $query = "SELECT * FROM event_format";
             $stm = $db_pdo -> query( $query );
             $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
             for( $i = 0; $i < count( $result ); $i++ ) {
-                echo '<option value="fc-' . $result[$i]["id"] . '">' . $result[$i]["name"] . '</option>';
+                echo '<option value="' . $result[$i]["id"] . '">' . $result[$i]["name"] . '</option>';
             }     
+            echo ";'\n";
+            echo "let optContactPerson = '<option value=\"0\" selected>ohne</option>";                        
+            $query = "SELECT id, CONCAT( lastname, ', ', firstname ) AS name FROM user ORDER BY lastname";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            for( $i = 0; $i < count( $result ); $i++ ) {
+                echo '<option value="' . $result[$i]["id"] . '">' . str_replace("'", "“", $result[$i]["name"] )  . '</option>';
+            }     
+            echo ";'\n";
+            echo "let optRoleUser = '<option value=\"0\" selected>ohne</option>";                        
+            $query = "SELECT role.id, role FROM role, account WHERE account.role_id = role.id AND user_id = " . $_SESSION["user_id"];
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            for( $i = 0; $i < count( $result ); $i++ ) {
+                echo '<option value="' . $result[$i]["id"] . '">' . $result[$i]["role"] . "</option>";
+            }     
+            echo ";'\n";
+            echo "let optInformRole = '";                        
+            $query = "SELECT * FROM role";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            $l = count( $result );
+            $i = 0;
+            while( $i < $l ) {
+                echo '<option value="' . $result[$i]["id"] . '">' . $result[$i]["role"] . "</option>";
+                $i += 1;
+            }
+            echo ";'\n";
+            echo "let optInformUser = '";                        
+            $query = "SELECT id, concat( lastname, ', ', firstname ) as name FROM user where id <> 0 order by lastname";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            $l = count( $result );
+            $i = 0;
+            while( $i < $l ) {
+                echo '<option value="' . $result[$i]["id"] . '">' . str_replace("'", "“", $result[$i]["name"] ) . "</option>";
+                $i += 1;
+            }
             echo ";'\n";
     ?>
     const getTime = function( idTime, idMinutes ) {
@@ -190,218 +142,95 @@ $event_string = substr( $event_string, 0, -1 );
 
 <div id="editEvent" style="display: none;">
     <div class="accordion">          
-       <div>
-          <input type="radio" name="acc" id="usual1" checked>
-          <div class="panelHL"><label for="usual1">Allgemein</label></div>
-          <div class="panel">
-     <input id="editId">
-    <input id="editGroupId" value="0">
-    <label>Titel</label>
-    <input id="editTitle" type="text">
-    <div>
-        <select id="usePattern"></select>
-    </div>
-    <label>Ort</label>
-    <select id="meeting_point"></select>
-    <label>Kategorie</label>
-    <select id="category"></select>
-<?php
-/*
-    $query = "SELECT * FROM event_place";
-    $stm = $db_pdo -> query( $query );
-    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    print_r( "<select id='meeting_point'>");
-    for( $i = 0; $i < count( $result ); $i++ ) {
-        echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["place"] . "</option>";
-    }     
-    print_r( "</select></div>");
-*/
-    $query = "SELECT * FROM event_format";
-    $stm = $db_pdo -> query( $query );
-    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    print_r( "<select id='editFormat'>");
-    echo '<option value="fc-0" selected></option>';
-    for( $i = 0; $i < count( $result ); $i++ ) {
-        echo "<option value='fc-" . $result[$i]["id"] . "'>" . $result[$i]["name"] . "</option>";
-    }     
-    print_r( "</select>");
-?>
-    <label>Ansprechpartner</label>
-<?php
-    $query = "SELECT id, CONCAT( lastname, ', ', firstname ) AS name FROM user ORDER BY lastname";
-    $stm = $db_pdo -> query( $query );
-    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    print_r( "<select id='editCreator'>");
-    for( $i = 0; $i < count( $result ); $i++ ) {
-        echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["name"] . "</option>";
-    }     
-    print_r( "</select>");
-?>
-         </div>
+        <div>
+            <input type="radio" name="acc" id="usual1" checked>
+            <div class="panelHL"><label for="usual1">Allgemein</label></div>
+            <div class="panel">
+                <input id="Id">
+                <input id="innnerId">
+                <input id="allDay" type="checkbox">
+                <input id="groupId" value="0">
+                <select id="usePattern"></select>
+                <label>Titel</label>
+                <input id="title" type="text">
+                <label>Ort</label>
+                <select id="place"></select>
+                <label>Kategorie</label>
+                <select id="category"></select>
+                <label>Ansprechpartner</label>
+                <select id='creator'></select>
+            </div>
        </div>
        <div>
-          <input type="radio" name="acc" id="usual2">
-          <div class="panelHL"><label for="usual2">Datum/Zeit und Teilnahme</label></div>
-          <div class="panel">
-    <div class="startDateTime">    
-        <div>Start</div>
-        <div>Startzeit</div>
-    </div>
-    <div style="display: inline-flex;">
-        <input type="date" id="editDetailDateFrom" class="date">
-        <div id="editStartTimeMinutes" style="display: inline-flex;"></div>
-        <!--
-         <select id="editStartTimeHour">
-            <option selected value="00">00</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-        </select>
-        <select id="editStartTimeMinutes">
-            <option value="00" selected>00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
-        </select>
-        &nbsp;
-        <label>Uhr</label>
-    -->
-    </div>
-    <div class="startDateTime">    
-        <div>Ende</div>
-        <div>Endzeit</div>
-    </div>
-    <div style="display: inline-flex;">
-        <input type="date" id="editDetailDateTo" class="date">
-        <div id="editEndTimeMinutes" style="display: inline-flex;"></div>
-        <!--
-        <select id="editEndTimeHour">
-            <option value="00" selected>00</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-        </select>
-        <select id="editEndTimeMinutes">
-            <option value="00" selected>00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
-        </select>
-        &nbsp;
-        <label>Uhr</label>
-    -->
-    </div>
-     <label>Anmeldeschluss</label>
-    <input id="editDeadline" type="date" class="date">  <input type="button" id="editDeleteDeadline" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anmeldeschluss löschen"><br>
+            <input type="radio" name="acc" id="usual2">
+            <div class="panelHL"><label for="usual2">Datum/Zeit</label></div>
+            <div class="panel">
+                <div class="startDateTime">    
+                    <div>Start</div>
+                    <div>Startzeit</div>
+                </div>
+                <div style="display: inline-flex;">
+                    <input type="date" id="startDate" class="date">
+                    <div id="startMinutes" style="display: inline-flex;"></div>
+                </div>
+                <div class="startDateTime">    
+                    <div>Ende</div>
+                    <div>Endzeit</div>
+                </div>
+                <div style="display: inline-flex;">
+                    <input type="date" id="endDate" class="date">
+                    <div id="endMinutes" style="display: inline-flex;"></div>
+                </div>
+                 <label>Anmeldeschluss</label>
+                <input id="deadline" type="date" class="date">&nbsp;<input type="button" id="deleteDeadline" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anmeldeschluss löschen"><br>
+                <label>Wiederholen</label>
+                <select id="repeat">
+                    <option value="0" selected=""></option>
+                    <option value="1">täglich</option>
+                    <option value="5">wochentags</option>
+                    <option value="7">wöchentlich</option>
+                    <option value="14">aller 2 Wochen</option>
+                    <option value="28">aller 4 Wochen</option>
+                    <option value="31">monatlich</option>
+                    <option value="2">1./3./5. Wochentag des Monats</option>
+                    <option value="3">2./4. Wochentag des Monats</option>
+                </select>
+                <label>Wiederholen bis</label>
+                <input type="date" id="repeatTo" class="date"> <input type="button" id="deleteRepeatTo" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Wiederholung löschen">
           </div>
-       </div>
-       <div>
-          <input type="radio" name="acc" id="usual3">
-          <div class="panelHL"><label for="usual3">Teilnahmeinformationen</label></div>
-          <div class="panel">
-    <label>teilnehmen als</label>
-    <select id="editParticipateAs">
-        <option value="0" selected="">ohne</option>
-<?php
-    $query = "SELECT role.id, role FROM role, account WHERE account.role_id = role.id AND user_id = " . $_SESSION["user_id"];
-    $stm = $db_pdo -> query( $query );
-    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    for( $i = 0; $i < count( $result ); $i++ ) {
-        echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["role"] . "</option>";
-    }     
-?>
-    </select>
-    <div>
-        <a href="#" id="participate">Teilnehmen</a>erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
-    </div>
-    <div id="divCountPart">
-        Anzahl Teilnehmer&nbsp;&nbsp;<input id="count_part" type="number" min="1" step="1" value="1">
-    </div>
-    <div>
-        <a href="#" id="deleteParticipation">Teilnahme löschen</a><br>
-    </div>
-    <a href="#" id="showParticipants">Teilnehmer/innen anzeigen</a>
-    <div>&nbsp;</div>
-    <a href="#" id="printParticipants" target="_blank">Teilnehmer drucken</a>
-    <div>&nbsp;</div>
-          </div>
-       </div>
+        </div>
+        <div>
+            <input type="radio" name="acc" id="usual3">
+            <div class="panelHL"><label for="usual3">Teilnahmeinformationen</label></div>
+            <div class="panel">
+                <label>teilnehmen als</label>
+                <select id="participateAs"></select>
+                <div>
+                    <a href="#" id="participate">Teilnehmen</a>&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
+                </div>
+                <div id="divCountPart">
+                    Anzahl Teilnehmer&nbsp;&nbsp;<input id="countPart" type="number" min="1" step="1" value="1">
+                </div>
+                <div>
+                    <a href="#" id="deleteParticipation">Teilnahme löschen</a><br>
+                </div>
+                <a href="#" id="showParticipants">Teilnehmer/innen anzeigen</a>
+                <div>&nbsp;</div>
+                <a href="#" id="printParticipants" target="_blank">Teilnehmer drucken</a>
+                <div>&nbsp;</div>
+            </div>
+        </div>
        <div>
           <input type="radio" name="acc" id="usual4">
           <div class="panelHL"><label for="usual4">Informiere Gr./TN</label></div>
           <div class="panel">
     <div>
         <label>informiere Gruppe</label>
-        <select id="editInformRole">
-            <option value="0" selected></option>
-<?php
-    $query = "SELECT * FROM role where id > 0";
-    $stm = $db_pdo -> query( $query );
-    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    $l = count( $result );
-    $i = 0;
-    while( $i < $l ) {
-        echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["role"] . "</option>";
-        $i += 1;
-    }
-?>    
-        </select>
+        <select id="informRole"></select>
     </div>
     <div>
         <label>informiere Nutzer</label>
-        <select id="editInformUser" multiple>
-<?php
-    $query = "SELECT id, concat( lastname, ', ', firstname ) as name FROM user where id <> 0 order by lastname";
-    $stm = $db_pdo -> query( $query );
-    $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-    $l = count( $result );
-    $i = 0;
-    while( $i < $l ) {
-        echo "<option value='" . $result[$i]["id"] . "'>" . $result[$i]["name"] . "</option>";
-        $i += 1;
-    }
-?>    
-        </select>
+        <select id="informUser" multiple></select>
     </div>
           </div>
        </div>
@@ -410,19 +239,25 @@ $event_string = substr( $event_string, 0, -1 );
           <div class="panelHL"><label for="usual5">Beschreibung/Anhänge</label></div>
           <div class="panel">
      <label>Beschreibung</label>
-    <textarea id="editDescription" placeholder="Beschreibung eingeben" maxlength="512"></textarea>
+    <textarea id="Description" placeholder="Beschreibung eingeben" maxlength="512"></textarea>
     <label>Notiz</label>
-    <input id="editNotice" type="text">
+    <input id="Notice" type="text">
     <label>Direktlink</label>
-    <input id="editUrl" type="text"><input id="editInvalidUrl" type=checkbox>
+    <input id="Url" type="text"><input id="editInvalidUrl" type=checkbox>
     <label>interner Link</label>
-    <input id="editInnerUrl" type="text"><input id="editInvalidInnerUrl" type=checkbox> <input type="button" id="editLoadAppendix" value="Anhang"> <input type="button" id="editDeleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
+    <input id="newInnerUrl" type="text" placeholder="Link eingeben" maxlength="255">
+    <img src="library/css/icons/AppEmpty.png" data-filesrc id="imgFileAppendix" class="imgFileAppendix">
+    <input type="button" id="loadAppendix" value="Anhang"> 
+    <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
+    <input type="checkbox" id="sendAppendix" title="Anhang mitsenden">senden
     <label>Linktext</label>
-    <input id="editInnerUrlText" type="text">
-    <div id="divEditInnerUrl"></div>
-    <div id="appendixLink">
+    <input id="innerUrlText" type="text">
+<!--
+    <div id="divInnerUrl"></div>
+-->
+    <div id="divAppendixLink">
     
-        <a href="#" id="appendixLinkLink">www</a>
+        <a href="#" id="appendixLink">www</a>
     
     </div>
           </div>
@@ -430,31 +265,54 @@ $event_string = substr( $event_string, 0, -1 );
     </div>
 
 </div>
-<div class="row">
+<section id="divCalendar">
+    <article>
+        <div class="row">
 
-    <div id="divCal" class="col"></div>
+            <div id="divCal" class="col"></div>
 
-</div>
+        </div>
+    </article>
+    <article id="legende">
+        <h1>Legende</h1>
+        <div>&nbsp;</div>
+        <div>
+        <?php
+            $query = "SELECT * FROM event_format";
+            $stm = $db_pdo -> query( $query );
+            $result_format = $stm -> fetchAll(PDO::FETCH_ASSOC);
+            for( $i = 0; $i < count( $result_format ); $i++) {
+                print_r( '<div><div>' . $result_format[$i]["name"] . '</div><div style="background-color: ' . $result_format[$i]["bckg_color"] . '; color: ' . $result_format[$i]["font"] . ';">Termin</div></div>');    
+            }
+                        
+        ?>
+        </div>
+        <h1>Termine exportieren</h1>
+        <div>&nbsp;</div>
+        <div style="text-align: center; margin-bottom: 1em;">
+            <input id="exportEvents" type="button" value="Exportieren">
+        </div>
+    </article>
+</section>
+<!-- nessecary for MessagesNewsDR as bell elment -->
 <input id="test">
 <input id="test_small">
+<!-- -->
 <script src="library/javascript/no_jquery.js"></script>
 <script src="library/javascript/easyit_helper_neu.js"></script>
 <script src="library/javascript/menu_calendar.js"></script>
 <script src="library/javascript/DropResize.js"></script>
 <script src="library/javascript/DialogDR.js"></script>
-<!--
-<script src="library/javascript/touchmove.js"></script>
--->
-<script src="library/javascript/MessageDR.js"></script>
 <script src="library/javascript/MessagesNewsDR.js"></script>
+<script src="library/javascript/MessageDR.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
 <script src="library/javascript/Calendar.js"></script>
 <script src="library/javascript/init_calendar.js"></script>
 <script>
 <?php
-    echo "var currentUser = " . $_SESSION['user_id'] . ";\n";
+    echo "var currentUserId = " . $_SESSION['user_id'] . ";\n";
 ?>
-var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } );
+var cal = new Calendar({pVar: "cal", evCalId: "#divCal", type: "editable" } );
 docReady(function() {
     init();
 });

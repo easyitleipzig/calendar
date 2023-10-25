@@ -1,0 +1,107 @@
+/* partic dialog */
+#dPartic {
+    background-color: #333;
+    color: #E086D3;
+    border-radius: 9px;
+    padding: 5px;
+    width: 200px;
+}
+#dPartic::before {
+  content: " ";
+  width: 0;
+  height: 0;
+  
+  border-style: solid;
+  border-width: 12px 12.5px 0 12.5px;
+  border-color: #333 transparent transparent transparent;
+
+  position: absolute;
+  left: 5px;
+  top: -5px;
+  transform: rotate(180deg);
+}
+#dPartic_box {
+    box-shadow: unset;
+    background-color: transparent;    
+    border: none !important;
+}
+.dParticBox {
+}
+.dParticHL, .dParticMenu {
+    display: none !important;
+}
+#dPartic_headline, #dPartic_menu, #dPartic_footer {
+    display: none !important;
+}
+/* end partic dialog */
+/* styles event dialog */
+    #editEvent label {
+        display: block;
+    }
+/* end styles event dialog */
+/* styles edit dialog */
+.cEdit #usePattern {
+    display:  none;
+}
+/* end styles edit dialog */
+        .fc-participate {
+            border: 1px black solid;
+            box-shadow: 5px 5px 10px 1px #737373;
+            margin-bottom: 5px;
+        }
+        .eventHasAppendix {
+            background-image: url(library/css/icons/bueroklammer.png);
+            background-repeat: no-repeat;
+            background-size: 12px 20px;
+            background-position-x: right;
+        }
+.accordion>div>input{
+  display: none;
+}
+
+.accordion .panel {
+  margin: 0 auto;
+  height: 0;
+  overflow:hidden;
+  background-color: white;
+  line-height: 1.4;
+  padding: 0 20px;
+  box-sizing: border-box;
+  transition: all 0.5s;
+}
+
+.accordion input:checked~.panel {
+  height: auto;
+  color: #333;
+  padding: 10px;
+  transition: all 0.5s;
+  min-height: 325px;
+  max-height: 325px;
+  overflow-y: auto;
+}
+.panelHL {
+    border-radius: 5px;
+    padding-left: 0.3em;
+    border-color: aliceblue;
+    border: 3px solid #0c97e2;
+}
+.panelHL > label {
+    z-index: 1;
+    position: relative;
+    cursor: pointer;
+    color: #0c97e2;
+    font-size: 14px;
+    font-weight: 600;
+    top: -1px;
+}
+
+#dDia { background-color:lightblue }
+
+@media screen and (min-width: 300px) {
+    
+}
+@media screen and (min-width: 320px) {
+}
+@media screen and (min-width: 480px) {
+}
+

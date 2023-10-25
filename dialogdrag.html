@@ -45,15 +45,46 @@
 <script>
 //var cal = new Calendar({pVar: "cal", evCalId: "#divCal" } ), dDia1;
 // if you set canResize you must set an initial width and heigth
-var dDia1 = new DialogDR( { dVar: "dDia1", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: true, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia1" + TEST_INNER_HTML, canResize: false  } );
-  var dDia2 = new DialogDR( { dVar: "dDia2", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia2" + TEST_INNER_HTML, canResize: false } );
-var dDia3 = new DialogDR( { dVar: "dDia3", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia3" + TEST_INNER_HTML, canResize: true } );
-var dDia4 = new DialogDR( { dVar: "dDia4", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia4" + TEST_INNER_HTML, canResize: true } );
+dDia1 = new DialogDR( { dVar: "dDia1", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: true, hasHelp: true, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia1" + TEST_INNER_HTML, canResize: false  } );
+dDia2 = new DialogDR( { dVar: "dDia2", modal: false, center: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia2" + TEST_INNER_HTML, canResize: false } );
+//dDia3 = new DialogDR( { dVar: "dDia3", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia3" + TEST_INNER_HTML, canResize: true } );
+//dDia4 = new DialogDR( { dVar: "dDia4", modal: false, autoOpen: false, canMove: true, hasInfo: false, hasHelp: false, hasMin: true, hasMax: true, hasClose: true, hasSticky: true, hasHelp: true, innerHTML: "dDia4" + TEST_INNER_HTML, canResize: true } );
+
+const HTML_CRTL_MENU = '<div id="[fieldPraefix]Control" class="frControl"><div id="[fieldPraefix]Copy" class="frControlCopy" title="Kopieren"></div><div id="[fieldPraefix]Cut" class="frControlCut" title="Ausschneiden"></div><div id="[fieldPraefix]Paste" class="frControlPaste" title="Einfügen"></div><div id="[fieldPraefix]Delete" class="frControlDelete" title="Löschen"></div><div id="[fieldPraefix]Type" class="frControlType" data-ctrltype="[type]" title="Ansicht"></div><div id="[fieldPraefix]SortName" class="frControlSortName" title="Sortieren nach Name"></div><div id="[fieldPraefix]SortType" class="frControlSortType" title="Sortieren nach Typ"></div><div id="[fieldPraefix]ZoomMinus" class="frControlZoomMinus" title="Ansicht verkleinern"></div><div id="[fieldPraefix]ZoomPlus" class="frControlZoomPlus" title="Ansicht vergrößern"></div><div id="[fieldPraefix]Preview" class="frControlPreview" title="Vorschau an/aus"></div><input id="[fieldPraefix]_loadFiles" class="custom-file-input" type="file" multiple="" accept=".jpg, .jpeg, .png, .gif, .docx, .xlsx, .pptx, .pdf" form="[fieldPraefix]_uploadForm" data-dvar="dFR_1" title="Datei(en) hochladen"><div id="[fieldPraefix]Info" class="frControlInfo" title="Dateiinformationen"></div><div id="[fieldPraefix]NewFolder" class="frControlNewFolder" title="neuer Ordner"></div><div id="[fieldPraefix]Reset" class="frControlReset" title="Ansicht zurücksetzen"></div></div>';
+class FileReaderDR {                    // dialog drag and resize
+      constructor( param ) {
+        this.opt = {
+            dVar:               "", // necessary - id of dialog; if the element does not exists a new element will be created with this id
+            divFR:              undefined,
+        }
+        let showOnInit = true,
+            boxId = "",
+            tmpClasses = "",
+            crtlMenu = "";
+        Object.assign( this.opt, param );
+        this.crtlMenu = HTML_CRTL_MENU.replaceAll( "[fieldPraefix]", this.opt.fieldPraefix );
+        this.opt.divFR = new DialogDR({ 
+                                    id: "#fr",
+                                    dVar: this.opt.dVar + ".opt.divFR", 
+                                    autoOpen: true, 
+                                    center: true, 
+                                    width: 320, 
+                                    height: 440,
+                                    innerHTML: this.crtlMenu 
+                                });
+        //this.crtlMenu = HTML_CRTL_MENU.replaceAll( "[fieldPraefix]", this.opt.fieldPraefix );
+        //console.log( this.crtlMenu );
+        //this.divFR = new DialogDR({ dVar: "this.divFR", autoOpen: true, center: true, width: 320, height: 440 })
+    }
+}
+
+//f = new FileReaderDR( { dVar: "f" } );
 docReady(function() {
+
     dDia1.show();
-    dDia2.show();
-    dDia3.show();
-    dDia4.show();
+    //dDia2.show();
+    //dDia3.show();
+    //dDia4.show();
 })
 </script>
   <script>

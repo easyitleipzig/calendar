@@ -321,6 +321,7 @@ var automaticLogout = function() {
 }
 /**/
 /* geo coords */
+
 function getPosition() {
     // Simple wrapper
     return new Promise((res, rej) => {
@@ -361,12 +362,34 @@ async function getGeoPositions() {
     }
 
 /* end geo */
+/*
 var automaticLogout = function() {
     if( ++timerCounter >= timerCounterMax ) {
         location.href = "index.php?c=timeout";   
     } else {
     }
 }
+*/
+/*
+window.onload = function() {
+    console.log ("onload");
+    if( typeof isExtern === "undefined" ) {
+    }
+}
+window.onpagehide = function(e) {
+    if( typeof isExtern === "undefined" ) {
+    }
+}
+*/
+/*
+getPosNav();
+nj( "#profile" ).sty( "display", "none" );
+/*
+function wait(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+*/
+/*
 nj("#disconnect_button, #short_name").on("click", function() {
     if( nj( "#profile" ).sty( "display" ) == "none" ) {
         let left = nj("#disconnect_button").gRe().x;
@@ -416,28 +439,11 @@ nj("#profile_disconnect, #profile_disconnect_phone").on("click", function() {
 nj("#abstinencard_show, #abstinencecard_show_phone").on("click", function( e ) {
     location.href = "abstinenzcard.php";
 });
-
-
-window.onload = function() {
-    console.log ("onload");
-    if( typeof isExtern === "undefined" ) {
-    }
-}
-window.onpagehide = function(e) {
-    if( typeof isExtern === "undefined" ) {
-    }
-}
-getPosNav();
-nj( "#profile" ).sty( "display", "none" );
-/*
-function wait(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
-}
-*/
 nj( "input" ).on( "blur", function( e ) {   
     nj().els( this ).value = nj().els( this ).value.replaceAll( '"', "“" );
 });
 /* correct safari representation */ 
+/*
 const correctSafariRepresentation = function() {
     if( nj().gBr() === "Safari" ) {
         loadCSS( "library/css/safari/default.css" );
