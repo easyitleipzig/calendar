@@ -44,21 +44,23 @@
     display:  none;
 }
 /* end styles edit dialog */
-        .fc-participate {
-            border: 1px black solid;
-            box-shadow: 5px 5px 10px 1px #737373;
-            margin-bottom: 5px;
-        }
-        .eventHasAppendix {
-            background-image: url(library/css/icons/bueroklammer.png);
-            background-repeat: no-repeat;
-            background-size: 12px 20px;
-            background-position-x: right;
-        }
+/* event formats */
+.fc-participate {
+    border: 1px black solid;
+    box-shadow: 5px 5px 10px 1px #737373;
+    margin-bottom: 5px;
+}
+.eventHasAppendix {
+    background-image: url("icons/bueroklammer.png");
+    background-repeat: no-repeat;
+    background-size: 12px 20px;
+    background-position-x: right;
+}
+/* end event formats */
+/* start accordion */
 .accordion>div>input{
   display: none;
 }
-
 .accordion .panel {
   margin: 0 auto;
   height: 0;
@@ -94,6 +96,7 @@
     font-weight: 600;
     top: -1px;
 }
+/* end accordion */
 
 #dDia { background-color:lightblue }
 

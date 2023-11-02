@@ -116,7 +116,7 @@ class Calendar {
 		        	}
 		        },
 		        
-		        dateFromPoint(x,y) {
+		        dateFromPoint: function( x, y ) {
 		        	console.log( arguments );
 		        },
 				
@@ -136,7 +136,7 @@ class Calendar {
 
 
 			});
-			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: false, hasHelp: true, afterShow: function(){ nj( this.id).Dia().options('center')} } );
+			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: false, hasHelp: true, width: 320, afterShow: function(){ nj( this.id).Dia().options('center')} } );
 			this.dPartic = new DialogDR( { dVar: this.opt.pVar + ".dPartic", id: "#dPartic", modal: false, variables: {calendar: this }, onShow: function() {
 				console.log( this.pVar );
 				nj("#dPartic_box div" ).on( "mouseleave", function(e){ 
@@ -163,6 +163,46 @@ class Calendar {
 
 		// start functions
 		/**
+		 * buildDateFromDialog
+		 * 
+		 * build Date from event dialog
+		 *
+		 * start 		boolean 	true -> startdate; false -> enddate
+		 * 
+		 * 
+		 * return date 		date
+		 * 
+		*/
+		buildDateFromDialog = function( start = true ) {
+			if( start ) {
+				return new Date( nj("#startDate").v() + "T" + nj("#startHour").v() + ":" + nj("#valStartMinutes").v() );
+			} else {
+				return new Date( nj("#endDate").v() + "T" + nj("#endHour").v() + ":" + nj("#valEndMinutes").v() );
+			}
+		}
+		/**
+		 * buildEventFromDialog
+		 * 
+		 * build extendedProps from event dialog
+		 * 
+		 * 
+		 * return object 		extendedProps event object
+		 * 
+		*/
+		buildExtendedPropsFromDialog = function() {
+			let prop = {}
+			prop.id = nj( "#Id" ).v();;
+			prop.groupId = nj( "#groupId" ).v();;
+			prop.place = nj( "#place" ).v();;
+			prop.category = nj( "#category" ).v();;
+			prop.registration_deadline = nj( "#deadline" ).v();;
+			prop.url = nj( "#Url" ).v();;
+			prop.inner_url = nj( "#url" ).v();;
+			prop.inner_url_text = nj( "#url" ).v();;
+			prop.description = nj( "#url" ).v();;
+			return prop;
+		}
+		/**
 		 * buildEventFromDialog
 		 * 
 		 * build a calendar event object from event dialog
@@ -171,11 +211,14 @@ class Calendar {
 		 * return object 		calendar event object
 		 * 
 		*/
-		buildEventFromDialog = function() {
+		buildEventFromDialog = function( widthInnerId = false, display = true, ressources = true ) {
 			let ev = {};
-			ev.extenedProps = {};
+			ev.extendedProps = {};
 			console.log( nj( "#innerId" ).v() );
-			if( nj( "#innerId" ).v() !== "" ) ev.id = nj( "#innerId" ).v();
+			if( nj( "#innerId" ).v() !== "" && widthInnerId ) ev.id = nj( "#innerId" ).v();
+			if( display ) ev.display = "auto";
+			if( ressources ) ev.resourceIds = [];
+			if( nj( "#innerId" ).v() !== "" && widthInnerId ) ev.id = nj( "#innerId" ).v();
 			ev.allDay = nj( "#allDay" ).chk();
 			if( ev.allDay ) {
 				ev.start = nj( "#startDate" ).v() + "T00:00Z";
@@ -185,45 +228,16 @@ class Calendar {
 			
 			if( !ev.allDay ) ev.end = nj( "#endDate" ).v() + "T" + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v() + "Z";
 			ev.title = nj( "#title" ).v();
-			ev.extenedProps.id = nj( "#Id" ).v();;
-			ev.extenedProps.groupId = nj( "#groupId" ).v();;
-			ev.extenedProps.place = nj( "#place" ).v();;
-			ev.extenedProps.category = nj( "#category" ).v();;
-			ev.extenedProps.registration_deadline = nj( "#deadline" ).v();;
-			ev.extenedProps.url = nj( "#Url" ).v();;
-			ev.extenedProps.inner_url = nj( "#url" ).v();;
-			ev.extenedProps.inner_url_text = nj( "#url" ).v();;
-			ev.extenedProps.description = nj( "#url" ).v();;
-			
-/*
-									{
-									    "id": nj( e.target ).Dia().opt.variables.event.id,
-									    "resourceIds": [],
-									    "allDay": true,
-									    "start": "2023-10-22T08:00:00.000Z",
-									    "end": "2023-10-22T14:30:00.000Z",
-									    "title": "Konferenz der Suchtselbsthilfe",
-									    "titleHTML": "",
-									    "display": "auto",
-									    "extendedProps": {
-									        "id": 2041,
-									        "groupId": 0,
-									        "place": 7,
-									        "registration_deadline": "2023-10-12",
-									        "url": "",
-									        "inner_url": "library/documents/cal_ev_appendix_edit_2041_1694595658.pdf",
-									        "inner_url_text": "Flyer",
-									        "description": "Konferenz der Suchtselbsthilfe in Dresden. Anmeldung bitte eigenständig über Anmeldeformular der SLS https://www.slsev.de/online-anmeldung/anmeldung-21102023/",
-									        "notice": "",
-									        "class": "fc-4",
-									        "creator": 26,
-									        "participate": null,
-									        "remindMe": null,
-									        "countPart": null,
-									        "participateAs": null
-									    }
-									}
-*/
+			ev.titleHTML = "";
+			ev.extendedProps.id = nj( "#Id" ).v();;
+			ev.extendedProps.groupId = nj( "#groupId" ).v();;
+			ev.extendedProps.place = nj( "#place" ).v();;
+			ev.extendedProps.class = "fc-" + nj( "#category" ).v();;
+			ev.extendedProps.registration_deadline = nj( "#deadline" ).v();;
+			ev.extendedProps.url = nj( "#Url" ).v();;
+			ev.extendedProps.inner_url = nj( "#newInnerUrl" ).v();;
+			ev.extendedProps.inner_url_text = nj( "#innerUrlText" ).v();;
+			ev.extendedProps.description = nj( "#description" ).v();
 			return ev;
 		}
 		/**
@@ -253,6 +267,23 @@ class Calendar {
 		fillEditDialogForNew = function( data, dialog ) {
 			if( data.event.date < new Date() ) {			
 				nj().els( dialog.opt.id + "_box div.d_HLTitle")[0].innerHTML = "Neuer Termin (gesperrt)";
+				nj( "#Id" ).v( "new" );
+				nj( "#allDay" ).chk( false )
+				nj( "#innerId" ).v( "" )
+				nj( "#title" ).v( "" );
+				nj( "#place" ).v( 0 );
+				nj( "#category" ).v( 0 );
+				nj( "#creator" ).v( 0 );
+				nj( "#startDate" ).v( "" );
+				nj( "#endDate" ).v( "" );
+				nj( "#startHour").v( "00" );
+				nj( "#valStartMinutes").v( "00" );
+				nj( "#endHour").v( "00" );
+				nj( "#endStartMinutes").v( "00" );
+				nj( "#deadline" ).v( "" );
+				nj( "#participateAs" ).v( 0 );
+				nj( "#remindMe" ).chk( false );
+				nj( "#countPart" ).v( "1" );
 				dialog.options( "buttons", [{title: "Schließen", action: function( e ) {
 					console.log( e );
 					nj( e.target ).Dia().hide();	
@@ -481,40 +512,17 @@ class Calendar {
 							}},
 							{title: "Speichern", action: function( e ) {
 								console.log( nj( e.target ).Dia().opt.variables );
-								nj( this ).Dia().hide();
-								console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog() );								
-/* works
-								nj( e.target ).Dia().opt.variables.calendar.evCal.updateEvent(
-									{
-									    "id": nj( e.target ).Dia().opt.variables.event.id,
-									    "resourceIds": [],
-									    "allDay": true,
-									    "start": "2023-10-22T08:00:00.000Z",
-									    "end": "2023-10-22T14:30:00.000Z",
-									    "title": "Konferenz der Suchtselbsthilfe",
-									    "titleHTML": "",
-									    "display": "auto",
-									    "extendedProps": {
-									        "id": 2041,
-									        "groupId": 0,
-									        "place": 7,
-									        "registration_deadline": "2023-10-12",
-									        "url": "",
-									        "inner_url": "library/documents/cal_ev_appendix_edit_2041_1694595658.pdf",
-									        "inner_url_text": "Flyer",
-									        "description": "Konferenz der Suchtselbsthilfe in Dresden. Anmeldung bitte eigenständig über Anmeldeformular der SLS https://www.slsev.de/online-anmeldung/anmeldung-21102023/",
-									        "notice": "",
-									        "class": "fc-4",
-									        "creator": 26,
-									        "participate": null,
-									        "remindMe": null,
-									        "countPart": null,
-									        "participateAs": null
-									    }
-									}
-								)
+								//nj( this ).Dia().hide();
+								console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
+								nj( e.target ).Dia().opt.variables.calendar.evCal.updateEvent( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) )
 
-*/
+							}},
+							{title: "Löschen", action: function( e ) {
+								console.log( nj( e.target ).Dia().opt.variables );
+								//nj( this ).Dia().hide();
+								//console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
+								nj( e.target ).Dia().opt.variables.calendar.evCal.removeEventById( nj( "#innerId" ).v() )
+
 							}},
 						]
 				});
