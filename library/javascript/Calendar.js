@@ -163,6 +163,61 @@ class Calendar {
 
 		// start functions
 		/**
+		 * evaluateCalData
+		 * 
+		 * basic processing for ajax request
+		 * 
+		 * data 			json string 	valid json string
+		 * 
+		 * return undefined
+		 * 
+		*/
+		evaluateCalData = function( data ) {
+    		let l, i, tmp;
+		    //console.log( data );
+		    let jsonobject;
+		    if( typeof data === "string" ) {
+		        jsonobject = JSON.parse( data );
+		    } else {
+		        jsonobject = data;
+		    }
+		    if( !isJ( jsonobject ) ) {
+		        throw "kein JSON-Objekt übergeben";
+		    }
+		    console.log( jsonobject, this );
+			switch( jsonobject.command ) {
+				case "getDaysForView":
+					l = jsonobject.data.length;
+					i = 0;
+					while ( i < l ) {
+						console.log( jsonobject.data[i] );
+						i += 1;
+					}
+					break;
+		        case "getEventsForView":
+	        		l = jsonobject.data.length;
+	        		i = 0;
+	        		while ( i < l ) {
+	        			//console.log( jsonobject.data[i] );
+	        			cal.addEvent( jsonobject.data[i] )
+	        			i += 1;
+	        		}
+		        break;
+		    	case "showParticipants":
+			    	if( jsonobject.data.length > 0 ) {
+				    	tmp = "";
+				    	l = jsonobject.data.length;
+				    	i = 0;
+				    	while ( i < l ) {
+				    		tmp += "<div>" + jsonobject.data[i].participant + "</div>"
+				    		i += 1;
+				    	}
+				    	cal.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
+			    	}
+			    break;
+			}
+		}
+		/**
 		 * buildDateFromDialog
 		 * 
 		 * build Date from event dialog
@@ -179,28 +234,6 @@ class Calendar {
 			} else {
 				return new Date( nj("#endDate").v() + "T" + nj("#endHour").v() + ":" + nj("#valEndMinutes").v() );
 			}
-		}
-		/**
-		 * buildEventFromDialog
-		 * 
-		 * build extendedProps from event dialog
-		 * 
-		 * 
-		 * return object 		extendedProps event object
-		 * 
-		*/
-		buildExtendedPropsFromDialog = function() {
-			let prop = {}
-			prop.id = nj( "#Id" ).v();;
-			prop.groupId = nj( "#groupId" ).v();;
-			prop.place = nj( "#place" ).v();;
-			prop.category = nj( "#category" ).v();;
-			prop.registration_deadline = nj( "#deadline" ).v();;
-			prop.url = nj( "#Url" ).v();;
-			prop.inner_url = nj( "#url" ).v();;
-			prop.inner_url_text = nj( "#url" ).v();;
-			prop.description = nj( "#url" ).v();;
-			return prop;
 		}
 		/**
 		 * buildEventFromDialog
@@ -223,10 +256,10 @@ class Calendar {
 			if( ev.allDay ) {
 				ev.start = nj( "#startDate" ).v() + "T00:00Z";
 			} else {
-				ev.start = nj( "#startDate" ).v() + "T" + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() + "Z";	
+				ev.start = nj( "#startDate" ).v() + "T" + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() ;	
 			}
 			
-			if( !ev.allDay ) ev.end = nj( "#endDate" ).v() + "T" + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v() + "Z";
+			if( !ev.allDay ) ev.end = nj( "#endDate" ).v() + "T" + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v();
 			ev.title = nj( "#title" ).v();
 			ev.titleHTML = "";
 			ev.extendedProps.id = nj( "#Id" ).v();;
@@ -251,8 +284,71 @@ class Calendar {
 		 * 
 		*/
 		getInternIdFromId = function( id ) {
-
-			console.log( this, nj( "#Id" ).v() );
+			let tmp = this.evCal.getEvents();
+			let l = tmp.length;
+			let i = 0;
+			while ( i < l ) {
+				if( tmp[i].extendedProps.id == id ) return tmp[i].id
+				i += 1;
+			}
+			return false;
+		}
+		/**
+		 * getIdFromInternId
+		 * 
+		 * get intern Id from database id
+		 * 
+		 * internId 		string 	intern Id
+		 * 
+		 * return undefined
+		 * 
+		*/
+		getIdFromInternId = function( id ) {
+			let tmp = this.evCal.getEventById( id );
+			return tmp.extendedProps.id
+		}
+		/**
+		 * saveEvent
+		 * 
+		 * save event to database
+		 * 
+		 * return result
+		 * 
+		*/
+		saveEvent = function() {
+			data = {};
+		    data.command = "saveEvent";
+		    data.id = nj( "#Id").v();
+		    data.group_id = nj( "#groupId").v();
+		    data.title = nj( "#title").v();
+		    data.place = nj( "#place").v();
+		    data.format = nj( "#category").v();
+		    data.creator = nj( "#creator").v();
+		    data.informRole = nj( "#informRole").v();
+		    data.informUser = nj( "#informUser").gSV();
+		    data.fromDate = nj( "#startDate").v();
+		    data.toDate = nj( "#endDate").v();
+		    data.fromTime = nj( "#startHour").v() + ":" + nj( "#valStartMinutes").v();
+		    data.toTime = nj( "#endHour").v() + ":" + nj( "#valEndMinutes").v();
+		    data.deadline = nj( "#deadline").v();
+			data.participateAs = nj( "#participateAs" ).v();
+			data.participate = nj( "#participate" ).chk();
+			data.countPart = nj( "#countPart" ).v();
+			data.informRole = nj( "#informRole" ).v();
+			data.informUser = nj( "#informUser" ).v();
+		    data.url = nj( "#Url").v();
+		    data.description = nj( "#Description").v().replace(/\n|\r/g, " * ");;
+		    data.notice = nj( "#Notice").v();
+		    data.innerUrl = nj( "#innerUrl").v();
+		    data.innerUrlText = nj( "#innerUrlText").v();
+		    if( nj( "#innerUrl").v() != "" && nj( "#editSendAppendix" ).chk() ) {
+		    	data.sendAppendix = true;
+		    } else {
+		    	data.sendAppendix = false;
+		    }
+		    data.countPart = nj( "#count_part" ).v();
+			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalendar );
+			
 		}
 		/**
 		 * fillEditDialogForNew
@@ -367,62 +463,9 @@ class Calendar {
 			tmpTime = tmpTime[1].split( ":" );
 			nj( "#endHour" ).v( tmpTime[0] );
 			nj( "#valEndMinutes" ).v( tmpTime[1] );
-
-		}
-		/**
-		 * evaluateCalData
-		 * 
-		 * basic processing for ajax request
-		 * 
-		 * data 			json string 	valid json string
-		 * 
-		 * return undefined
-		 * 
-		*/
-		evaluateCalData = function( data ) {
-    		let l, i, tmp;
-		    //console.log( data );
-		    let jsonobject;
-		    if( typeof data === "string" ) {
-		        jsonobject = JSON.parse( data );
-		    } else {
-		        jsonobject = data;
-		    }
-		    if( !isJ( jsonobject ) ) {
-		        throw "kein JSON-Objekt übergeben";
-		    }
-		    console.log( jsonobject, this );
-			switch( jsonobject.command ) {
-				case "getDaysForView":
-					l = jsonobject.data.length;
-					i = 0;
-					while ( i < l ) {
-						console.log( jsonobject.data[i] );
-						i += 1;
-					}
-					break;
-		        case "getEventsForView":
-	        		l = jsonobject.data.length;
-	        		i = 0;
-	        		while ( i < l ) {
-	        			//console.log( jsonobject.data[i] );
-	        			cal.addEvent( jsonobject.data[i] )
-	        			i += 1;
-	        		}
-		        break;
-		    	case "showParticipants":
-			    	if( jsonobject.data.length > 0 ) {
-				    	tmp = "";
-				    	l = jsonobject.data.length;
-				    	i = 0;
-				    	while ( i < l ) {
-				    		tmp += "<div>" + jsonobject.data[i].participant + "</div>"
-				    		i += 1;
-				    	}
-				    	cal.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
-			    	}
-			    break;
-			}
+			nj( "#participate" ).chk( event.extendedProps.participate )
+			nj( "#participateAs" ).v( event.extendedProps.participateAs )
+			console.log( event.extendedProps );
 		}
 		/**
 		 * onDateClickWithCtrl
@@ -513,6 +556,7 @@ class Calendar {
 							{title: "Speichern", action: function( e ) {
 								console.log( nj( e.target ).Dia().opt.variables );
 								//nj( this ).Dia().hide();
+								nj( e.target ).Dia().opt.variables.calendar.saveEvent();
 								console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
 								nj( e.target ).Dia().opt.variables.calendar.evCal.updateEvent( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) )
 
@@ -547,7 +591,7 @@ class Calendar {
 			console.log( info.jsEvent.screenX, info.jsEvent.screenY );
 			data.x = info.jsEvent.screenX;
 			data.y = info.jsEvent.screenY;
-			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+			//nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
 		 * onEventMouseLeave

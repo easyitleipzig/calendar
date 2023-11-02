@@ -206,14 +206,20 @@ $event_string = substr( $event_string, 0, -1 );
                 <label>teilnehmen als</label>
                 <select id="participateAs"></select>
                 <div>
+<!--
                     <a href="#" id="participate">Teilnehmen</a>&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
+                    <a href="#" id="participate">Teilnehmen</a>&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
+-->
+                    Teilnehmen&nbsp;&nbsp;<input id="participate" type="checkbox" style="margin-top: 0.5em">&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
                 </div>
                 <div id="divCountPart">
                     Anzahl Teilnehmer&nbsp;&nbsp;<input id="countPart" type="number" min="1" step="1" value="1">
                 </div>
+<!--
                 <div>
                     <a href="#" id="deleteParticipation">Teilnahme löschen</a><br>
                 </div>
+-->
                 <a href="#" id="showParticipants">Teilnehmer/innen anzeigen</a>
                 <div>&nbsp;</div>
                 <a href="#" id="printParticipants" target="_blank">Teilnehmer drucken</a>
@@ -245,7 +251,7 @@ $event_string = substr( $event_string, 0, -1 );
     <label>Direktlink</label>
     <input id="Url" type="text"><input id="editInvalidUrl" type=checkbox>
     <label>interner Link</label>
-    <input id="newInnerUrl" type="text" placeholder="Link eingeben" maxlength="255">
+    <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
     <img src="library/css/icons/AppEmpty.png" data-filesrc id="imgFileAppendix" class="imgFileAppendix">
     <input type="button" id="loadAppendix" value="Anhang"> 
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">

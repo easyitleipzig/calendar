@@ -551,7 +551,7 @@ fetch(request)
         fetch( url, {
             method: 'POST',
             headers: {
-            'Accept': 'application/json, text/plain, */*',
+            //'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify( d )
@@ -565,14 +565,14 @@ fetch(request)
         });
     }
     _fetchPostNew = function( url, fetchData, callback ) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify( fetchData )
-    };
-    fetch(url, requestOptions)
-        .then(response => response.json())
-        .then(data => callback( data ) );
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify( fetchData )
+        };
+        fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(data => callback( data ) );
     }
     // others
     _ddS = function( k, v ) {

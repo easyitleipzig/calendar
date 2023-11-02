@@ -79,7 +79,7 @@ class CalendarEvent {
                 if( $result_part[0]["user_id"] > 0 ) $exPro -> participate = true;
                 $exPro -> remindMe = $result_part[0]["remind_me"];
                 $exPro -> countPart = $result_part[0]["count_part"];
-                $exPro -> participateAs = $result_part[0]["count_part"];
+                $exPro -> participateAs = $result_part[0]["role_id"];
             } else {
                 $exPro -> participate = null;
                 $exPro -> remindMe = null;

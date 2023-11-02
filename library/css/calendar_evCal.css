@@ -97,6 +97,27 @@
     top: -1px;
 }
 /* end accordion */
+/* start calendar */
+#divCalendar {
+    display: flex;
+}
+/* end calendar */
+/* start legende */
+#legende {
+    margin: auto;
+}
+#legende > div > div {
+    display: flex;
+}
+#legende > div > div > div:first-child {
+    width: 250px;
+}
+#legende > div > div > div:nth-child( 2 ) {
+    border-radius: 5px;
+    padding: 3px;
+    margin: 3px;
+}
+/* start legende */
 
 #dDia { background-color:lightblue }
 
