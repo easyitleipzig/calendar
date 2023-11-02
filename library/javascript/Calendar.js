@@ -174,7 +174,8 @@ class Calendar {
 		buildEventFromDialog = function() {
 			let ev = {};
 			ev.extenedProps = {};
-			if( nj( "#internId" ).v() !== "" ) ev.id = nj( "#internId" ).v();
+			console.log( nj( "#innerId" ).v() );
+			if( nj( "#innerId" ).v() !== "" ) ev.id = nj( "#innerId" ).v();
 			ev.allDay = nj( "#allDay" ).chk();
 			if( ev.allDay ) {
 				ev.start = nj( "#startDate" ).v() + "T00:00Z";
@@ -187,6 +188,7 @@ class Calendar {
 			ev.extenedProps.id = nj( "#Id" ).v();;
 			ev.extenedProps.groupId = nj( "#groupId" ).v();;
 			ev.extenedProps.place = nj( "#place" ).v();;
+			ev.extenedProps.category = nj( "#category" ).v();;
 			ev.extenedProps.registration_deadline = nj( "#deadline" ).v();;
 			ev.extenedProps.url = nj( "#Url" ).v();;
 			ev.extenedProps.inner_url = nj( "#url" ).v();;
@@ -262,7 +264,7 @@ class Calendar {
 				nj( "#editEvent" ).aCl( "cNew" );
 				nj( "#Id" ).v( "new" );
 				nj( "#allDay" ).chk( event.allDay )
-				nj( "#innnerId" ).v( "" )
+				nj( "#innerId" ).v( "" )
 				nj( "#title" ).v( "" );
 				nj( "#place" ).v( 0 );
 				nj( "#category" ).v( 0 );
@@ -316,7 +318,7 @@ class Calendar {
 			nj( "#editEvent" ).rCl( "cNew" );
 			nj( "#editEvent" ).aCl( "cEdit" );
 			nj( "#Id" ).v( event.extendedProps.id );
-			nj( "#innnerId" ).v( event.id );
+			nj( "#innerId" ).v( event.id );
 			nj( "#groupId" ).v( event.extendedProps.groupId );
 			nj( "#allDay" ).chk( event.allDay );
 			nj( "#title" ).v( event.title );
@@ -377,17 +379,18 @@ class Calendar {
 	        			i += 1;
 	        		}
 		        break;
-		    case "showParticipants":
-		    	if( jsonobject.data.length > 0 ) {
-			    	tmp = "";
-			    	l = jsonobject.data.length;
-			    	i = 0;
-			    	while ( i < l ) {
-			    		tmp += "<div>" + jsonobject.data[i].participant + "</div>"
-			    		i += 1;
+		    	case "showParticipants":
+			    	if( jsonobject.data.length > 0 ) {
+				    	tmp = "";
+				    	l = jsonobject.data.length;
+				    	i = 0;
+				    	while ( i < l ) {
+				    		tmp += "<div>" + jsonobject.data[i].participant + "</div>"
+				    		i += 1;
+				    	}
+				    	cal.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
 			    	}
-			    	cal.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
-		    	}
+			    break;
 			}
 		}
 		/**
@@ -478,9 +481,9 @@ class Calendar {
 							}},
 							{title: "Speichern", action: function( e ) {
 								console.log( nj( e.target ).Dia().opt.variables );
-								nj( this ).Dia().hide();								
+								nj( this ).Dia().hide();
+								console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog() );								
 /* works
-*/
 								nj( e.target ).Dia().opt.variables.calendar.evCal.updateEvent(
 									{
 									    "id": nj( e.target ).Dia().opt.variables.event.id,
@@ -510,7 +513,7 @@ class Calendar {
 									    }
 									}
 								)
-/*
+
 */
 							}},
 						]
@@ -533,10 +536,10 @@ class Calendar {
 			console.log( "onEventMouseEnter", info );
 			data.command = "showParticipants";
 			data.event_id = info.event.extendedProps.id;
-			console.log( this );
+			console.log( info.jsEvent.screenX, info.jsEvent.screenY );
 			data.x = info.jsEvent.screenX;
 			data.y = info.jsEvent.screenY;
-			nj().post("library/php/ajax_calendar.php", data, this.evaluateCalData );
+			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
 		 * onEventMouseLeave
@@ -570,7 +573,7 @@ class Calendar {
 			data.event = JSON.stringify( info.event );
 			data.repeat = 0;
 			data.repeatTo = "0000-00-00";
-			nj().post("library/php/ajax_calendar.php", data, this.evaluateCalData );   
+			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
 
 		}
 		/**
@@ -716,7 +719,7 @@ class Calendar {
 			data.userId = this.opt.currentUserId;
 			data.isFetch = true;
 			console.log( data );
-    		nj().post("library/php/ajax_calendar.php", data, this.evaluateCalData );   
+    		nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
 		}
 		/**
 		 * switchHeadline

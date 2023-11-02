@@ -483,6 +483,8 @@ switch( $_POST["command"]) {
                             $return -> message = $return -> result -> message;
                             $return -> data = $return -> result -> data;
                             $return -> sum = $return -> result -> sum;
+                            $return -> x = $_POST["x"];
+                            $return -> y = $_POST["y"];
                             unset( $return -> result );
                             print_r( json_encode( $return ));    
     break;

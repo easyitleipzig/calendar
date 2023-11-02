@@ -54,7 +54,7 @@ $event_string = substr( $event_string, 0, -1 );
     $l = count( $r );
     $i = 0;
     while ( $i < $l ) {
-        print_r( ".fc-" . $r[$i]["id"] . " {background-color: " . $r[$i]["bckg_color"] . "; color: " . $r[$i]["font"] . "}" . "\n" );
+        print_r( ".fc-" . $r[$i]["id"] . " {background-color: " . $r[$i]["bckg_color"] . "  !important; color: " . $r[$i]["font"] . "  !important}" . "\n" );
         $i += 1;
     }
 ?>
@@ -147,7 +147,7 @@ $event_string = substr( $event_string, 0, -1 );
             <div class="panelHL"><label for="usual1">Allgemein</label></div>
             <div class="panel">
                 <input id="Id">
-                <input id="innnerId">
+                <input id="innerId">
                 <input id="allDay" type="checkbox">
                 <input id="groupId" value="0">
                 <select id="usePattern"></select>
@@ -252,9 +252,6 @@ $event_string = substr( $event_string, 0, -1 );
     <input type="checkbox" id="sendAppendix" title="Anhang mitsenden">senden
     <label>Linktext</label>
     <input id="innerUrlText" type="text">
-<!--
-    <div id="divInnerUrl"></div>
--->
     <div id="divAppendixLink">
     
         <a href="#" id="appendixLink">www</a>

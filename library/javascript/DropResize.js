@@ -196,6 +196,8 @@ function re_dragMouseStop(e) {
     // correct terget position
     nj().els( e.target.nextElementSibling ).style.top = parseInt( e.target.nextElementSibling.style.top ) - 10 + "px";
     nj().els( e.target.nextElementSibling ).style.left = parseInt( e.target.nextElementSibling.style.left ) + 10 + "px";
+    console.log( e.target );
+    nj().els( e.target ).style.height = nj().els( e.target ).style.height + 14 + "px";
     // end correct terget position
     (document.onmouseup = null), (document.onmousemove = null);
 }
