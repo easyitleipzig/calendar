@@ -174,7 +174,6 @@ class Calendar {
 		*/
 		evaluateCalData = function( data ) {
     		let l, i, tmp;
-		    //console.log( data );
 		    let jsonobject;
 		    if( typeof data === "string" ) {
 		        jsonobject = JSON.parse( data );
@@ -351,6 +350,28 @@ class Calendar {
 			
 		}
 		/**
+		 * setEventNewValues
+		 * 
+		 * build field definitions from intern Id
+		 * 
+		 * data 			object 	dialog variables
+		 * 
+		 * return undefined
+		 * 
+		*/
+		setEventNewValues = function( isBlocked = true, event = undefined ) {
+				nj( "#editEvent" ).rCl( "cEdit" );
+				nj( "#editEvent" ).aCl( "cNew" );
+				nj( "#Id" ).v( "new" );
+				nj( "#allDay" ).chk( event.allDay )
+				nj( "#innerId" ).v( "" )
+				nj( "#title" ).v( "" );
+				nj( "#place" ).v( 0 );
+				nj( "#category" ).v( 0 );
+				nj( "#creator" ).v( currentUserId );
+
+		}
+		/**
 		 * fillEditDialogForNew
 		 * 
 		 * build field definitions from intern Id
@@ -363,13 +384,7 @@ class Calendar {
 		fillEditDialogForNew = function( data, dialog ) {
 			if( data.event.date < new Date() ) {			
 				nj().els( dialog.opt.id + "_box div.d_HLTitle")[0].innerHTML = "Neuer Termin (gesperrt)";
-				nj( "#Id" ).v( "new" );
-				nj( "#allDay" ).chk( false )
-				nj( "#innerId" ).v( "" )
-				nj( "#title" ).v( "" );
-				nj( "#place" ).v( 0 );
-				nj( "#category" ).v( 0 );
-				nj( "#creator" ).v( 0 );
+				this.setEventNewValues( true, data.event );
 				nj( "#startDate" ).v( "" );
 				nj( "#endDate" ).v( "" );
 				nj( "#startHour").v( "00" );
@@ -387,15 +402,7 @@ class Calendar {
 			} else {
 				nj().els( dialog.opt.id + "_box div.d_HLTitle")[0].innerHTML = "Neuer Termin";
 				let event = data.event;
-				nj( "#editEvent" ).rCl( "cEdit" );
-				nj( "#editEvent" ).aCl( "cNew" );
-				nj( "#Id" ).v( "new" );
-				nj( "#allDay" ).chk( event.allDay )
-				nj( "#innerId" ).v( "" )
-				nj( "#title" ).v( "" );
-				nj( "#place" ).v( 0 );
-				nj( "#category" ).v( 0 );
-				nj( "#creator" ).v( currentUserId );
+				this.setEventNewValues( false, data.event );
 				let tmpDateTime = event.dateStr.split( "T" );
 				let endDate = event.date;
 				//let endDate = new Date(  tmpDateTime[0] )

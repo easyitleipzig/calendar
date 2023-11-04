@@ -43,7 +43,6 @@ Date.prototype.getGermanDateString = function( widthMinutes ) {
     }        
 }
 Date.prototype.getMySQLDateString = function( widthMinutes = false ) {
-    console.log( widthMinutes );
     if( widthMinutes ) {
         return this.getFullYear() + "-" + ( "0" + ( this.getMonth() + 1 ) ).substr(-2) + "-" + ( "0" + this.getDate() ).substr(-2) + " " + ( "0" + ( this.getHours() ) ).substr(-2) + ":" + ( "0" + ( this.getMinutes() ) ).substr(-2);
     } else {

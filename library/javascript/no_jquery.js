@@ -1,5 +1,5 @@
 //javascript
-function nj( p ) {
+var nj = function ( p ) {
     if( p == "" || typeof( p ) == "undefined" ) {
         this.e = null;
         return this;

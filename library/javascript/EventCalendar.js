@@ -7453,7 +7453,6 @@ var EventCalendar = function() {
         }
     }
     function Vr(t, e, n) {
-        console.log( t.$$.root );
         let o, s, i, c, u, d, f, h, p, $, m, v, y, w, b, k, x, C, _, D, E, S, M, U, B, N, L, H, P, R, I, G, j, O, A, W, Y, q, X, V, J, K, Q, Z, tt, et, nt, ot, rt, lt, st, it, ct, at, {_iEvents: ut, _iClass: dt, _events: ft, _view: ht, _dayGrid: pt, _draggable: gt, dateClick: $t, dragScroll: mt, datesAboveResources: vt, eventDragMinDistance: yt, eventDragStart: wt, eventDragStop: bt, eventDrop: Dt, eventLongPressDelay: Et, eventResizeStart: Ut, eventResizeStop: Bt, eventResize: Nt, longPressDelay: Lt, selectable: Ht, select: Rt, selectBackgroundColor: zt, selectLongPressDelay: Gt, selectMinDistance: At, slotDuration: Wt, slotHeight: Yt, unselect: qt, unselectAuto: Kt, unselectCancel: Qt, view: Zt} = z("state");
         function te(t) {
             window.getSelection().removeAllRanges(),

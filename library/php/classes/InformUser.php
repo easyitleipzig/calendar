@@ -86,6 +86,7 @@ class InformUser {
     private $message;
     private $isIntern; 
     private $attachments; 
+    private $isMessage; 
     public $failureRecipants;
     public function standardFunktion(  ) {
         $return = new \stdClass();
@@ -96,7 +97,7 @@ class InformUser {
         }        
         return $return;                            
     }
-    public function __construct( $pdo, $message_behavior, $fromRole = 0, $fromUser = 0, $toRole = 0, $toUser = 0, $isIntern = true, $attachments = [] ) {
+    public function __construct( $pdo, $message_behavior, $fromRole = 0, $fromUser = 0, $toRole = 0, $toUser = 0, $isIntern = true, $attachments = [], $isMessage = true ) {
         $this -> pdo = $pdo; 
         $this -> message_behavior = $message_behavior;
         $this -> fromRole = $fromRole;
@@ -133,8 +134,9 @@ class InformUser {
         $this -> mail -> AddEmbeddedImage('../images/logo.png', 'TBP', 'logo.png');
         $this -> message = new \Message();
         $this -> isIntern = $isIntern;
-        $this -> attachments = $attachments;            // ["path1, name1", ["path2, name2", ... ]
-        $this -> failureRecipants = [];
+        $this -> attachments = $attachments;            // ["path1, name1", "path2, name2", ... ]
+        $this -> attachments = $attachments;            // ["path1, name1", "path2, name2", ... ]
+        $this -> isMessage = $isMessage;
     }
     public function setFromNameEmail(){
         
@@ -344,14 +346,29 @@ class InformUser {
                     $tmp = explode( ",", $this -> toUser );
                     $l = count( $tmp );
                     $i = 0;
-                    while( $i < $l ) {
-                        $this -> message -> newMessage( $this -> pdo, $titleMessage, $contentMessage, $this -> fromRole, $this -> fromUser, $this -> toRole, $tmp[$i] );
-                        $i += 1;
+                    if( !$this -> isMessage ) {
+                        require_once( "News.php" );
+                        $news = new \News();
+                    }
+                    if( $this -> isMessage ) {
+                        while( $i < $l ) {
+                            $this -> message -> newMessage( $this -> pdo, $titleMessage, $contentMessage, $this -> fromRole, $this -> fromUser, $this -> toRole, $tmp[$i] );
+                            $i += 1;
+                        }
+                    } else {
+                        while( $i < $l ) {
+                            $news -> newNews( $this -> pdo, $titleMessage, $contentMessage, $this -> fromRole, $this -> fromUser, $this -> toRole, $tmp[$i] );
+                            $i += 1;
+                        }                        
                     }
                 break;
                 case "both":
                     $l = count( $this -> usrArr );
                     $i = 0;
+                    if( !$this -> isMessage ) {
+                        require_once( "News.php" );
+                        $news = new \News();
+                    }
                     while( $i < $l ) {
                         $tmp = $this -> sendEmail( $titleEmail, $contentEmail, $this -> usrArr[$i]["email"], $this -> usrArr[$i]["name"], $this -> isIntern, $this -> attachments );
                         if( !$tmp -> mailSuccess ) {
@@ -359,9 +376,15 @@ class InformUser {
                             $fPart = new \stdClass();
                             $fPart -> name = $this -> usrArr[$i]["name"];
                             $fPart -> email = $this -> usrArr[$i]["email"];
+                            $fPart -> id = $this -> usrArr[$i]["id"];
                             $return -> failurePart[] = $fPart;
                         }
-                        $this -> message -> newMessage( $this -> pdo, $titleMessage, $contentMessage, $this -> fromRole, $this -> fromUser, 0, $this -> usrArr[$i]["id"] );
+                        if( $this -> isMessage ) {
+                            $this -> message -> newMessage( $this -> pdo, $titleMessage, $contentMessage, $this -> fromRole, $this -> fromUser, 0, $this -> usrArr[$i]["id"] );
+                        } else {
+                            $news -> newNews( $this -> pdo, $titleMessage, $contentMessage, $this -> fromRole, $this -> fromUser, $this -> toRole, $tmp[$i] );
+                        }
+                        
                         $i += 1;
                     }
                 break;

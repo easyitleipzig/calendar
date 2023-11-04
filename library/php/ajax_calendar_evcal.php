@@ -270,7 +270,7 @@ switch( $_POST["command"]) {
                             $result = $ev -> saveEvent( $db_pdo, $_POST["id"], $_POST["group_id"], $_POST["title"], $_POST["fromDate"], $_POST["toDate"], $_POST["fromTime"], $_POST["toTime"], $_POST["url"], $_POST["description"], $_POST["notice"], $_POST["place"], $_POST["format"], $_POST["deadline"], $_POST["innerUrl"], $_POST["innerUrlText"], $_POST["creator"], $_POST["countPart"]  );
                             // if success and count participants greater 0 
                             $parts = $ev -> getParticipants( $db_pdo, $_POST["id"] ) -> Ids;
-                            $q = "select name from event_format where format = '" . $_POST["format"] . "'";
+                            $q = "select name from event_format where id = '" . $_POST["format"] . "'";
                             $s = $db_pdo -> query( $q );
                             $r_cat = $s -> fetchAll( PDO::FETCH_ASSOC );
                             if( $result -> success && count( $parts ) > 0 ) {
@@ -345,75 +345,7 @@ switch( $_POST["command"]) {
                             
                             
                             // end inform participants
-                            
-                            /*
-                            $query = "SELECT user.id, CONCAT( firstname, ' ', lastname ) AS name, email, opt_in FROM user, event_participate WHERE user.id = event_participate.user_id AND event_id = " . $_POST["id"];
-                            $stm = $db_pdo -> query( $query );
-                            $users_participate = $stm -> fetchAll( PDO::FETCH_ASSOC );
-                            // end inform participants
-                            // inform role
-                            if( isset( $_POST["informRole"] ) && $_POST["informRole"] != 0 && $_POST["informRole"] != "") {
-                                $query = "SELECT user.id, CONCAT( firstname, ' ', lastname ) AS name, user.email, opt_in FROM user, account WHERE user.id = account.user_id AND account.role_id = " . $_POST["informRole"];
-                                $stm = $db_pdo -> query( $query );
-                                $users_role = $stm -> fetchAll( PDO::FETCH_ASSOC );
-                            
-                            }                            
-                            // end inform role
-                            // users inform user
-                            if( isset( $_POST["informUser"] ) && $_POST["informUser"] != "" ) {
-                                $query = "SELECT user.id, CONCAT( firstname, ' ', lastname ) AS name, user.email, opt_in FROM user WHERE user.id IN (" . $_POST["informUser"] . ")";
-                                $stm = $db_pdo -> query( $query );
-                                $users_user = $stm -> fetchAll( PDO::FETCH_ASSOC );
-                            }
-                            // end users inform user
-                            //
-                            if( isset( $_POST["informRole"] ) && $_POST["informRole"] != 0  && $_POST["informRole"] != "" ) {
-                                $users_new = array_unique( array_merge( $users_participate, $users_role ) );    
-                            } else {
-                                $users_new = $users_participate;
-                            }
-                            if( isset( $_POST["informUser"] ) && $_POST["informUser"] != "" ) $users_new = array_unique( array_merge( $users_new, $users_user ) );
-                            $content = "Es wurde für den " . getGermanDateFromMysql( $_POST["fromDate"] ) . " der Termin „" . $_POST["title"] ."” geändert. Bitte prüfe, ob Du teilnehmen kannst und bestätige dann deine Teilnahme im Veranstaltungskalender über die „Teilnehmen”-Funktion des Termins.";
-                            switch( $settings["calendar_editable"]["message_behavior"] ) {
-                                case "both":
-                                    sendUserAboutChangedEventEmail( $db_pdo, $users_new, $content, $settings["calendar_editable"]["inform_myself"] );
-                                    require_once( "classes/Message.php");
-                                    $m = new \Message();
-                                    $l = count( $users_new );
-                                    $i = 0;
-                                    while ( $i < $l ){
-                                        $m -> newMessage( $db_pdo, "Terminänderung", $content, 0, $_POST["creator"], 0,$users_new[$i]["id"],"", "", $settings["calendar_editable"]["inform_myself"]);                                        
-                                        $i += 1;
-                                    }                                        
-                                break;
-                                case "email":
-                                    sendUserAboutChangedEventEmail( $db_pdo, $users_new, $content, $settings["calendar_editable"]["inform_myself"] );
-                                break;
-                                case "message":
-                                    require_once( "classes/Message.php");
-                                    $m = new \Message();
-                                    $l = count( $users_new );
-                                    $i = 0;
-                                    while ( $i < $l ){
-                                        $m -> newMessage( $db_pdo, "Terminänderung", $content, 0, $_POST["creator"], 0,$users_new[$i]["id"],"", "", $settings["calendar_editable"]["inform_myself"]);                                        
-                                        $i += 1;
-                                    }                                        
-                                break;
-                                case "intelligent":
-                                    sendUserAboutChangedEventEmail( $db_pdo, $users_new, $content, $settings["calendar_editable"]["inform_myself"] );
-                                    require_once( "classes/Message.php");
-                                    $m = new \Message();
-                                    $l = count( $users_new );
-                                    $i = 0;
-                                    while ( $i < $l ){
-                                        if( !boolval( $users_new[$i]["opt_in"] ) ) {
-                                            $m -> newMessage( $db_pdo, "Terminänderung", $content, 0, $_POST["creator"], 0,$users_new[$i]["id"],"", "", $settings["calendar_editable"]["inform_myself"]);                                        
-                                        }
-                                        $i += 1;
-                                    }                                        
-                                break;
-                            }
-                            */
+                            $return -> dVar = $_POST["dVar"];                            
                             $return -> success = $result -> success;
                             $return -> message = $result -> message;
                             print_r( json_encode( $return ));    
