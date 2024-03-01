@@ -598,7 +598,7 @@ class Calendar {
 			console.log( info.jsEvent.screenX, info.jsEvent.screenY );
 			data.x = info.jsEvent.screenX;
 			data.y = info.jsEvent.screenY;
-			//nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
 		 * onEventMouseLeave
