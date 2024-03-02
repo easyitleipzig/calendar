@@ -206,20 +206,11 @@ $event_string = substr( $event_string, 0, -1 );
                 <label>teilnehmen als</label>
                 <select id="participateAs"></select>
                 <div>
-<!--
-                    <a href="#" id="participate">Teilnehmen</a>&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
-                    <a href="#" id="participate">Teilnehmen</a>&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
--->
                     Teilnehmen&nbsp;&nbsp;<input id="participate" type="checkbox" style="margin-top: 0.5em">&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
                 </div>
                 <div id="divCountPart">
                     Anzahl Teilnehmer&nbsp;&nbsp;<input id="countPart" type="number" min="1" step="1" value="1">
                 </div>
-<!--
-                <div>
-                    <a href="#" id="deleteParticipation">Teilnahme löschen</a><br>
-                </div>
--->
                 <a href="#" id="showParticipants">Teilnehmer/innen anzeigen</a>
                 <div>&nbsp;</div>
                 <a href="#" id="printParticipants" target="_blank">Teilnehmer drucken</a>
@@ -252,8 +243,12 @@ $event_string = substr( $event_string, 0, -1 );
     <input id="Url" type="text"><input id="invalidUrl" type=checkbox>
     <label>interner Link</label>
     <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
-    <img src="library/css/icons/AppEmpty.png" data-filesrc id="imgFileAppendix" class="imgFileAppendix">
-    <input type="button" id="loadAppendix" value="Anhang"> 
+    <div id="editAppendix">
+
+    </div>
+    <form enctype="multipart/form-data" action="library/php/upload_calendar20_apendix.php" method="POST" id="form_upload_edit_apendix">
+    <input type="file" id="loadAppendix" accept=".pdf,.jpg,.jpeg,.png,.gif" multiple>
+    </form> 
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
     <input type="checkbox" id="sendAppendix" title="Anhang mitsenden">senden
     <label>Linktext</label>
@@ -302,98 +297,6 @@ $event_string = substr( $event_string, 0, -1 );
 <input id="test_small">
 <!-- -->
 <script>
-    /*
-const PATH_TO_INFO = "info/";
-const PATH_TO_HELP = "help/";
-const PATH_TO_ICONS = "../library/icons/";
-const PATH_TO_CSS = "library/css/";
-const PATH_TO_JAVASCIPT = "library/javascript/";
-const DEFAULT_CSS_FILE = "DialogNew.css";
-const CLASS_DIALOG_MENU = "dialogMenu";
-const CLASS_DIALOG_BOX = "dialogBox";
-const CLASS_DIALOG_CONTENT = "dialogContent";
-const CLASS_DIALOG_FOOTER = "dialogFooter";
-const CLASS_DIALOG_RESIZER = "dialogResizer";
-const CLASS_DIALOG_HELP = "dialogHelp";
-const CLASS_DIALOG_INFO = "dialogInfo";
-const CLASS_DIALOG_WRAPPER = "dialogWrapper";
-var data = {};
-(function(funcName, baseObj) {
-    // The public function name defaults to window.docReady
-    // but you can pass in your own object and own function name and those will be used
-    // if you want to put them in a different namespace
-    funcName = funcName || "docReady";
-    baseObj = baseObj || window;
-    var readyList = [];
-    var readyFired = false;
-    var readyEventHandlersInstalled = false;
-
-    // call this when the document is ready
-    // this function protects itself against being called more than once
-    function ready() {
-        if (!readyFired) {
-            // this must be set to true before we start calling callbacks
-            readyFired = true;
-            for (var i = 0; i < readyList.length; i++) {
-                // if a callback here happens to add new ready handlers,
-                // the docReady() function will see that it already fired
-                // and will schedule the callback to run right after
-                // this event loop finishes so all handlers will still execute
-                // in order and no new ones will be added to the readyList
-                // while we are processing the list
-                readyList[i].fn.call(window, readyList[i].ctx);
-            }
-            // allow any closures held by these functions to free
-            readyList = [];
-        }
-    }
-
-    function readyStateChange() {
-        if ( document.readyState === "complete" ) {
-            ready();
-        }
-    }
-
-    // This is the one public interface
-    // docReady(fn, context);
-    // the context argument is optional - if present, it will be passed
-    // as an argument to the callback
-    baseObj[funcName] = function(callback, context) {
-        if (typeof callback !== "function") {
-            throw new TypeError("callback for docReady(fn) must be a function");
-        }
-        // if ready has already fired, then just schedule the callback
-        // to fire asynchronously, but right away
-        if (readyFired) {
-            setTimeout(function() {callback(context);}, 1);
-            return;
-        } else {
-            // add the function and context to the list
-            readyList.push({fn: callback, ctx: context});
-        }
-        // if document already ready to go, schedule the ready function to run
-        if (document.readyState === "complete") {
-            setTimeout(ready, 1);
-        } else if (!readyEventHandlersInstalled) {
-            // otherwise if we don't have event handlers installed, install them
-            if (document.addEventListener) {
-                // first choice is DOMContentLoaded event
-                document.addEventListener("DOMContentLoaded", ready, false);
-                // backup is window load event
-                window.addEventListener("load", ready, false);
-            } else {
-                // must be IE
-                document.attachEvent("onreadystatechange", readyStateChange);
-                window.attachEvent("onload", ready);
-            }
-            readyEventHandlersInstalled = true;
-        }
-    }
-})("docReady", window);
-    var registerOnScroll = function( args ) {
-        
-    }
-*/
 </script>
 <script src="library/javascript/no_jquery.js"></script>
 <script src="library/javascript/easyit_helper_neu.js"></script>
@@ -412,7 +315,7 @@ var data = {};
 <script src="library/javascript/MessageDR.js"></script>
 <script src="library/javascript/EventCalendar.js"></script>
 <script src="library/javascript/Calendar.js"></script>
-<script src="library/javascript/init_calendar20_admin.js"></script>
+<script src="library/javascript/init_calendar20_editable.js"></script>
 <script>
 <?php
     echo "var currentUserId = " . $_SESSION['user_id'] . ";\n";
