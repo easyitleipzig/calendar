@@ -58,6 +58,7 @@ foreach ( $_POST as &$str) {
 }
 switch( $_POST["command"]) {
     case "getEventsForView":
+                            $return -> dVar = $_POST["dVar"];
                             require_once( "classes/CalendarEventEvCal.php");
                             $ev = new \CalendarEvent();
                             $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
@@ -66,6 +67,127 @@ switch( $_POST["command"]) {
                             $return -> message = "Die Termine wurden erfolgreich geladen.";                                
                             print_r( json_encode( $return ));    
     break;
+    case "showParticipants":
+                            require_once( "classes/CalendarEventEvCal.php");
+                            $ev = new \CalendarEvent();
+                            $return -> result = $ev -> getParticipants( $db_pdo, $_POST["event_id"] );
+                            $return -> success = $return -> result -> success;
+                            $return -> message = $return -> result -> message;
+                            $return -> data = $return -> result -> data;
+                            $return -> sum = $return -> result -> sum;
+                            $return -> x = $_POST["x"];
+                            $return -> y = $_POST["y"];
+                            unset( $return -> result );
+                            print_r( json_encode( $return ));    
+    break;
+    case "deleteAppendix":
+                            if( $_POST["id"] === "new" ) {
+                                $files = glob( "../cal/cal_new*.*");
+                            } else {
+                                $files = glob( "../cal/cal_" . $_POST["id"] . "*.*");
+                            }
+                            $l = count( $files );
+                            $i = 0;
+                            while( $i < $l ) {
+                                unlink( "../cal/" . $files[$i] );
+                                $i += 1;
+                            }
+                            $return -> message = "Neue Anhänge wurden erfolgreich gelöscht";
+                            print_r( json_encode( $return ));
+    break;
+    case "saveEvent":
+                            require_once( "classes/CalendarEventEvCal.php");
+                            require_once( "classes/InformUser.php" );
+                            $ev = new \CalendarEvent();
+                            // get old data
+                            $q = "select * from event where id = " . $_POST["id"];                           
+                            $s = $db_pdo -> query( $q );
+                            $r = $s -> fetchAll( PDO::FETCH_ASSOC );
+                            //
+                            $result = $ev -> saveEvent( $db_pdo, $_POST["id"], $_POST["group_id"], $_POST["title"], $_POST["fromDate"], $_POST["toDate"], $_POST["fromTime"], $_POST["toTime"], $_POST["url"], $_POST["description"], $_POST["notice"], $_POST["place"], $_POST["format"], $_POST["deadline"], $_POST["innerUrl"], $_POST["innerUrlText"], $_POST["creator"], $_POST["countPart"]  );
+                            // if success and count participants greater 0 
+                            $parts = $ev -> getParticipants( $db_pdo, $_POST["id"] ) -> Ids;
+                            $q = "select name from event_format where id = '" . $_POST["format"] . "'";
+                            $s = $db_pdo -> query( $q );
+                            $r_cat = $s -> fetchAll( PDO::FETCH_ASSOC );
+                            if( $result -> success && count( $parts ) > 0 ) {
+                            // build change text if save success, $r is old data
+                                $cTxt = "";
+                                if( count ( $r ) > 0 ) {                                
+                                    if( $r[0]["title"] !== $_POST["title"] ) {
+                                        $cTxt .= "Der Titel ist jetzt: “" . $_POST["title"] . "“. ";    
+                                    }
+                                    if( $r[0]["start_date"] !== $_POST["fromDate"] || substr( $r[0]["start_time"], 0, 5 ) !== $_POST["fromTime"] ) {
+                                        $cTxt .= "Das Datum/Zeit wurde auf " . getGermanDateFromMysql( $_POST["fromDate"] ) . " um " . $_POST["fromTime"] . " Uhr gesetzt. ";
+                                    }
+                                    if( $r[0]["end_date"] !== $_POST["toDate"] || substr( $r[0]["end_time"], 0, 5 ) !== $_POST["toTime"] ) {
+                                        $cTxt .= "Der Termin endet jetzt am " . getGermanDateFromMysql( $_POST["toDate"] ) . " " . $_POST["toTime"] . " Uhr. ";
+                                    }
+                                    if( $r[0]["class"] !== $_POST["format"] ) {
+                                        $cTxt .= "Die Terminkategorie ist nun “" . $r_cat[0]["name"] . "“. ";
+                                    }
+                                    if( $r[0]["place"] != $_POST["place"] ) {
+                                        $q = "select place from event_place where id = " . $_POST["place"];
+                                        $s = $db_pdo -> query( $q );
+                                        $r_place = $s -> fetchAll( PDO::FETCH_ASSOC );
+                                        $cTxt .= "Der Ort ist nun “" . $r_place["place"] . "“. ";
+                                    }
+                                    if( $r[0]["creator"] != $_POST["creator"] ) {
+                                        $q = "select concat(salutation.salutation, ' ', firstname, ' ', lastname ) as fullname from salutation, user where user.salutation = salutation.id and user.id = " . $_POST["creator"];
+                                        $s = $db_pdo -> query( $q );
+                                        $r_creator = $s -> fetchAll( PDO::FETCH_ASSOC );
+                                        $cTxt .= "Der/die Terminverantwortliche ist nun " . $r_creator[0]["fullname"] . ". ";
+                                    }
+                                    if( $r[0]["description"] != $_POST["description"] ) {
+                                        $cTxt .= "Die Terminbeschreibung lautet nun “" . $_POST["description"] . "“. ";
+                                    }
+                                    if( $r[0]["inner_url"] !== $_POST["innerUrl"] ) {
+                                        $cTxt .= "Der Anhang wurde geändert. ";                                    
+                                    }
+                                    if( $r[0]["url"] !== $_POST["url"] ) {
+                                        $cTxt .= "Der externe Link wurde geändert. ";                                    
+                                    }
+                                }
+                                $l = count( $parts );
+                                $i = 0;
+                                // only if participants and not empty change text
+                                while( $i < $l && $cTxt != "" ) {
+                                    $iu = new \InformUser( $db_pdo, $settings["calendar_editable"]["message_behavior"], 27, 0, 0, $parts[$i], true );
+                                    $title = "Der Termin “" . $r[0]["title"] . "” vom " . getGermanDateFromMysql( $r[0]["start_date"] ) . " " . substr( $r[0]["start_time"], 0, 5 ) . " Uhr wurde geändert.";
+                                    $res = $iu -> sendUserInfo( $title, $title, $cTxt, $cTxt );
+                                    unset( $iu );                        
+                                    $i += 1;
+                                }
+                                
+                            //    
+                            }
+                            // inform participants
+                            
+                            $iUser = $ev -> buildInformUser( $db_pdo, $_POST["informRole"], $_POST["informUser"], $parts );
+                            $l = count( $iUser );
+                            $i = 0;
+                            if( !isset( $r_cat[0] ) ) {
+                                $title = "Neuer Termin - ohne";    
+                            } else {
+                                $title = "Neuer Termin - " . $r_cat[0]["name"];
+                            }
+                            $content = "Es wurde für den " . getGermanDateFromMysql( $_POST["fromDate"] ) . " " . $_POST["fromTime"] . " Uhr der Termin “" . $_POST["title"] . "” eingestellt. Bitte prüfe, ob Du teilnehmen kannst und bestätige Deine Teilnahme im Veranstaltungskalender.";
+                            while( $i < $l ) {
+                                $iu = new \InformUser( $db_pdo, $settings["calendar_editable"]["message_behavior"], 27, 0, 0, $iUser[$i], true );
+                                $res = $iu -> sendUserInfo( $title, $title, $content, $content );
+                                unset( $iu );                        
+                                $i += 1;
+                            }
+                            
+                            
+                            
+                            // end inform participants
+                            $return -> dVar = $_POST["dVar"];                            
+                            $return -> success = $result -> success;
+                            $return -> message = $result -> message;
+                            print_r( json_encode( $return ));    
+    break;
+    /* end events evcal */
     case "updateEventEvCal":
                                 require_once( "classes/CalendarEvent.php");
                                 $ev = new \CalendarEvent();
@@ -376,19 +498,6 @@ switch( $_POST["command"]) {
                             $return -> message = $return -> result -> message;
                             print_r( json_encode( $return ));    
     break; 
-    case "showParticipants":
-                            require_once( "classes/CalendarEventEvCal.php");
-                            $ev = new \CalendarEvent();
-                            $return -> result = $ev -> getParticipants( $db_pdo, $_POST["event_id"] );
-                            $return -> success = $return -> result -> success;
-                            $return -> message = $return -> result -> message;
-                            $return -> data = $return -> result -> data;
-                            $return -> sum = $return -> result -> sum;
-                            $return -> x = $_POST["x"];
-                            $return -> y = $_POST["y"];
-                            unset( $return -> result );
-                            print_r( json_encode( $return ));    
-    break;
     case "checkForFile":
                             if( file_exists( "../../" . $_POST["fileName"] ) ) {
                                 $return -> success = true;
@@ -493,21 +602,6 @@ switch( $_POST["command"]) {
     case "informUserAboutDeletion":
                             $return = informUserAboutDeletion( $db_pdo, $_POST["Id"] );                          
                             print_r( json_encode( $return ));                                                        
-    break;
-    case "deleteAppendix":
-                            if( $_POST["id"] === "new" ) {
-                                $files = glob( "../cal/cal_new*.*");
-                            } else {
-                                $files = glob( "../cal/cal_" . $_POST["id"] . "*.*");
-                            }
-                            $l = count( $files );
-                            $i = 0;
-                            while( $i < $l ) {
-                                unlink( "../cal/" . $files[$i] );
-                                $i += 1;
-                            }
-                            $return -> message = "Neue Anhänge wurden erfolgreich gelöscht";
-                            print_r( json_encode( $return ));
     break;
 }  
 ?>

@@ -101,6 +101,48 @@ class CalendarEvent {
         
         return $events;        
     }
+    public function saveEvent( $pdo, $id, $group_id, $title, $start_date, $end_date, $start_time, 
+                    $end_time, $url, $description, $notice, $place, $format, $deadline, $inner_url = "", $inner_url_text = "", $creator = 0, $count_part = 1 ){
+        $return = new \stdClass();
+        if( $group_id == "") {
+            $group_id = 0;
+        }
+        $query = "UPDATE event SET group_id = $group_id, title = '$title', start_date = '$start_date', end_date = '$end_date', 
+                    start_time = '$start_time', end_time = '$end_time', url = '$url', description = '$description', notice = '$notice', 
+                    place = '$place', class = '$format', registration_deadline = '$deadline', inner_url = '$inner_url', 
+                    inner_url_text = '$inner_url_text', creator = $creator  WHERE id = $id ";
+        try {
+            $pdo->query( $query );      
+            $return -> success = true;    
+            if( $inner_url != "" ) {
+                $tmp = explode( "/", $inner_url );
+                $fname = $tmp[ count( $tmp ) - 1 ];
+                if( file_exists( "../documents/$fname") ) {
+                    $tmpExt = explode( ".", $fname );
+                    $ext = $tmpExt[ count( $tmpExt) - 1 ];
+                    $newFileName = "cal_ev_appendix_edit_" . $id . "_" . time() . "." . $ext;
+                    rename( "../documents/$fname", "../documents/$newFileName" );
+                    $query = "UPDATE event set inner_url = 'library/documents/$newFileName' WHERE id = " . $id;
+                    $pdo->query( $query );
+                }                
+            } else {
+                $query = "UPDATE event set inner_url = '', inner_url_text = '' WHERE id = " . $id;
+                $pdo->query( $query );                
+            }
+            $return -> message = "Der Termin wurde erfolgreich gespeichert.";
+        } catch ( Exception $e ) {
+                $return -> success = false;    
+                $return -> message = "Beim Speichern des Termins ist folgender Fehler aufgetreten:" . $e -> getMessage();
+        }
+        return $return;
+    
+    
+    }
+    
+    
+    
+    
+    /* end CalEv */
     public function getMaxGroupId( $pdo ) {
         $query = "SELECT MAX(group_id) AS max_group_id FROM event";
         $stm = $pdo -> query( $query );
@@ -436,55 +478,6 @@ class CalendarEvent {
         $return -> string = substr( $return -> string, 0, -1 );
         
         return $return;
-    }
-    public function saveEvent( $pdo, $id, $group_id, $title, $start_date, $end_date, $start_time, 
-                    $end_time, $url, $description, $notice, $place, $format, $deadline, $inner_url = "", $inner_url_text = "", $creator = 0, $count_part = 1 ){
-        $return = new \stdClass();
-        if( $group_id == "") {
-            $group_id = 0;
-        }
-        // get old event dates and times for inform participants if event changed
-/*
-        $query = "SELECT title, start_date, end_date, start_time, end_time FROM event WHERE id = $id";
-        $stm = $pdo -> query( $query );
-        $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
-        if( $result[0]["start_date"] != $start_date || $result[0]["end_date"] != $end_date || $result[0]["start_time"] != $start_time || $result[0]["end_time"] != $end_time  ) {
-            // event is changed -> inform participants
-            $content = "Der Termin „" . $result[0]["title"] . "” vom " . getGermanDateFromMysql( $result[0]["start_date"], false ) . " wurde auf den " . getGermanDateFromMysql( $start_date ) . " um $start_time Uhr verschoben. Bitte prüfe, ob Du teilnehmen kannst."; 
-            $settings = parse_ini_file('../../ini/settings.ini', TRUE);
-            $result = informParticipantsAboutChangedEvent( $pdo, $id, $content, $end_date, $settings["calendar"]["message_behavior"] );        
-        }
-*/
-        $query = "UPDATE event SET group_id = $group_id, title = '$title', start_date = '$start_date', end_date = '$end_date', 
-                    start_time = '$start_time', end_time = '$end_time', url = '$url', description = '$description', notice = '$notice', 
-                    place = '$place', class = '$format', registration_deadline = '$deadline', inner_url = '$inner_url', 
-                    inner_url_text = '$inner_url_text', creator = $creator  WHERE id = $id ";
-        try {
-            $pdo->query( $query );      
-            $return -> success = true;    
-            if( $inner_url != "" ) {
-                $tmp = explode( "/", $inner_url );
-                $fname = $tmp[ count( $tmp ) - 1 ];
-                if( file_exists( "../documents/$fname") ) {
-                    $tmpExt = explode( ".", $fname );
-                    $ext = $tmpExt[ count( $tmpExt) - 1 ];
-                    $newFileName = "cal_ev_appendix_edit_" . $id . "_" . time() . "." . $ext;
-                    rename( "../documents/$fname", "../documents/$newFileName" );
-                    $query = "UPDATE event set inner_url = 'library/documents/$newFileName' WHERE id = " . $id;
-                    $pdo->query( $query );
-                }                
-            } else {
-                $query = "UPDATE event set inner_url = '', inner_url_text = '' WHERE id = " . $id;
-                $pdo->query( $query );                
-            }
-            $return -> message = "Der Termin wurde erfolgreich gespeichert.";
-        } catch ( Exception $e ) {
-                $return -> success = false;    
-                $return -> message = "Beim Speichern des Termins ist folgender Fehler aufgetreten:" . $e -> getMessage();
-        }
-        return $return;
-    
-    
     }
     public function saveSerieEvent( $pdo, $id, $group_id, $title, $start_date, $end_date, $start_time, 
                     $end_time, $url, $description, $notice, $place, $format, $deadline, $inner_url = "", $inner_url_text = "" ){

@@ -81,7 +81,8 @@ const init = function() {
         cal.getDaysForView( info )
     });
     data = {};
-    data.command = "getEventsForView"; 
+    data.command = "getEventsForView";
+    data.dVar = "cal"; 
     data.startDate = cal.evCal.view.activeStart.addDays(1).toISOString().split("T")[0];
     data.endDate = cal.evCal.view.activeEnd.addDays(1).toISOString().split("T")[0];
     data.userId = currentUserId;

@@ -185,22 +185,13 @@ class Calendar {
 		        throw "kein JSON-Objekt übergeben";
 		    }
 		    if( typeof jsonobject.dVar !== "undefined" ) calendar = window[ jsonobject.dVar ]
-		    console.log( jsonobject, cal );
+		    console.log( jsonobject, calendar );
 			switch( jsonobject.command ) {
-				case "getDaysForView":
-					l = jsonobject.data.length;
-					i = 0;
-					while ( i < l ) {
-						console.log( jsonobject.data[i] );
-						i += 1;
-					}
-					break;
 		        case "getEventsForView":
 	        		l = jsonobject.data.length;
 	        		i = 0;
 	        		while ( i < l ) {
-	        			//console.log( jsonobject.data[i] );
-	        			cal.addEvent( jsonobject.data[i] )
+	        			calendar.addEvent( jsonobject.data[i] )
 	        			i += 1;
 	        		}
 		        break;
@@ -833,27 +824,6 @@ class Calendar {
 
 			*/
 			this.opt.cal = new EventCalendar( nj().els( calArgs.id ), options);
-		}
-		/**
-		 * getDayForView
-		 * 
-		 * get startdate and enddate for a given date, first day of week and viewtype
-		 * 
-		 * cDate 			date 			date in the current view
-		 * cView 			string 			current view
-		 * 
-		 * return object { start: startdate, end: enddate}
-		*/
-		getDaysForView = function( info ) {
-			console.log( this.opt.currentUserId );
-			data = {};
-			data.command = "getEventsForView"; 
-			data.startDate = info.startStr.replace( "T", " " );
-			data.endDate = info.endStr.replace( "T", " " );
-			data.userId = this.opt.currentUserId;
-			data.isFetch = true;
-			console.log( data );
-    		nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
 		}
 		/**
 		 * switchHeadline
