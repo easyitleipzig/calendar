@@ -15,6 +15,21 @@ async function uploadAppendixFile( path, el, id ) {
       body: formData
     })
   .then( data => { 
+    let tmp = "";
+    console.log( el.length );
+    if( id === "new") {
+        l = el.length;
+
+        i = 0;
+        while ( i < l ) {
+            console.log( getFileExtAndName(el[i].name).Ext );
+            getFileExtAndName(el[i].name)
+            tmp += "<a href='library/cal/cal_new_" + currentUserId + "_" + i + "." + getFileExtAndName(el[i].name).Ext + " target='_blank'>Anhang " + ( i + 1 ) + "</a>&nbsp;&nbsp;"
+            i += 1;
+        }
+        nj( "#loadAppendix" ).v( null );
+        nj( "#editAppendix" ).htm( tmp );
+    }
   } )
   .catch( data => { 
     console.log(data);
@@ -72,5 +87,5 @@ const init = function() {
     data.userId = currentUserId;
     data.isFetch = true;
     console.log( data );
-    nj().post("library/php/ajax_calendar.php", data, cal.evaluateCalData );   
+    nj().post("library/php/ajax_calendar_evcal.php", data, cal.evaluateCalData );   
 }

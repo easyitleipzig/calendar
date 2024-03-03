@@ -1,6 +1,12 @@
 <?php
 class CalendarEvent {
-    
+    private function getAppendixForEvent( $id ) {
+        $fText = "";
+        $files = glob( "../cal/cal_$id*.*" );
+        $fText = implode( "|", $files );
+        $fText = str_replace( "..", "library", $fText);
+        return $fText;
+    }    
     public function getEventForId( $pdo, $id ) {
         $query = "SELECT * FROM event where id = $id";
         $stm = $pdo -> query( $query );
@@ -35,9 +41,9 @@ class CalendarEvent {
             $exPro -> participate = null;
             $exPro -> remindMe = null;
             $exPro -> countPart = null;
-            $exPro -> participateAs = null;
-            
+            $exPro -> participateAs = null;            
         }
+        $exPro -> appendix = $this -> getAppendixForEvent( $id );
         $ev -> extendedProps = $exPro;
         return $ev;        
 
@@ -87,6 +93,7 @@ class CalendarEvent {
                 $exPro -> participateAs = null;
                 
             }
+            $exPro -> appendix = $this -> getAppendixForEvent( $exPro -> id );
             $ev -> extendedProps = $exPro;
             $events[] = $ev;
             $i += 1;

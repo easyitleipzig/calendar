@@ -1,5 +1,5 @@
 <?php
-define( "PATH_TO_APPENDIX", "library/documents/" );
+define( "PATH_TO_APPENDIX", "library/cal/" );
 // ajax file for calendar.php and calendar_editable.php
 session_start();
 error_reporting( E_ALL ^E_NOTICE );
@@ -34,27 +34,6 @@ if( isset( $_POST["param"] ) ) {
     $return -> param = $_POST["param"];
 }
 $settings = parse_ini_file('../../ini/settings.ini', TRUE);
-/*
-
-$session_timeout = $settings['logout']['automatic_timeout'] * 60;
-
-if (!isset($_SESSION['last_visit'])) {
-    $_SESSION['last_visit'] = time();
-    // Aktion der Session wird ausgeführt
-}
-if((time() - $_SESSION['last_visit']) > $session_timeout && $_POST["command"] != "connect" && $_POST["command"] != "sendContactForm" && $_POST["command"] != "sendBcForm" ) {
-    session_unset();
-    session_destroy();
-    $return -> command = "timeout";
-    $return -> message = "Sie wurden automatisch abgemeldet, da Sie mehr als " . $session_timeout/60 . " Minuten inaktiv waren. Sie werden nun weitergeleitet.";
-//    $return -> role_id = $_POST["role_id"];
-    print_r( json_encode( $return ));
-    die;
-    
-} else {
-    $_SESSION['last_visit'] = time();
-}
-*/
 $dns = $settings['database']['type'] . 
             ':host=' . $settings['database']['host'] . 
             ((!empty($settings['database']['port'])) ? (';port=' . $settings['database']['port']) : '') . 
@@ -79,23 +58,13 @@ foreach ( $_POST as &$str) {
 }
 switch( $_POST["command"]) {
     case "getEventsForView":
-                            if( $_POST["isFetch"] === "1" ) { // 1 is true
-                                require_once( "classes/CalendarEventEvCal.php");
-                                $ev = new \CalendarEvent();
-                                $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
-                                $return -> wasFetch = true;
-                                $return -> success = true;
-                                $return -> message = "Die Termine wurden erfolgreich geladen.";                                
-                                print_r( json_encode( $return ));    
-                            } else {
-                                $return -> wasFetch = false;
-                                require_once( "classes/CalendarEvent.php");
-                                $ev = new \CalendarEvent();
-                                $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
-                                $return -> success = true;
-                                $return -> message = "Die Termine wurden erfolgreich geladen.";                                
-                                print_r( json_encode( $return ));    
-                            }
+                            require_once( "classes/CalendarEventEvCal.php");
+                            $ev = new \CalendarEvent();
+                            $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
+                            $return -> wasFetch = true;
+                            $return -> success = true;
+                            $return -> message = "Die Termine wurden erfolgreich geladen.";                                
+                            print_r( json_encode( $return ));    
     break;
     case "updateEventEvCal":
                                 require_once( "classes/CalendarEvent.php");
@@ -408,7 +377,7 @@ switch( $_POST["command"]) {
                             print_r( json_encode( $return ));    
     break; 
     case "showParticipants":
-                            require_once( "classes/CalendarEvent.php");
+                            require_once( "classes/CalendarEventEvCal.php");
                             $ev = new \CalendarEvent();
                             $return -> result = $ev -> getParticipants( $db_pdo, $_POST["event_id"] );
                             $return -> success = $return -> result -> success;
@@ -524,6 +493,21 @@ switch( $_POST["command"]) {
     case "informUserAboutDeletion":
                             $return = informUserAboutDeletion( $db_pdo, $_POST["Id"] );                          
                             print_r( json_encode( $return ));                                                        
+    break;
+    case "deleteAppendix":
+                            if( $_POST["id"] === "new" ) {
+                                $files = glob( "../cal/cal_new*.*");
+                            } else {
+                                $files = glob( "../cal/cal_" . $_POST["id"] . "*.*");
+                            }
+                            $l = count( $files );
+                            $i = 0;
+                            while( $i < $l ) {
+                                unlink( "../cal/" . $files[$i] );
+                                $i += 1;
+                            }
+                            $return -> message = "Neue Anhänge wurden erfolgreich gelöscht";
+                            print_r( json_encode( $return ));
     break;
 }  
 ?>

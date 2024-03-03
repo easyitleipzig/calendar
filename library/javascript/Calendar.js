@@ -32,7 +32,7 @@ nj( document ).on( "keypress", function( e ) {
 class Calendar {
 	constructor( setup ) {
 		this.opt = {
-			pVar:               "",
+			dVar:               "",
 			evCalId: 			"",
 			addClassFiles:		"calendar_evCal.css EventCalendar.css",
 			calView: 			'dayGridMonth', // timeGridWeek, timeGridDay, timeGridList ....,
@@ -51,11 +51,11 @@ class Calendar {
 			loadCSS( PATH_TO_CSS + tmpCF[ i ] );
 			i += 1;
 		}
-		nj( this.opt.evCalId ).sDs("dvar", this.opt.pVar );
+		nj( this.opt.evCalId ).sDs("dvar", this.opt.dVar );
 		nj( this.opt.evCalId ).sDs("ei_calendar", "" );
 		this.evCal = new EventCalendar( nj().els( this.opt.evCalId ), {
 
-				cVar: this.opt.pVar,
+				cVar: this.opt.dVar,
 
 	    		view: this.opt.calView,
 
@@ -136,9 +136,8 @@ class Calendar {
 
 
 			});
-			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: false, hasHelp: true, width: 320, afterShow: function(){ nj( this.id).Dia().options('center')} } );
-			this.dPartic = new DialogDR( { dVar: this.opt.pVar + ".dPartic", id: "#dPartic", modal: false, variables: {calendar: this }, onShow: function() {
-				console.log( this.pVar );
+			this.divEvent = new DialogDR( { dVar: this.opt.dVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: false, hasHelp: true, width: 320, afterShow: function(){ nj( this.id).Dia().options('center')} } );
+			this.dPartic = new DialogDR( { dVar: this.opt.dVar + ".dPartic", id: "#dPartic", modal: false, variables: {calendar: this }, onShow: function() {
 				nj("#dPartic_box div" ).on( "mouseleave", function(e){ 
 					e.stopImmediatePropagation();
 					nj("#" + this.id ).Dia().hide();
@@ -146,6 +145,8 @@ class Calendar {
 				}
 			 	/* onShow: function(){ nj( this.id).Dia().options('center') }*/ 
 			} );
+			this.showPart = new DialogDR( { dVar: this.opt.dVar +  ".showPart", id: "#showPart", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: true, hasHelp: false, width: 320 } );
+			
 		}
 		// end constructor
 		// variables declaration
@@ -173,7 +174,7 @@ class Calendar {
 		 * 
 		*/
 		evaluateCalData = function( data ) {
-    		let l, i, tmp;
+    		let l, i, tmp, calendar;
 		    let jsonobject;
 		    if( typeof data === "string" ) {
 		        jsonobject = JSON.parse( data );
@@ -183,7 +184,8 @@ class Calendar {
 		    if( !isJ( jsonobject ) ) {
 		        throw "kein JSON-Objekt übergeben";
 		    }
-		    console.log( jsonobject, this );
+		    if( typeof jsonobject.dVar !== "undefined" ) calendar = window[ jsonobject.dVar ]
+		    console.log( jsonobject, cal );
 			switch( jsonobject.command ) {
 				case "getDaysForView":
 					l = jsonobject.data.length;
@@ -214,6 +216,10 @@ class Calendar {
 				    	cal.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
 			    	}
 			    break;
+			case "deleteAppendix":
+				console.log( jsonobject.message );
+				nj( "#loadAppendix" ).v( null );
+				break;
 			}
 		}
 		/**
@@ -372,6 +378,59 @@ class Calendar {
 
 		}
 		/**
+		 * deleteAppendix
+		 * 
+		 * delete apendixes from intern Id
+		 * 
+		 * 
+		 * return undefined
+		 * 
+		*/
+		deleteAppendix = function( data, dialog ) {
+			data = {};
+			data.command = "deleteAppendix";
+			data.id = nj( "#Id" ).v();
+			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+		}
+		/**
+		 * setParticipate
+		 * 
+		 * switch participation
+		 * 
+		 * 
+		 * return undefined
+		 * 
+		*/
+		setParticipate = function() {
+			data = {};
+			data.command = "setParticipate";
+			data.id = nj( "#Id" ).v();
+			data.userId = currentUserId;
+			data.participate = nj( "#participate" ).chk();
+			data.participateAs = nj( "#participateAs" ).v();
+			data.remindMe = nj( "#remindMe" ).chk();
+			data.countPart = nj( "#countPart" ).v();
+			console.log( data );
+			//nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+		}
+		/**
+		 * showDialogParticipate
+		 * 
+		 * shows the participation dialog
+		 * 
+		 * 
+		 * return undefined
+		 * 
+		*/
+		showDialogParticipate = function( cal ) {
+			data = {};
+			data.command = "showDialogParticipate";
+			data.dVar = cal.opt.dVar;
+			data.id = nj( "#Id" ).v();
+			console.log( data );
+			//nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+		}
+		/**
 		 * fillEditDialogForNew
 		 * 
 		 * build field definitions from intern Id
@@ -423,7 +482,13 @@ class Calendar {
 				dialog.options( "buttons", [
 				{
 					title: "Schließen", action: function( e ) {
-						nj( e.target ).Dia().hide();	
+						e.stopImmediatePropagation();
+						nj( e.target ).Dia().hide();
+						if( nj("#Id").v() === "new" ) {
+							console.log( nj( this ).gRO() );
+							nj( this ).gRO().deleteAppendix();
+							//cal.deleteAppendix();
+						}	
 					} 
 				},
 				{
@@ -470,8 +535,18 @@ class Calendar {
 			tmpTime = tmpTime[1].split( ":" );
 			nj( "#endHour" ).v( tmpTime[0] );
 			nj( "#valEndMinutes" ).v( tmpTime[1] );
-			nj( "#participate" ).chk( event.extendedProps.participate )
-			nj( "#participateAs" ).v( event.extendedProps.participateAs )
+			nj( "#participate" ).chk( event.extendedProps.participate );
+			nj( "#participateAs" ).v( event.extendedProps.participateAs );
+			nj( "#remindMe" ).chk( event.extendedProps.remindMe );
+			// set behavior for participate
+			nj( "#participate, #participateAs, #remindMe, #countPart" ).on( "change", function( e ) {
+				e.stopImmediatePropagation();
+				nj( this ).gRO().setParticipate();
+			} );
+			nj( "#showParticipants" ).on( "click", function( e ) {
+				e.stopImmediatePropagation();
+				nj( this ).gRO().showDialogParticipate( nj( this ).gRO() );
+			})
 			console.log( event.extendedProps );
 		}
 		/**
@@ -558,7 +633,7 @@ class Calendar {
 					buttons: [
 							{title: "Abbrechen", action: function( e ) {
 								//console.log( nj( this ).Dia().opt.variables.cal.evCal );
-								nj( e.target ).Dia().hide();	
+								nj( e.target ).Dia().hide();
 							}},
 							{title: "Speichern", action: function( e ) {
 								console.log( nj( e.target ).Dia().opt.variables );
