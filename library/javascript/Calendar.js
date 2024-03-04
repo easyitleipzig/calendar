@@ -32,7 +32,7 @@ nj( document ).on( "keypress", function( e ) {
 class Calendar {
 	constructor( setup ) {
 		this.opt = {
-			dVar:               "",
+			pVar:               "",
 			evCalId: 			"",
 			addClassFiles:		"calendar_evCal.css EventCalendar.css",
 			calView: 			'dayGridMonth', // timeGridWeek, timeGridDay, timeGridList ....,
@@ -51,11 +51,11 @@ class Calendar {
 			loadCSS( PATH_TO_CSS + tmpCF[ i ] );
 			i += 1;
 		}
-		nj( this.opt.evCalId ).sDs("dvar", this.opt.dVar );
+		nj( this.opt.evCalId ).sDs("dvar", this.opt.pVar );
 		nj( this.opt.evCalId ).sDs("ei_calendar", "" );
 		this.evCal = new EventCalendar( nj().els( this.opt.evCalId ), {
 
-				cVar: this.opt.dVar,
+				cVar: this.opt.pVar,
 
 	    		view: this.opt.calView,
 
@@ -136,8 +136,8 @@ class Calendar {
 
 
 			});
-			this.divEvent = new DialogDR( { dVar: this.opt.dVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: false, hasHelp: true, width: 320, afterShow: function(){ nj( this.id).Dia().options('center')} } );
-			this.dPartic = new DialogDR( { dVar: this.opt.dVar + ".dPartic", id: "#dPartic", modal: false, variables: {calendar: this }, onShow: function() {
+			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: false, hasHelp: true, width: 320, afterShow: function(){ nj( this.id).Dia().options('center')} } );
+			this.dPartic = new DialogDR( { dVar: this.opt.pVar + ".dPartic", id: "#dPartic", modal: false, variables: {calendar: this }, onShow: function() {
 				nj("#dPartic_box div" ).on( "mouseleave", function(e){ 
 					e.stopImmediatePropagation();
 					nj("#" + this.id ).Dia().hide();
@@ -145,7 +145,7 @@ class Calendar {
 				}
 			 	/* onShow: function(){ nj( this.id).Dia().options('center') }*/ 
 			} );
-			this.showPart = new DialogDR( { dVar: this.opt.dVar +  ".showPart", id: "#showPart", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: true, hasHelp: false, width: 320 } );
+			this.showPart = new DialogDR( { dVar: this.opt.pVar +  ".showPart", id: "#showPart", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: true, hasHelp: false, width: 320 } );
 			
 		}
 		// end constructor
@@ -184,7 +184,7 @@ class Calendar {
 		    if( !isJ( jsonobject ) ) {
 		        throw "kein JSON-Objekt übergeben";
 		    }
-		    if( typeof jsonobject.dVar !== "undefined" ) calendar = window[ jsonobject.dVar ]
+		    if( typeof jsonobject.pVar !== "undefined" ) calendar = window[ jsonobject.pVar ]
 		    console.log( jsonobject, calendar );
 			switch( jsonobject.command ) {
 		        case "getEventsForView":
@@ -204,13 +204,52 @@ class Calendar {
 				    		tmp += "<div>" + jsonobject.data[i].participant + "</div>"
 				    		i += 1;
 				    	}
-				    	cal.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
+				    	calendar.dPartic.show({innerHTML: tmp, x: jsonobject.x, y: jsonobject.y - 100 })
 			    	}
 			    break;
-			case "deleteAppendix":
-				console.log( jsonobject.message );
-				nj( "#loadAppendix" ).v( null );
+				case "deleteAppendix":
+					console.log( jsonobject.message );
+					nj( "#editAppendix" ).v( "" );
+					nj( "#loadAppendix" ).v( null );
 				break;
+				
+				case "showDialogParticipate":
+					if( jsonobject.success ) {
+						if( jsonobject.countPart === null ) {
+								dMNew.show({title:"Teilnehmer anzeigen", type: "info", text: "Für diesen Termin gibt es keine Teilnehmer." } );
+								return;
+							} else {
+								tmp = "";
+								tmp += "<div><div>Teilnehmer</div><div>" + jsonobject.countPart + "</div></div>";
+								l = jsonobject.participants.length;
+								i = 0;
+								while ( i < l ) {
+									
+									tmp += "<div><div>" + jsonobject.participants[i]["fullname"] + "</div><div>" + jsonobject.participants[i]["count_part"] + "</div></div>";
+									i += 1;
+								}
+								calendar.showPart.show({title: "Terminteilnehmer", innerHTML:tmp, buttons:[
+										{
+											title: "Drucken",
+											action: function() {
+												open("calendar20_showPart.php?cal=" + nj( "#Id" ).v(), "_blank");	
+											}
+										},
+										{
+											title: "Okay",
+											action: function() {
+												calendar.showPart.hide();	
+											}
+										},
+									]});
+
+							}
+						} 
+					break;
+					case "setParticipate":
+						dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: jsonobject.message } );
+					break; 
+				
 			}
 		}
 		/**
@@ -395,6 +434,7 @@ class Calendar {
 		setParticipate = function() {
 			data = {};
 			data.command = "setParticipate";
+			data.pVar = this.opt.pVar;
 			data.id = nj( "#Id" ).v();
 			data.userId = currentUserId;
 			data.participate = nj( "#participate" ).chk();
@@ -402,7 +442,7 @@ class Calendar {
 			data.remindMe = nj( "#remindMe" ).chk();
 			data.countPart = nj( "#countPart" ).v();
 			console.log( data );
-			//nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
 		 * showDialogParticipate
@@ -413,13 +453,13 @@ class Calendar {
 		 * return undefined
 		 * 
 		*/
-		showDialogParticipate = function( cal ) {
+		showDialogParticipate = function( calendar ) {
 			data = {};
 			data.command = "showDialogParticipate";
-			data.dVar = cal.opt.dVar;
+			data.pVar = calendar.opt.pVar;
 			data.id = nj( "#Id" ).v();
 			console.log( data );
-			//nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
 		 * fillEditDialogForNew
@@ -476,9 +516,7 @@ class Calendar {
 						e.stopImmediatePropagation();
 						nj( e.target ).Dia().hide();
 						if( nj("#Id").v() === "new" ) {
-							console.log( nj( this ).gRO() );
 							nj( this ).gRO().deleteAppendix();
-							//cal.deleteAppendix();
 						}	
 					} 
 				},
@@ -537,7 +575,7 @@ class Calendar {
 			nj( "#showParticipants" ).on( "click", function( e ) {
 				e.stopImmediatePropagation();
 				nj( this ).gRO().showDialogParticipate( nj( this ).gRO() );
-			})
+			});
 			console.log( event.extendedProps );
 		}
 		/**
@@ -658,8 +696,8 @@ class Calendar {
 		 * 
 		*/
 		onEventMouseEnter = function( info ) {
-			console.log( "onEventMouseEnter", info );
 			data.command = "showParticipants";
+			data.pVar = this.opt.pVar;
 			data.event_id = info.event.extendedProps.id;
 			console.log( info.jsEvent.screenX, info.jsEvent.screenY );
 			data.x = info.jsEvent.screenX;

@@ -140,7 +140,55 @@ class CalendarEvent {
     }
     
     
-    
+    public function showDialogParticipate( $pdo, $id ) {
+        $result = new \stdClass();
+        $q = "select sum(count_part) as count_part from event_participate where event_id = $id";
+        $s = $pdo -> query( $q );
+        $r = $s -> fetchAll( PDO::FETCH_ASSOC );
+        if( count( $r ) > 0 ) {
+            $result -> countPart = $r[0]["count_part"];
+        } else {
+            $result -> countPart = "";
+        }
+        $q = "select concat( lastname, ', ', firstname) as fullname, count_part from user, event_participate where user.id = event_participate.user_id and event_id = $id";
+        $s = $pdo -> query( $q );
+        $r = $s -> fetchAll( PDO::FETCH_ASSOC );
+        $result -> participants = $r;
+        $q = "select title from event where id = $id";
+        $s = $pdo -> query( $q );
+        $r = $s -> fetchAll( PDO::FETCH_ASSOC );
+        $result -> title = $r[0]["title"];
+        return $result;
+    }  
+    public function setParticipate( $pdo, $id, $userId, $participate, $participateAs, $remindMe, $countPart ) {
+        $return = new \stdClass();
+        $return -> success = true;
+        try {
+        if( $participate === "1" ) {
+            // participate
+            // check for existing record
+                $q = "select id from event_participate where event_id = $id and user_id = $userId";
+                $s = $pdo -> query( $q );
+                $r = $s -> fetchAll( PDO::FETCH_ASSOC );
+                if( count( $r ) > 0 ) {
+                    // update record
+                    $q = "UPDATE `event_participate` SET `remind_me` = '$remindMe', `role_id` = '$participateAs', `count_part` = '$countPart'. current_datetime=Now() WHERE `event_participate`.`event_id` = $id and `event_participate`.`user_id` = $userId";
+                    $return -> message = "Die Teilnahme wurde erfolgreich gespeichert.";
+                } else {
+                    // create new record
+                    $q ="INSERT INTO `event_participate` (`event_id`, `user_id`, `remind_me`, `role_id`, `current_datetime`, `count_part`) VALUES ('$id', '$userId', '$remindMe', '$participateAs', current_timestamp(), '$countPart')";
+                    $return -> message = "Die Teilnahme wurde erfolgreich angelegt.";
+                }
+            } else {
+                // delete part record
+                $q = "delete from event_participate  WHERE `event_participate`.`event_id` = $id and `event_participate`.`user_id` = $userId";
+                $return -> message = "Die Teilnahme wurde erfolgreich gelöscht.";}
+            $pdo -> query( $q );
+        } catch ( Exception $e ) {
+                $return -> success = false;    
+                $return -> message = "Beim Löschen des Termins ist folgender Fehler aufgetreten:" . $e -> getMessage();
+        }
+    }   
     
     /* end CalEv */
     public function getMaxGroupId( $pdo ) {

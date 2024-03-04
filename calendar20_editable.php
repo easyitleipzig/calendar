@@ -19,7 +19,7 @@ catch( \PDOException $e ) {
     var_dump( $result );
     exit;
 }
-require_once("library/php/classes/CalendarEvent.php");
+require_once("library/php/classes/CalendarEventEvCal.php");
 $event = new \CalendarEvent();
 /*
 $dates = $event -> getStartEnd( $db_pdo, $_SESSION["calInitialDate"], $_SESSION["calInitialView"]);
@@ -213,7 +213,7 @@ $event_string = substr( $event_string, 0, -1 );
                 </div>
                 <a href="#" id="showParticipants">Teilnehmer/innen anzeigen</a>
                 <div>&nbsp;</div>
-                <a href="#" id="printParticipants" target="_blank">Teilnehmer drucken</a>
+                <a href="#" id="printPart" target="_blank">Teilnehmer drucken</a>
                 <div>&nbsp;</div>
             </div>
         </div>
@@ -246,9 +246,7 @@ $event_string = substr( $event_string, 0, -1 );
     <div id="editAppendix">
 
     </div>
-    <form enctype="multipart/form-data" action="library/php/upload_calendar20_apendix.php" method="POST" id="form_upload_edit_apendix">
     <input type="file" id="loadAppendix" accept=".pdf,.jpg,.jpeg,.png,.gif" multiple>
-    </form> 
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
     <input type="checkbox" id="sendAppendix" title="Anhang mitsenden">senden
     <label>Linktext</label>
@@ -321,9 +319,9 @@ $event_string = substr( $event_string, 0, -1 );
     echo "var currentUserId = " . $_SESSION['user_id'] . ";\n";
 ?>
 var cal = new Calendar({pVar: "cal", evCalId: "#divCal", type: "editable" } );
-docReady(function() {
+(function() {  
     init();
-});
+})();
 </script>
 </body>
 </html>

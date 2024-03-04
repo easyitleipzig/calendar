@@ -58,7 +58,7 @@ foreach ( $_POST as &$str) {
 }
 switch( $_POST["command"]) {
     case "getEventsForView":
-                            $return -> dVar = $_POST["dVar"];
+                            $return -> pVar = $_POST["pVar"];
                             require_once( "classes/CalendarEventEvCal.php");
                             $ev = new \CalendarEvent();
                             $return -> data = $ev -> getEventsForView( $db_pdo, $_POST["startDate"], $_POST["endDate"], $_POST["userId"] );
@@ -68,6 +68,7 @@ switch( $_POST["command"]) {
                             print_r( json_encode( $return ));    
     break;
     case "showParticipants":
+                            $return -> pVar = $_POST["pVar"];
                             require_once( "classes/CalendarEventEvCal.php");
                             $ev = new \CalendarEvent();
                             $return -> result = $ev -> getParticipants( $db_pdo, $_POST["event_id"] );
@@ -182,10 +183,32 @@ switch( $_POST["command"]) {
                             
                             
                             // end inform participants
-                            $return -> dVar = $_POST["dVar"];                            
+                            $return -> pVar = $_POST["pVar"];                            
                             $return -> success = $result -> success;
                             $return -> message = $result -> message;
                             print_r( json_encode( $return ));    
+    break;
+    case "showDialogParticipate":
+                            require_once( "classes/CalendarEventEvCal.php");
+                            $ev = new \CalendarEvent();
+                            $res = $ev -> showDialogParticipate( $db_pdo, $_POST["id"] );
+                            $return -> pVar = $_POST["pVar"];              
+                            $return -> countPart = $res -> countPart;
+                            $return -> participants = $res -> participants;              
+                            $return -> title = $res -> title;
+                            $return -> success = true;//$result -> success;
+                            $return -> message = "Die Teilnehmer wurden erfolgreich geladen.";//$result -> message;
+                            print_r( json_encode( $return ));        
+    break;
+    case "setParticipate":
+                            require_once( "classes/CalendarEventEvCal.php");
+                            $ev = new \CalendarEvent();
+                            $result = $ev -> setParticipate( $db_pdo, $_POST["id"], $_POST["userId"], $_POST["participate"], $_POST["participateAs"], $_POST["remindMe"], $_POST["countPart"] );
+                            $return -> pVar = $_POST["pVar"];
+                            $return -> participate = $_POST["participate"];             
+                            $return -> success = $result -> success;
+                            $return -> message = $result -> message;
+                            print_r( json_encode( $return ));
     break;
     /* end events evcal */
     case "updateEventEvCal":
@@ -196,6 +219,7 @@ switch( $_POST["command"]) {
                                 $return -> message = "Der Termin wurden erfolgreich aktualisiert.";                                
                                 print_r( json_encode( $return ));    
     break;
+/* not more nessecary becaus of setParticipate
     case "setRemindMe":
                             $query = "UPDATE event_participate SET remind_me = " . $_POST["value"] . ",  role_id = " . $_POST["participateAs"] . " WHERE event_id = " . $_POST["eventId"] . " AND user_id = " . $_POST["userId"];
                             try {
@@ -209,6 +233,7 @@ switch( $_POST["command"]) {
                             
                             print_r( json_encode( $return ));    
     break;
+*/
     case "exportEvents":
                             require_once( "classes/CalendarEvent.php");
                             $ev = new \CalendarEvent();
