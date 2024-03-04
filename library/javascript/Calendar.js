@@ -579,6 +579,28 @@ class Calendar {
 			console.log( event.extendedProps );
 		}
 		/**
+		 * getDayForView
+		 * 
+		 * get startdate and enddate for a given date, first day of week and viewtype
+		 * 
+		 * cDate 			date 			date in the current view
+		 * cView 			string 			current view
+		 * 
+		 * return object { start: startdate, end: enddate}
+		*/
+		getDaysForView = function( info ) {
+			console.log( this.opt.currentUserId );
+			data = {};
+			data.command = "getEventsForView"; 
+			data.pVar = this.opt.pVar;
+			data.startDate = info.startStr.replace( "T", " " );
+			data.endDate = info.endStr.replace( "T", " " );
+			data.userId = this.opt.currentUserId;
+			data.isFetch = true;
+			console.log( data );
+    		nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
+		}
+		/**
 		 * onDateClickWithCtrl
 		 * 
 		 * date click event with pressed Ctrl key
