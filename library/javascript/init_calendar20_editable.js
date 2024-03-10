@@ -49,7 +49,6 @@ const uploadAppendix = function(evt) {
         }
         i += 1;
     }
-    //console.log( nj().els( "#loadAppendix" ).files );
     uploadAppendixFile("library/php/upload_calendar20_apendix.php", files, nj( "#Id" ).v())
 }
 const dDia1 = new DialogDR( { dVar: "dDia1", id: "#dDia1", modal: false, hasMin: true, hasMax: true, hasInfo: true, hasHelp: true } );

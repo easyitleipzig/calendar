@@ -164,7 +164,15 @@ class CalendarEvent {
         $return = new \stdClass();
         $return -> success = true;
         try {
-        if( $participate === "1" ) {
+            $q = "select title, creator, start_date, start_time from event where id = $id";
+            $s = $pdo -> query( $q );
+            $r_event = $s -> fetchAll( PDO::FETCH_ASSOC );
+            $q = "select concat( firstname, ' ', lastname ) as fullname from user where id = $userId";
+            $s = $pdo -> query( $q );
+            $r_user = $s -> fetchAll( PDO::FETCH_ASSOC );
+            require_once( "InformUser.php" );
+            $iu = new \InformUser( $pdo, "both", 27, 0, 0, $r_event[0]["creator"] );
+            if( $participate === "1" ) {
             // participate
             // check for existing record
                 $q = "select id from event_participate where event_id = $id and user_id = $userId";
@@ -177,17 +185,26 @@ class CalendarEvent {
                 } else {
                     // create new record
                     $q ="INSERT INTO `event_participate` (`event_id`, `user_id`, `remind_me`, `role_id`, `current_datetime`, `count_part`) VALUES ('$id', '$userId', '$remindMe', '$participateAs', current_timestamp(), '$countPart')";
+                    // prepare message about participation
+                    $title = "Teilnahmeinformation ´" . $r_event[0]["title"] . "´";
+                    $content = "Der Nutzer " . $r_user[0]["fullname"] . " hat dem Termin ´" . $r_event[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_event[0]["start_date"], false ) . " um " . $r_event[0]["start_time"] . " Uhr zugesagt.";
                     $return -> message = "Die Teilnahme wurde erfolgreich angelegt.";
                 }
             } else {
                 // delete part record
                 $q = "delete from event_participate  WHERE `event_participate`.`event_id` = $id and `event_participate`.`user_id` = $userId";
-                $return -> message = "Die Teilnahme wurde erfolgreich gelöscht.";}
+                $return -> message = "Die Teilnahme wurde erfolgreich gelöscht.";
+                // send message about participation delete
+                $title = "Teilnahmelöschung ´" . $r_event[0]["title"] . "´";
+                $content = "Der Nutzer " . $r_user[0]["fullname"] . " hat für Termin ´" . $r_event[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_event[0]["start_date"], false ) . " um " . $r_event[0]["start_time"] . " Uhr abgesagt.";
+            }
             $pdo -> query( $q );
+            $iu -> sendUserInfo( $title, $title, $content, $content );
         } catch ( Exception $e ) {
                 $return -> success = false;    
                 $return -> message = "Beim Löschen des Termins ist folgender Fehler aufgetreten:" . $e -> getMessage();
         }
+        return $return;
     }   
     
     /* end CalEv */

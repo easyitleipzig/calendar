@@ -36,13 +36,15 @@ class Calendar {
 			evCalId: 			"",
 			addClassFiles:		"calendar_evCal.css EventCalendar.css",
 			calView: 			'dayGridMonth', // timeGridWeek, timeGridDay, timeGridList ....,
-			type: 				"editable", // type of calendar, "editable"/"noeditable" 
+			type: 				true, // type of calendar, "editable" true/"noeditable" false 
 			firstDay: 			1,
 			currentUserId: 		1,
 			divEvWidth:  		290,
 			divEvHeight:  		440,
 
 		}
+		//let calEdit;
+		//this.opt.type === "editable" ? this.calEdit = true : this.calEdit = false;
 		Object.assign( this.opt, setup );
 		let tmpCF = this.opt.addClassFiles.split( " " );
 		let l = tmpCF.length;
@@ -111,7 +113,7 @@ class Calendar {
 		        	if( info.event.extendedProps.participate ) {
 		        		nj( info.el ).aCl( "fc-participate" );
 		        	}
-		        	if( info.event.extendedProps.inner_url ) {
+		        	if( info.event.extendedProps.appendix ) {
 		        		nj( info.el ).aCl( "eventHasAppendix" );
 		        	}
 		        },
@@ -125,9 +127,21 @@ class Calendar {
 		        	nj( info.jsEvent.target ).Dia().onEventDragStart( info );
 		        },
 		        eventDragStop: function( info ) {
+		        	console.log( nj( info.jsEvent.target ).gRO() );
+
 		        	nj( info.jsEvent.target ).Dia().onEventDragStop( info );
 		        },
 
+		        eventDrop: function( info ) {
+		        	//console.log( info );
+		        	if( nj( info.jsEvent.target ).gRO().opt.type ) {
+		        		data = {};
+						data.command = "saveEventByJson";
+						data.event = JSON.stringify( info.event.id);
+						console.log( data );
+		        	}
+		        	
+		        },
 
 		        select: function( info ) {
 		            // body...
@@ -247,6 +261,7 @@ class Calendar {
 						} 
 					break;
 					case "setParticipate":
+						//if( jsonobject.elId === "")
 						dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: jsonobject.message } );
 					break; 
 				
@@ -431,11 +446,12 @@ class Calendar {
 		 * return undefined
 		 * 
 		*/
-		setParticipate = function() {
+		setParticipate = function( elId ) {
 			data = {};
 			data.command = "setParticipate";
 			data.pVar = this.opt.pVar;
 			data.id = nj( "#Id" ).v();
+			data.elId = elId;
 			data.userId = currentUserId;
 			data.participate = nj( "#participate" ).chk();
 			data.participateAs = nj( "#participateAs" ).v();
@@ -532,6 +548,7 @@ class Calendar {
 			}
 		}
 		fillEditDialogForEdit = function( data, dialog ) {
+			let tmp, app, event = data.event;
 			console.log( data.event.start );
 			if( data.event.start < new Date() ) {			
 				nj().els( dialog.opt.id + "_box div.d_HLTitle")[0].innerHTML = "Termin bearbeiten (gesperrt)";
@@ -542,7 +559,6 @@ class Calendar {
 			} else {
 				nj().els( dialog.opt.id + "_box div.d_HLTitle")[0].innerHTML = "Termin bearbeiten";
 			}
-			let event = data.event;
 			nj( "#editEvent" ).rCl( "cNew" );
 			nj( "#editEvent" ).aCl( "cEdit" );
 			nj( "#Id" ).v( event.extendedProps.id );
@@ -567,10 +583,23 @@ class Calendar {
 			nj( "#participate" ).chk( event.extendedProps.participate );
 			nj( "#participateAs" ).v( event.extendedProps.participateAs );
 			nj( "#remindMe" ).chk( event.extendedProps.remindMe );
+			// set appendix
+			if( event.extendedProps.appendix !== "" ) {
+				app = event.extendedProps.appendix.split("|") ;
+				let l = app.length;
+				let i = 0;
+				tmp = "";
+				while ( i < l ) {
+					tmp += "<a href='" + app[i] + "'>Anhang " + (i + 1 ) + "</a>&nbsp;"
+					i += 1;
+				}
+				console.log( tmp );
+				nj( "#editAppendix" ).htm( tmp );
+			}
 			// set behavior for participate
 			nj( "#participate, #participateAs, #remindMe, #countPart" ).on( "change", function( e ) {
 				e.stopImmediatePropagation();
-				nj( this ).gRO().setParticipate();
+				nj( this ).gRO().setParticipate( this.id );
 			} );
 			nj( "#showParticipants" ).on( "click", function( e ) {
 				e.stopImmediatePropagation();
@@ -724,6 +753,7 @@ class Calendar {
 			console.log( info.jsEvent.screenX, info.jsEvent.screenY );
 			data.x = info.jsEvent.screenX;
 			data.y = info.jsEvent.screenY;
+			//console.log( info.jsEvent );
 			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
@@ -750,14 +780,19 @@ class Calendar {
 		 * 
 		*/
 		onEventResize = function( info ) {
-			console.log( "onEventResize", info );
-			this.evCal.removeEventById( info.event.id );
+			console.log( "onEventResize", info, this.opt );
+			if( !this.opt.type ) {
+				this.evCal.removeEventById( info.event.id );
+				this.evCal.addEvent( info.oldEvent );
+				return;
+			}
 			this.evCal.addEvent( info.event );
 			data = {};
 			data.command = "updateEventEvCal";
 			data.event = JSON.stringify( info.event );
 			data.repeat = 0;
 			data.repeatTo = "0000-00-00";
+			console.log( data );
 			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
 
 		}
@@ -798,7 +833,15 @@ class Calendar {
 		 * 
 		*/
 		onEventDragStop = function( info ) {
-			console.log( "onEventDragStart", info );
+			if( !this.opt.type ) {
+				this.evCal.removeEventById( info.event.id );
+				this.evCal.addEvent( info.event );				
+			} else {
+				data = {};
+				data.command = "saveEventByJson";
+				data.event = JSON.stringify( this.evCal.getEventById(info.event.id));
+				console.log( data );
+			}
 		}
 		/**
 		 * removeEvent

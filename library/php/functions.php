@@ -1602,7 +1602,9 @@ function getGermanDateFromMysql( $date, $widthMinutes = false ) {
     } else {
             $tmp = explode( " ", $date );
             $tmp = explode( "-", $tmp[0] );
-            return $tmp[2] . "." . $tmp[1] . "." .$tmp[0];
+            if( count( $tmp ) > 0 ) {
+                return $tmp[2] . "." . $tmp[1] . "." .$tmp[0];
+            }
     }
 }
 

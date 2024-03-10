@@ -699,3 +699,25 @@ function htmlToElement(html) {
     template.innerHTML = html;
     return template.content.firstChild;
 }
+const checkInvalidSigns = function ( str ) {
+    // content
+    const invSigns = /\`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\>|\?|\/|\""|\;|\:|\s/g;
+    return invSigns.test( str );
+}
+const validateFileName = function (str ) {
+    // content
+    const invSigns = /\*|\?|\<|\>|\"|\||\:|\\|\/|\s/g;
+    return !invSigns.test( str );
+}
+const validatePathName = function (str ) {
+    // content
+    const invSigns = /\*|\?|\<|\>|\"|\||\:|\\|\/|\s/g;
+    return !invSigns.test( str );
+}
+var getPathAndName = function( str ) {
+    let res = {};
+    let tmp = str.split( "/" );
+    res.name = tmp.pop();
+    res.path = tmp.join("/");
+    return res;
+}

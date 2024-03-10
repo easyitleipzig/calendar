@@ -206,6 +206,7 @@ switch( $_POST["command"]) {
                             $result = $ev -> setParticipate( $db_pdo, $_POST["id"], $_POST["userId"], $_POST["participate"], $_POST["participateAs"], $_POST["remindMe"], $_POST["countPart"] );
                             $return -> pVar = $_POST["pVar"];
                             $return -> participate = $_POST["participate"];             
+                            $return -> elId = $_POST["elId"];             
                             $return -> success = $result -> success;
                             $return -> message = $result -> message;
                             print_r( json_encode( $return ));

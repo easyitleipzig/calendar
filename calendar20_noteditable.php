@@ -318,7 +318,7 @@ $event_string = substr( $event_string, 0, -1 );
 <?php
     echo "var currentUserId = " . $_SESSION['user_id'] . ";\n";
 ?>
-var cal = new Calendar({pVar: "cal", evCalId: "#divCal", type: true } );
+var cal = new Calendar({pVar: "cal", evCalId: "#divCal", type: false } );
 (function() {  
     init();
 })();
