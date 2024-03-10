@@ -590,7 +590,7 @@ class Calendar {
 				let i = 0;
 				tmp = "";
 				while ( i < l ) {
-					tmp += "<a href='" + app[i] + "'>Anhang " + (i + 1 ) + "</a>&nbsp;"
+					tmp += "<a href='" + app[i] + "' target='_blank'>Anhang " + (i + 1 ) + "</a>&nbsp;"
 					i += 1;
 				}
 				console.log( tmp );
@@ -680,7 +680,7 @@ class Calendar {
 		*/
 		onDateClick = function( info ) {
 			console.log( "onDateClick", this.opt.type );
-			if( this.opt.type !== "editable" ) return;
+			if( !this.opt.type ) return;
 			this.divEvent.show( {variables: { event: info, calendar: this }, onShow: function( e ){
 				console.log( this.variables.calendar );
 				this.variables.calendar.fillEditDialogForNew( arguments[0].opt.variables, arguments[0] )
