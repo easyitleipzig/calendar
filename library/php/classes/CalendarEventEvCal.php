@@ -2,7 +2,7 @@
 class CalendarEvent {
     private function getAppendixForEvent( $id ) {
         $fText = "";
-        $files = glob( "../cal/cal_$id*.*" );
+        $files = glob( "../cal/cal_ev_$id*.*" );
         $fText = implode( "|", $files );
         $fText = str_replace( "..", "library", $fText);
         return $fText;
