@@ -140,6 +140,10 @@ $event_string = substr( $event_string, 0, -1 );
 <a href="#" id="openMessage">openMessage</a>
 <a href="#" id="openMessageNews">openMessageNews</a>
 
+<div id="evRequest" style="display: none;">
+    <label>Anfrage</label>
+    <textarea id="contentRequest"></textarea>
+</div>
 <div id="editEvent" style="display: none;">
     <div class="accordion">          
         <div>

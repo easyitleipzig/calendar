@@ -188,6 +188,13 @@ switch( $_POST["command"]) {
                             $return -> message = $result -> message;
                             print_r( json_encode( $return ));    
     break;
+    case "saveEventByJson":
+                            $return -> pVar = $_POST["pVar"];
+                            require_once( "classes/CalendarEventEvCal.php" );
+                            $ev = new \CalendarEvent();
+                            $event = json_decode( $_POST["pVar"] );
+                            print_r( json_encode( $return ));        
+    break;                           
     case "showDialogParticipate":
                             require_once( "classes/CalendarEventEvCal.php");
                             $ev = new \CalendarEvent();
@@ -210,6 +217,31 @@ switch( $_POST["command"]) {
                             $return -> success = $result -> success;
                             $return -> message = $result -> message;
                             print_r( json_encode( $return ));
+    break;
+    case "sendEvRequest":
+                            $return -> success = true;
+                            $return -> message = "Der Ansprechpartners wurde über deine Anfrage informiert.";
+                            try {
+                                $q = "select title, creator, start_date from event where id = " . $_POST["id"];
+                                $s = $db_pdo -> query( $q );
+                                $r_ev = $s -> fetchAll( PDO::FETCH_ASSOC );
+                                $q = "select concat( firstname, ' ', lastname ) as fullname, email from user where id = " . $_SESSION["user_id"];
+                                $s = $db_pdo -> query( $q );
+                                $r_user = $s -> fetchAll( PDO::FETCH_ASSOC );
+                                require_once( "classes/InformUser.php" );
+                                $iu = new \InformUser( $db_pdo, "both", 27,0,0,$r_ev[0]["creator"]);
+                                $title = "Terminanfrage zu ´" . $r_ev[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_ev[0]["start_date"] );
+                                $content_email = "<p>Der Nutzer " . $r_user[0]["fullname"] . " E-Mail: <a href='mailto:" . $r_user[0]["email"] . "'>" . $r_user[0]["email"] . "</a> hat zum Termin ´" . $r_ev[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_ev[0]["start_date"] ) . " folgende Anfrage:<p>";
+                                $content_email .= "<p>" . $_POST["request"] . "</p><p>Bitte beantworte die Anfrage.</p>";
+                                $content_message = "Der Nutzer " . $r_user[0]["fullname"] . " E-Mail: " . $r_user[0]["email"] . " hat zum Termin ´" . $r_ev[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_ev[0]["start_date"] ) . " folgende Anfrage: " . $_POST["request"] . " Bitte beantworte die Anfrage.";
+                                $iu -> sendUserInfo( $title, $title, $content_email, $content_message );
+                            } catch ( Exception $e ) {
+                                $return -> success = false;    
+                                $return -> message = "Beim Informieren des Ansprechpartners ist folgender Fehler aufgetreten:" . $e -> getMessage();
+                            }
+                            print_r( json_encode( $return ));
+
+                                
     break;
     /* end events evcal */
     case "updateEventEvCal":

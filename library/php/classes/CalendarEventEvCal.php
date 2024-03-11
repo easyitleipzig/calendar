@@ -83,14 +83,19 @@ class CalendarEvent {
             $result_part = $s -> fetchAll(PDO::FETCH_ASSOC);
             if( count( $result_part ) > 0 ) {
                 if( $result_part[0]["user_id"] > 0 ) $exPro -> participate = true;
-                $exPro -> remindMe = $result_part[0]["remind_me"];
+                if( $result_part[0]["remind_me"] == 1 ) {
+                    $exPro -> remindMe = true;
+                } else {
+                    $exPro -> remindMe = false;    
+                }
+                
                 $exPro -> countPart = $result_part[0]["count_part"];
-                $exPro -> participateAs = $result_part[0]["count_part"];
+                $exPro -> participateAs = $result_part[0]["role_id"];
             } else {
-                $exPro -> participate = null;
-                $exPro -> remindMe = null;
-                $exPro -> countPart = null;
-                $exPro -> participateAs = null;
+                $exPro -> participate = false;
+                $exPro -> remindMe = false;
+                $exPro -> countPart = 1;
+                $exPro -> participateAs = 0;
                 
             }
             $exPro -> appendix = $this -> getAppendixForEvent( $exPro -> id );
@@ -137,6 +142,9 @@ class CalendarEvent {
         return $return;
     
     
+    }
+    public function saveEventByJson( $pdo, $ev ) {
+        
     }
     
     

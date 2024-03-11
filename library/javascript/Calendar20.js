@@ -4,17 +4,6 @@ const DIV_EVENT_NEW_HTML = '<div><label>[evId]</label><label>Titel</label><input
 const calVar = "cal";
 // standard event hour difference
 const standardEventHourDiff = 1;
-const DIV_EVENT_EDIT_HTML = `
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   
-
-Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.   
-
-Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.   
-
-Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer`;
-
-
-
 nj( document ).on( "keypress", function( e ) {
 	e.stopImmediatePropagation();
 	if( e.key = "y" && e.ctrlKey ) {
@@ -135,10 +124,7 @@ class Calendar {
 		        eventDrop: function( info ) {
 		        	//console.log( info );
 		        	if( nj( info.jsEvent.target ).gRO().opt.type ) {
-		        		data = {};
-						data.command = "saveEventByJson";
-						data.event = JSON.stringify( info.event.id);
-						console.log( data );
+		        		nj( info.jsEvent.target ).gRO().saveEventByJson( info.event )
 		        	}
 		        	
 		        },
@@ -159,8 +145,23 @@ class Calendar {
 				}
 			 	/* onShow: function(){ nj( this.id).Dia().options('center') }*/ 
 			} );
-			this.showPart = new DialogDR( { dVar: this.opt.pVar +  ".showPart", id: "#showPart", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: true, hasHelp: false, width: 320 } );
-			
+			this.showPart = new DialogDR( { dVar: this.opt.pVar +  ".showPart", id: "#showPart", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: true, hasHelp: false } );
+			this.evRequest = new DialogDR( { dVar: this.opt.pVar +  ".evRequest", id: "#evRequest", height: 300 , autoOpen: false, modal: true, hasHelp: false, width: 320, buttons: [
+					{
+						title: "Anfragen",
+						action: function( args ) {
+							console.log( nj( this ).gRO() );
+							nj( this ).gRO().sendEvRequest();	
+						}
+					},
+					{
+						title: "Schließen",
+						action: function( args ) {
+							nj( this ).gRO().evRequest.hide();	
+						}
+					},
+
+				] } );
 		}
 		// end constructor
 		// variables declaration
@@ -268,6 +269,23 @@ class Calendar {
 			}
 		}
 		/**
+		 * sendEvRequest
+		 * 
+		 * send request for event
+		 *
+		 * 
+		 * return undefined
+		 * 
+		*/
+		sendEvRequest = function() {
+			data = {};
+			data.command = "sendEvRequest";
+			data.id = nj( "#Id" ).v();
+			data.request = nj( "#contentRequest" ).v();
+			console.log( data );
+			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
+		}
+		/**
 		 * buildDateFromDialog
 		 * 
 		 * build Date from event dialog
@@ -356,6 +374,25 @@ class Calendar {
 		getIdFromInternId = function( id ) {
 			let tmp = this.evCal.getEventById( id );
 			return tmp.extendedProps.id
+		}
+		/**
+		 * saveEventByJson
+		 * 
+		 * save JSON event to database
+		 * 
+		 * return result
+		 * 
+		*/
+		saveEventByJson = function( event, repeat = 0, repeatTo = "0000-00-00") {
+			data = {};
+			data.command = "saveEventByJson";
+			data.pVar = this.opt.pVar;
+			data.event = JSON.stringify( event );
+			data.repeat = repeat;
+			data.repeatTo = repeatTo;
+			console.log( data );
+			//nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
+
 		}
 		/**
 		 * saveEvent
@@ -680,7 +717,7 @@ class Calendar {
 		*/
 		onDateClick = function( info ) {
 			console.log( "onDateClick", this.opt.type );
-			if( !this.opt.type ) return;
+			if( this.opt.type !== "editable" ) return;
 			this.divEvent.show( {variables: { event: info, calendar: this }, onShow: function( e ){
 				console.log( this.variables.calendar );
 				this.variables.calendar.fillEditDialogForNew( arguments[0].opt.variables, arguments[0] )
@@ -705,33 +742,53 @@ class Calendar {
 					// show appendix
 					window.open( info.event.extendedProps.inner_url, "_blank" );
 				} else {
-					this.divEvent.show( {variables: { event: info.event, calendar: this }, onShow: function(){
-							//let event = arguments[0].opt.variables.event;
-							console.log( this );
-							arguments[0].opt.variables.calendar.fillEditDialogForEdit( arguments[0].opt.variables, arguments[0] )
-						},
-					buttons: [
-							{title: "Abbrechen", action: function( e ) {
-								//console.log( nj( this ).Dia().opt.variables.cal.evCal );
-								nj( e.target ).Dia().hide();
-							}},
-							{title: "Speichern", action: function( e ) {
-								console.log( nj( e.target ).Dia().opt.variables );
-								//nj( this ).Dia().hide();
-								nj( e.target ).Dia().opt.variables.calendar.saveEvent();
-								console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
-								nj( e.target ).Dia().opt.variables.calendar.evCal.updateEvent( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) )
+					if( this.opt.type ) {
+						this.divEvent.show( {variables: { event: info.event, calendar: this }, onShow: function(){
+								//let event = arguments[0].opt.variables.event;
+								console.log( this );
+								arguments[0].opt.variables.calendar.fillEditDialogForEdit( arguments[0].opt.variables, arguments[0] )
+							},
+						buttons: [
+								{title: "Abbrechen", action: function( e ) {
+									//console.log( nj( this ).Dia().opt.variables.cal.evCal );
+									nj( e.target ).Dia().hide();
+								}},
+								{title: "Speichern", action: function( e ) {
+									console.log( nj( e.target ).Dia().opt.variables );
+									//nj( this ).Dia().hide();
+									nj( e.target ).Dia().opt.variables.calendar.saveEvent();
+									console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
+									nj( e.target ).Dia().opt.variables.calendar.evCal.saveEventByJson( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) )
 
-							}},
-							{title: "Löschen", action: function( e ) {
-								console.log( nj( e.target ).Dia().opt.variables );
-								//nj( this ).Dia().hide();
-								//console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
-								nj( e.target ).Dia().opt.variables.calendar.evCal.removeEventById( nj( "#innerId" ).v() )
+								}},
+								{title: "Löschen", action: function( e ) {
+									console.log( nj( e.target ).Dia().opt.variables );
+									//nj( this ).Dia().hide();
+									//console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
+									nj( e.target ).Dia().opt.variables.calendar.evCal.removeEventById( nj( "#innerId" ).v() )
 
-							}},
-						]
-				});
+								}},
+							]
+					});
+
+					} else {
+						this.divEvent.show( {variables: { event: info.event, calendar: this }, onShow: function(){
+								//let event = arguments[0].opt.variables.event;
+								console.log( this );
+								arguments[0].opt.variables.calendar.fillEditDialogForEdit( arguments[0].opt.variables, arguments[0] )
+							},
+						buttons: [
+								{title: "Schließen", action: function( e ) {
+									//console.log( nj( this ).Dia().opt.variables.cal.evCal );
+									nj( e.target ).Dia().hide();
+								}},
+								{title: "Anfragen", action: function( e ) {
+									nj( this ).gRO().evRequest.show();
+								}}
+							]
+					});
+
+					}
 				}
 			}
 
@@ -786,15 +843,9 @@ class Calendar {
 				this.evCal.addEvent( info.oldEvent );
 				return;
 			}
+			this.evCal.removeEventById( info.event.id );
 			this.evCal.addEvent( info.event );
-			data = {};
-			data.command = "updateEventEvCal";
-			data.event = JSON.stringify( info.event );
-			data.repeat = 0;
-			data.repeatTo = "0000-00-00";
-			console.log( data );
-			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
-
+			this.saveEventByJson( info.event );
 		}
 		/**
 		 * onEventDidMount
@@ -837,10 +888,8 @@ class Calendar {
 				this.evCal.removeEventById( info.event.id );
 				this.evCal.addEvent( info.event );				
 			} else {
-				data = {};
-				data.command = "saveEventByJson";
-				data.event = JSON.stringify( this.evCal.getEventById(info.event.id));
-				console.log( data );
+				//console.log( info );
+				//this.saveEventByJson( this.evCal.getEventById(info.event) );
 			}
 		}
 		/**

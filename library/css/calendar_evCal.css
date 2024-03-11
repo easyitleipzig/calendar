@@ -121,6 +121,10 @@
 
 #dDia { background-color:lightblue }
 
+.cEdit #Id, .cEdit #innerId, .cEdit #allDay, .cEdit #groupId {
+    display: none;
+} 
+
 @media screen and (min-width: 300px) {
     
 }
