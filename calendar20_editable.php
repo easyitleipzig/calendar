@@ -124,6 +124,15 @@ $event_string = substr( $event_string, 0, -1 );
                 $i += 1;
             }
             echo ";'\n";
+            echo "let optExportArt = '<option value=\"\" selected>Alle</option>";
+            $query = "SELECT * FROM event_format";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+
+            for( $i = 0; $i < count( $result ); $i++ ) {
+                print_r( '<option value="fc-' . $result[$i]["id"] . '" class="fc-' . $result[$i]["id"] . '">' . $result[$i]["name"] . "</option>");
+            }
+            echo ";'\n";
     ?>
     const getTime = function( idTime, idMinutes ) {
         let content = "";

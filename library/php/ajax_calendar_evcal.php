@@ -213,6 +213,7 @@ switch( $_POST["command"]) {
                             $result = $ev -> setParticipate( $db_pdo, $_POST["id"], $_POST["userId"], $_POST["participate"], $_POST["participateAs"], $_POST["remindMe"], $_POST["countPart"] );
                             $return -> pVar = $_POST["pVar"];
                             $return -> participate = $_POST["participate"];             
+                            $return -> remindMe = $_POST["remindMe"];             
                             $return -> elId = $_POST["elId"];             
                             $return -> success = $result -> success;
                             $return -> message = $result -> message;
@@ -243,31 +244,46 @@ switch( $_POST["command"]) {
 
                                 
     break;
-    /* end events evcal */
-    case "updateEventEvCal":
-                                require_once( "classes/CalendarEvent.php");
-                                $ev = new \CalendarEvent();
-                                $event = json_decode( $_POST["event"] );
-                                $return -> success = true;
-                                $return -> message = "Der Termin wurden erfolgreich aktualisiert.";                                
-                                print_r( json_encode( $return ));    
-    break;
-/* not more nessecary becaus of setParticipate
-    case "setRemindMe":
-                            $query = "UPDATE event_participate SET remind_me = " . $_POST["value"] . ",  role_id = " . $_POST["participateAs"] . " WHERE event_id = " . $_POST["eventId"] . " AND user_id = " . $_POST["userId"];
-                            try {
-                                $db_pdo -> query( $query );            
-                                $return -> success = true;
-                                $return -> message = "Die Erinnerung wurde erfolgreich gespeichert.";                                
-                            } catch ( Exception $e ) {
-                                $return -> success = false;
-                                $return -> message = "Beim Speichern der Erinnerung ist folgender Fehler aufgetreten: " . $e -> getMessage();
+    case "removeEvent":
+                            require_once( "classes/CalendarEventEvCal.php");
+                            $ev = new \CalendarEvent();
+                            $q = "select title, group_id, start_date, start_time, creator from event where id = " . $_POST["id"];
+                            $s = $db_pdo -> query( $q );
+                            $r_event = $s -> fetchAll( PDO::FETCH_ASSOC );
+                            if( $_POST["deleteSerie"] === "" ) {
+                                $res = $ev -> removeSingleEvent( $db_pdo, $_POST["id"], $_POST["informRole"], $_POST["informUser"] );
+                            } else {
+                                $res = $ev -> removeGroupEvent( $db_pdo, $r_event[0]["group_id"], $_POST["informRole"], $_POST["informUser"] );                                
                             }
-                            
+                            $return -> success = $res -> success;
+                            require_once( "classes/InformUser.php" );
+                            if( $res -> user = "0,") $res -> user = "";
+                            $iu = new InformUser( $db_pdo, "both", 27, 0, 0, $res -> user );
+                            $title = "Terminlöschung ´" . $r_event[0]["title"] . "´";
+                            $content = "Der Termin ´" . $r_event[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_event[0]["start_date"] ) . " um " . substr( $r_event[0]["start_time"], 0, 5 ) . " Uhr wurde abgesagt.";
+                            if( $res -> success && $_POST["deleteSerie"] === "" ) {
+                                if( $r_event[0]["group_id"] != 0 ) {
+                                    $content .= " Der Termin war ein Serientermin. Die anderen Termine der Serie bleiben bestehen.";
+                                }
+                                $return -> message = "Der Termin wurde erfolgreich gelöscht.";  
+                            } else {
+                                if( $res -> success && $_POST["deleteSerie"] === "1" ) {
+                                    $content = " Der Termin war ein Serientermin. Alle anderen Termine der Serie sind ebenfalls abgesagt worden. Es finden somit keine Termine dieser Serie statt.";                                    
+                                } else {
+                                    //$return -> message = "Beim Löschen des Termins sind Fehler entstanden: " .  $e -> getMessage();
+                                }
+                            }
+                            $res = $iu -> sendUserInfo( $title, $title, $content, $content );
+                            if( !$res -> mailSuccess ) {
+                                sendFailurMessage( $db_pdo, 27, $r_event[0]["creator"], $res -> failurePart, $title );    
+                            }
+                            $return -> pVar = $_POST["pVar"];              
+                            $return -> innerId = $_POST["innerId"];
+                            $return -> deleteSerie = $_POST["deleteSerie"];
+                            $return -> mailSuccess = $res -> mailSuccess;            
                             print_r( json_encode( $return ));    
     break;
-*/
-    case "exportEvents":
+   case "exportEvents":
                             require_once( "classes/CalendarEvent.php");
                             $ev = new \CalendarEvent();
                             $dates = new \stdClass();
@@ -376,7 +392,41 @@ switch( $_POST["command"]) {
                             }
                             print_r( json_encode( $return ));                                   
     break;
-    case "getPlaces":
+    case "sendEventsEmail":
+                            require_once( "classes/CalendarEventEvCal.php");
+                            $ev = new \CalendarEvent();                            
+                            $return -> result = $ev -> exportEvEMail( $db_pdo );
+                            $return -> success = $return -> result -> success;
+                            $return -> message = $return -> result -> message;
+                            //$return -> data = $return -> data;
+                            print_r( json_encode( $return ));    
+                            
+    break;
+    /* end events evcal */
+    case "updateEventEvCal":
+                                require_once( "classes/CalendarEvent.php");
+                                $ev = new \CalendarEvent();
+                                $event = json_decode( $_POST["event"] );
+                                $return -> success = true;
+                                $return -> message = "Der Termin wurden erfolgreich aktualisiert.";                                
+                                print_r( json_encode( $return ));    
+    break;
+/* not more nessecary becaus of setParticipate
+    case "setRemindMe":
+                            $query = "UPDATE event_participate SET remind_me = " . $_POST["value"] . ",  role_id = " . $_POST["participateAs"] . " WHERE event_id = " . $_POST["eventId"] . " AND user_id = " . $_POST["userId"];
+                            try {
+                                $db_pdo -> query( $query );            
+                                $return -> success = true;
+                                $return -> message = "Die Erinnerung wurde erfolgreich gespeichert.";                                
+                            } catch ( Exception $e ) {
+                                $return -> success = false;
+                                $return -> message = "Beim Speichern der Erinnerung ist folgender Fehler aufgetreten: " . $e -> getMessage();
+                            }
+                            
+                            print_r( json_encode( $return ));    
+    break;
+*/
+     case "getPlaces":
                             require_once( "classes/CalendarEvent.php");
                             $ev = new \CalendarEvent();
                             $return -> result = $ev -> getPlaces( $db_pdo);

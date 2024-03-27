@@ -30,9 +30,8 @@ body {
 }
 .col {
 	flex: 1 1 0%;
-	min-width: 0;
-	max-width: 100%;
-	height: calc(var(--document-height)*1px);
+	height: 400px;
+    width: 380px;
 }
 
 .ec {
@@ -40,32 +39,107 @@ body {
 }
 .ec.ec-day-grid {
 	height: 400px;
+    width: 328px;
+}
+.ec-toolbar button {
+    font-size: 8px;
+    width: 40px;
+}
+#divCalendar>article {
+    width: 330px;
+}
+#divCalendar {
+    display: flex;
+    flex-direction: column;
+}
+.ec-week-view {
+    height: 1000px;
+}
+@media (min-width: 480px) {
+    #divCalendar>article {
+        width: 443px;
+    }
+    .col {
+        flex: 1 1 0%;
+        height: 506px;
+    }
+    .ec {
+        height: 700px;
+        width: 443px;
+    }
+    .ec.ec-day-grid {
+        height: 487px;
+        width: 442px;
+    }
+    #divCalendar {
+        display: flex;
+        flex-direction: column;
+    }
 }
 @media (min-width: 576px) {
-	.ec {
-		height: 700px;
-	}
-	.ec.ec-day-grid {
-		height: 500px;
-	}
+    .col {
+        flex: 1 1 0%;
+        height: 506px;
+    }
+    .ec {
+        height: 700px;
+    }
+    .ec.ec-day-grid {
+        height: 487px;
+        width: 442px;
+    }
+    #divCalendar {
+        display: flex;
+        flex-direction: column;
+    }
+}
+@media (min-width: 800px) {
+    #divCalendar>article {
+        width: 445px;
+    }
+    .ec {
+        height: 800px;
+    }
+    .ec.ec-day-grid {
+        height: 700px;
+        width: 735px
+    }
+    #divCal {
+                height: 700px;
+    }
 }
 @media (min-width: 992px) {
-	.ec {
-		height: 800px;
-	}
-	.ec.ec-day-grid {
-		height: 700px;
-	}
+    .ec {
+        height: 800px;
+    }
+    .ec.ec-day-grid {
+        height: 700px;
+    }
+    #divCal {
+                height: 700px;
+    }
+}
+@media screen and (min-width: 1024px) {
+    section>article:first-child, section > article:nth-child(2) {
+        margin-top: 1em;
+        width: 736px;
+
+    }
+    #divCalendar {
+        margin-left: 6em;
+    }
 }
 @media (min-width: 1200px) {
 	.ec.ec-day-grid {
 		height: 800px;
 	}
+    #divCal {
+        height: 800px;
+    }
 }
 @media (min-width: 1920px) {
 	.ec.ec-day-grid {
 		height: 800px;
 		width: 1000px;
 	}
-
 }

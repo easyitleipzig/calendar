@@ -1,6 +1,67 @@
 const DIV_EVENT_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"><input type="datetime-local" id="evDateTime" value=""></div>';
-//const DIV_EVENT_EDIT_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"><input type="datetime-local" id="evDateTime" value=""></div>';
 const DIV_EVENT_NEW_HTML = '<div><label>[evId]</label><label>Titel</label><input id="evTitle" value="[evTitle]"></div>';
+const DIV_EXPORT = `<div style="display: flex;">
+        <div>
+            <label>System</label>
+            <select id="system">
+                <option value="Windows" selected>Windows/macOS/Android/iOS</option>
+                <!--
+                <option value="csv">Google Kalender</option>
+                -->
+            </select>
+        </div>
+        <div>
+            <label>Typ</label>
+            <select id="Type">
+                <option value="PRIVATE" selected>Privat</option>
+                <option value="PUBLIC">öffentlich</option>
+            </select>
+        </div>
+    </div>
+    <label>Art (Mehrfachauswahl möglich)</label>
+    <select id="exportArt"  multiple>
+    </select>
+    <label>eigene Termine</label>
+    <select id="own_evs">
+        <option value="all" selected>Alle</option>
+        <option value="own_evs">nur mit eigener Teilnahme</option>
+    </select>
+    <label>Zeitraum</label>
+    <select id="Zeitraum">
+        <option value="all" selected>Alle</option>
+        <option value="currWeek">aktuelle Woche</option>
+        <option value="nextWeek">nächste Woche</option>
+        <option value="currMonth">aktueller Monat</option>
+        <option value="nextMonth">nächster Monat</option>
+    </select>   
+    <div style="display: flex;">
+        <div>
+        <label>Erinnerung</label>
+        <select id="Erinnerung">
+            <option value="" selected>keine</option>
+            <option value="AUDIO">Alarm</option>
+            <option value="DISPLAY">Fenster</option>
+            <option value="EMAIL">E-Mail</option>
+        </select>
+        </div>
+        <div>
+        <label>Erinnerungszeit</label>
+        <select id="Erinnerungsintervall">
+            <option value="" selected>keine</option>
+            <option value="-PT10M">10 Minuten vorher</option>
+            <option value="-PT60M">1 Stunde vorher</option>
+            <option value="-PT1D">1 Tag vorher</option>
+            <option value="-PT7D">1 Woche vorher</option>
+        </select>
+        </div>
+    </div>
+    <div style="text-align: right; margin-top: 1em;">
+        <a id="exportLink" href="#" style="display: none;">Datei herunterladen</a>
+    </div>
+    <div style="text-align: right; margin-top: 1em;">
+        <a id="emailLink" href="#" style="display: none;">Datei als E-Mail senden</a>
+    </div>
+`;
 const calVar = "cal";
 // standard event hour difference
 const standardEventHourDiff = 1;
@@ -122,7 +183,7 @@ class Calendar {
 		        },
 
 		        eventDrop: function( info ) {
-		        	//console.log( info );
+		        	console.log( info );
 		        	if( nj( info.jsEvent.target ).gRO().opt.type ) {
 		        		nj( info.jsEvent.target ).gRO().saveEventByJson( info.event )
 		        	}
@@ -146,22 +207,66 @@ class Calendar {
 			 	/* onShow: function(){ nj( this.id).Dia().options('center') }*/ 
 			} );
 			this.showPart = new DialogDR( { dVar: this.opt.pVar +  ".showPart", id: "#showPart", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: true, hasHelp: false } );
-			this.evRequest = new DialogDR( { dVar: this.opt.pVar +  ".evRequest", id: "#evRequest", height: 300 , autoOpen: false, modal: true, hasHelp: false, width: 320, buttons: [
-					{
-						title: "Anfragen",
-						action: function( args ) {
-							console.log( nj( this ).gRO() );
-							nj( this ).gRO().sendEvRequest();	
-						}
-					},
-					{
-						title: "Schließen",
-						action: function( args ) {
-							nj( this ).gRO().evRequest.hide();	
-						}
-					},
+			this.exportEv =  new DialogDR( 
+				{ 
+					dVar: this.opt.pVar +  ".exportEv", 
+					id: "#exportEv", 
+					innerHTML: DIV_EXPORT, 
+					height: this.opt.divEvHeight, 
+					width: this.opt.divEvWidth, 
+					autoOpen: false, 
+					modal: true, 
+					hasHelp: false, 
+					buttons: [
+							{
+								title: "Exportieren",
+								action: function() {
+									nj( this ).gRO().exportEvents()
+								}
+							},
+							{
+								title: "Schließen",
+								action: function() {
+									nj( this ).gRO().exportEv.hide();	
+								}
+							}
+						]
+				} );
+			if( !this.opt.type ) {
+				this.evRequest = new DialogDR( 
+					{ 
+						dVar: this.opt.pVar +  ".evRequest", 
+						id: "#evRequest",
+						title: "Anfrage", 
+						height: 300 , 
+						autoOpen: false, 
+						modal: true, 
+						hasHelp: false, 
+						width: 320,
+						innerHTML: '<div id="evRequest"><label>Anfrage</label><textarea id="contentRequest"></textarea></div>',
+						buttons: [
+							{
+								title: "Anfragen",
+								action: function( args ) {
+									console.log( nj( this ).gRO() );
+									nj( this ).gRO().sendEvRequest();	
+								}
+							},
+							{
+								title: "Schließen",
+								action: function( args ) {
+									nj( this ).gRO().evRequest.hide();	
+								}
+							},
 
-				] } );
+					] 
+				} );
+			}
+			nj( "#exportEvents" ).sDs( "dvar", this.opt.pVar );
+			nj( "#exportEvents" ).on( "click", function( pVar) {
+				//console.log(  );
+				nj( this ).Dia().exportEv.show();	
+			})
 		}
 		// end constructor
 		// variables declaration
@@ -203,6 +308,7 @@ class Calendar {
 		    console.log( jsonobject, calendar );
 			switch( jsonobject.command ) {
 		        case "getEventsForView":
+		        	console.log( nj( "#divCal>div:first-child" ).hCl( "ec-week-view" ), window.innerWidth );
 	        		l = jsonobject.data.length;
 	        		i = 0;
 	        		while ( i < l ) {
@@ -263,10 +369,88 @@ class Calendar {
 					break;
 					case "setParticipate":
 						//if( jsonobject.elId === "")
-						dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: jsonobject.message } );
+						if( jsonobject.success ) {
+							if( jsonobject.elId === "participate" && jsonobject.participate === "1" ) {
+								dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: jsonobject.message } );
+							}
+							if( jsonobject.elId === "participate" && jsonobject.participate === "" ) {
+								dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: jsonobject.message } );
+							}
+							if( jsonobject.elId === "remindMe" && jsonobject.participate === "1" && jsonobject.remindMe === "1" ) {
+								dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: "Die Erinnerung wurde erfolgreich gespeichert." } );
+							}
+							if( jsonobject.elId === "remindMe" && jsonobject.participate === "1" && jsonobject.remindMe === "" ) {
+								dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: "Die Erinnerung wurde erfolgreich gelöscht." } );
+							}
+
+						} else {
+							dMNew.show({title:"Fehler", type: false, text: jsonobject.message })
+						}
 					break; 
-				
+				case "removeEvent":
+						if( jsonobject.success ) {
+							if( jsonobject.mailSuccess ) {
+								tmp = "Der Termin wurde erfolgreich gelöscht und die Teilnehmer sind erfolgreich darüber informiert worden."
+							} else {
+								tmp = "Der Termin wurde erfolgreich gelöscht. Allerdings sind beim Benachrichtigen der Nutzer Fehler aufgetreten."
+							}
+							dMNew.show({title: "Termin löschen", type: true, text: tmp, variables: { calendar: calendar, innerId: jsonobject.innerId, deleteSerie: jsonobject.deleteSerie}, buttons: [{
+								title: "Okay",
+								action: function() {
+									nj( this ).Dia().opt.variables.calendar.divEvent.hide();
+									dMNew.hide();	
+									if( nj( this ).Dia().opt.variables.deleteSerie === "" ) {
+										nj( this ).Dia().opt.variables.calendar.evCal.removeEventById( nj( this ).Dia().opt.variables.innerId );
+									} else {
+										location.reload();
+									}							
+								}
+							}]});
+						} else {
+							dMNew.show( {title: "Termin löschen", type: false, text: jsonobject.message } );
+						}
+					break;
+				case "exportEvents":
+   						if( jsonobject.success ) {
+                        //showNewMessage("Exportieren", jsonobject.success, "Klicke nun auf den Link “Datei herunterladen”, um deine Termine zu exportieren." );    
+	                        dMNew.show( { title: "Exportieren", type: jsonobject.success, text: "Klicke nun auf den Link “Datei herunterladen”, um deine Termine zu exportieren oder auf “E-Mail senden”, um dir deine Termine per EMail zuzusenden." } );
+	                        nj( "#exportLink" ).atr( "href", "library/php/" + jsonobject.fileName );
+	                        nj( "#exportLink" ).sty( "display", "block" );
+	                        nj( "#emailLink" ).sty( "display", "block" );
+	                        nj( "#emailLink" ).on("click", function() {
+	                            let data = {};
+	                            data.command = "sendEventsEmail";
+	                            console.log( data );
+	                            nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+	                        });
+	                    } else {
+	                        //showNewMessage("Exportieren", jsonobject.success, jsonobject.message );
+	                        dMNew.show( { title: "Exportieren", type: jsonobject.success, text: jsonobject.message } );
+	                    }
+
+					break;
 			}
+		}
+		/**
+		 * exportEvents
+		 * 
+		 * export events for selected settings
+		 *
+		 * 
+		 * return undefined
+		 * 
+		*/
+		exportEvents = function() {
+		    let data = {};
+		    data.command = "exportEvents";
+		    data.system = nj( "#system" ).v();
+		    data.type = nj( "#Type" ).v();
+		    data.art = nj( "#Art" ).gSV();
+		    data.ownEvs = nj( "#own_evs" ).v();
+		    data.zeitraum = nj( "#Zeitraum" ).v();
+		    data.reminder = nj( "#Erinnerung" ).v();
+		    data.reminder_intervall = nj( "#Erinnerungsintervall" ).v();
+		    nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
 		 * sendEvRequest
@@ -339,6 +523,7 @@ class Calendar {
 			ev.extendedProps.inner_url = nj( "#newInnerUrl" ).v();;
 			ev.extendedProps.inner_url_text = nj( "#innerUrlText" ).v();;
 			ev.extendedProps.description = nj( "#description" ).v();
+			ev.extendedProps.notice = nj( "#notice" ).v();
 			return ev;
 		}
 		/**
@@ -617,9 +802,17 @@ class Calendar {
 			tmpTime = tmpTime[1].split( ":" );
 			nj( "#endHour" ).v( tmpTime[0] );
 			nj( "#valEndMinutes" ).v( tmpTime[1] );
+			nj( "#deadline" ).v( event.extendedProps.registration_deadline );
 			nj( "#participate" ).chk( event.extendedProps.participate );
 			nj( "#participateAs" ).v( event.extendedProps.participateAs );
 			nj( "#remindMe" ).chk( event.extendedProps.remindMe );
+			nj( "#countPart" ).v( event.extendedProps.countPart );
+			nj( "#Description").v( event.extendedProps.description );
+			nj( "#notice").v( event.extendedProps.notice );
+			nj( "#Url").v( event.extendedProps.url );
+			nj( "#innerUrl").v( event.extendedProps.inner_url );
+			nj( "#innerUrlText").v( event.extendedProps.inner_url_text );
+
 			// set appendix
 			if( event.extendedProps.appendix !== "" ) {
 				app = event.extendedProps.appendix.split("|") ;
@@ -643,6 +836,11 @@ class Calendar {
 				nj( this ).gRO().showDialogParticipate( nj( this ).gRO() );
 			});
 			console.log( event.extendedProps );
+			// additional Text for noteditable
+			nj().els( "#dateTextDiv" ).innerHTML = "beginnt am " + new Date( nj( "#startDate" ).v() ).getGermanDateString() + " um " + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() + " Uhr und endet am " + new Date( nj( "#endDate" ).v() ).getGermanDateString() + " um " + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v() + " Uhr";
+			if( event.extendedProps.registration_deadline !== "0000-00-00" ) {
+				nj().els( "#deadlineTextDiv" ).innerHTML = "Anmeldeschluss: " + new Date( event.extendedProps.registration_deadline ).getGermanDateString()
+			}
 		}
 		/**
 		 * getDayForView
@@ -758,20 +956,46 @@ class Calendar {
 									//nj( this ).Dia().hide();
 									nj( e.target ).Dia().opt.variables.calendar.saveEvent();
 									console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
-									nj( e.target ).Dia().opt.variables.calendar.evCal.saveEventByJson( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) )
+									nj( e.target ).Dia().opt.variables.calendar.saveEventByJson( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) )
 
 								}},
 								{title: "Löschen", action: function( e ) {
 									console.log( nj( e.target ).Dia().opt.variables );
 									//nj( this ).Dia().hide();
 									//console.log( nj( e.target ).Dia().opt.variables.calendar.buildEventFromDialog( true ) );
-									nj( e.target ).Dia().opt.variables.calendar.evCal.removeEventById( nj( "#innerId" ).v() )
+									if( nj( "#groupId" ).v() === "0") {
+										nj( e.target ).gRO().removeEvent( false );
+									} else {
+										dMNew.show( { 
+											title: "Termin löschen", 
+											type: "question", 
+											text: "Bei diesem Termin handelt es sich um einen Serientermin. Was möchtest du löschen",
+											variables: { calendar: nj( e.target ).Dia().opt.variables.calendar },
+											buttons: [
+													{
+														title: "Einzeltermin",
+														action: function() {
+															nj( this ).Dia().opt.variables.calendar.removeEv( false );
+														}
+													},
+													{
+														title: "Serie",
+														action: function() {
+															nj( this ).Dia().opt.variables.calendar.removeEv( true );
+														}
+													}
+								
+												]
+										})
+									}
 
 								}},
 							]
 					});
 
 					} else {
+						nj( "#editEvent" ).aCl( "notEditable" );
+						nj( "#editEvent input:not([type=checkbox]):not([type=radio]):not(#countPart), #editEvent textarea" ).atr( "disabled", true );
 						this.divEvent.show( {variables: { event: info.event, calendar: this }, onShow: function(){
 								//let event = arguments[0].opt.variables.event;
 								console.log( this );
@@ -893,6 +1117,31 @@ class Calendar {
 			}
 		}
 		/**
+		 * removeEv
+		 * 
+		 * function 
+		 * 
+		 * remove single events from calendar
+		 * 
+		 * deleteSerie 		bool 	true -> delete serie; false -> delete single
+		 * 
+		 * return undefined
+		 * 
+		*/
+		removeEv = function( deleteSerie ) {
+			console.log( deleteSerie );
+			data = {};
+			data.command = "removeEvent";
+			data.pVar = this.opt.pVar;
+			data.id = nj( "#Id" ).v();
+			data.innerId = nj( "#innerId" ).v();
+			data.informRole = nj( "#informRole" ).v();
+			data.informUser = nj( "#informUser" ).gSV();
+			data.deleteSerie = deleteSerie;
+			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
+
+		}
+		/**
 		 * removeEvent
 		 * 
 		 * function 
@@ -903,7 +1152,24 @@ class Calendar {
 		 * 
 		*/
 		removeEvent = function( innerId ) {
-			this.evCal.removeEventById( innerId );	
+			console.log( this );
+			dMNew.show({title: "Termin löschen", type: "question", text: "Willst du diesen Termin wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.", variables: {calendar: this}, buttons: [
+					{
+						title: "Ja",
+						action: function( args ) {
+							console.log( nj( this ).Dia().opt.variables.calendar );
+							nj( this ).Dia().opt.variables.calendar.removeEv( false );
+						}
+					},
+					{
+						title: "Nein",
+						action: function( args ) {
+							console.log( nj( this ).Dia().opt.variables );
+							dMNew.hide();	
+						}
+
+					}
+				]});
 		}
 		/**
 		 * removeAllEventsFromView

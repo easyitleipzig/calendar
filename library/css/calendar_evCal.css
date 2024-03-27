@@ -123,7 +123,13 @@
 
 .cEdit #Id, .cEdit #innerId, .cEdit #allDay, .cEdit #groupId {
     display: none;
+}
+.cEdit select[disabled] {
+    color: black;
 } 
+.notEditable .accordion>div:nth-child(4), .notEditable #loadAppendix, .notEditable #deleteAppendix, .notEditable #sendAppendix, .notEditable #labSend, .notEditable #invalidUrl, #editEvent #invalidUrl {
+    display: none;
+}
 
 @media screen and (min-width: 300px) {
     

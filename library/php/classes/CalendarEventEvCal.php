@@ -7,6 +7,30 @@ class CalendarEvent {
         $fText = str_replace( "..", "library", $fText);
         return $fText;
     }    
+    private function getInformUser( $pdo, $id, $informRole, $informUser, $groupId ) {
+        $return = new \stdClass();
+        $q = "select concat( '', user_id) as user_id from account where role_id = $informRole";
+        $s = $pdo -> query( $q );
+        $r_role = $s -> fetchAll( PDO::FETCH_ASSOC );
+        $userForRole = assocArrToFlat( $r_role, "user_id", ",", false );
+        if( $userForRole = ["0"]) $userForRole = [];
+        $userForRole = array_merge( $userForRole, $informUser );
+        $userForRole = array_unique( $userForRole );
+        if( $groupId == "0" ) {
+            $q = "select user_id from event_participate where event_id = $id";
+        } else {
+            $q = "select DISTINCT(user_id) from event_participate, event where event.id = event_participate.event_id and group_id = $groupId";            
+        }
+        $s = $pdo -> query( $q );
+        $r_partUser = $s -> fetchAll( PDO::FETCH_ASSOC );
+        $r_partUser = assocArrToFlat( $r_partUser, "user_id", ",", false );
+        $userForRole = array_diff( $userForRole, $r_partUser );
+        $return -> userForRole = implode( ",", $userForRole );
+        $return -> userForPart = implode( ",", $r_partUser );
+        $return -> userAll = implode( ",", $userForRole ) . "," . $return -> userForPart;
+        if( $return -> userAll = "," ) $return -> userAll = "";       
+        return $return;
+    }    
     public function getEventForId( $pdo, $id ) {
         $query = "SELECT * FROM event where id = $id";
         $stm = $pdo -> query( $query );
@@ -188,7 +212,7 @@ class CalendarEvent {
                 $r = $s -> fetchAll( PDO::FETCH_ASSOC );
                 if( count( $r ) > 0 ) {
                     // update record
-                    $q = "UPDATE `event_participate` SET `remind_me` = '$remindMe', `role_id` = '$participateAs', `count_part` = '$countPart'. current_datetime=Now() WHERE `event_participate`.`event_id` = $id and `event_participate`.`user_id` = $userId";
+                    $q = "UPDATE `event_participate` SET `remind_me` = '$remindMe', `role_id` = '$participateAs', `count_part` = '$countPart', current_datetime=Now() WHERE `event_participate`.`event_id` = $id and `event_participate`.`user_id` = $userId";
                     $return -> message = "Die Teilnahme wurde erfolgreich gespeichert.";
                 } else {
                     // create new record
@@ -207,14 +231,91 @@ class CalendarEvent {
                 $content = "Der Nutzer " . $r_user[0]["fullname"] . " hat für Termin ´" . $r_event[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_event[0]["start_date"], false ) . " um " . $r_event[0]["start_time"] . " Uhr abgesagt.";
             }
             $pdo -> query( $q );
-            $iu -> sendUserInfo( $title, $title, $content, $content );
+            if( $participate === "1" && isset( $content ) ) $iu -> sendUserInfo( $title, $title, $content, $content );
         } catch ( Exception $e ) {
                 $return -> success = false;    
-                $return -> message = "Beim Löschen des Termins ist folgender Fehler aufgetreten:" . $e -> getMessage();
+                $return -> message = "Beim Löschen der Teilnahme ist folgender Fehler aufgetreten:" . $e -> getMessage();
         }
         return $return;
     }   
-    
+    public function removeSingleEvent( $pdo, $id, $informRole, $informUser ) {
+        $return = new \stdClass();
+        $return -> success = true;
+        try {
+            $q = "select title, group_id from event where id = $id";
+            $s = $pdo -> query( $q );
+            $r_event = $s -> fetchAll( PDO::FETCH_ASSOC );
+            $return -> user = $this -> getInformUser( $pdo, $id, $informRole, $informUser, "0" ) -> userAll;
+            // 1. delete appendix
+            $files = glob( "../cal/cal_ev_$id*.*");
+            $l = count( $files );
+            $i = 0;
+            while( $i < $l ) {
+                unlink( $files[$i] );
+                $i += 1;
+            }
+            // 2. delete participants
+            $q = "delete from event_participate where event_id = $id";
+            $pdo -> query( $q );
+            // 3. delete event
+            $q = "delete from event where id = $id";
+            $pdo -> query( $q );
+        } catch ( Exception $e ) {
+                $return -> success = false;    
+        }
+        return $return;    
+    }
+    public function removeGroupEvent( $pdo, $group_id, $informRole, $informUser ) {
+        $return = new \stdClass();
+        $return -> success = true;
+        try {
+            
+            // 1. delete appendix
+            $q = "select id from event where group_id = $group_id";
+            $s = $pdo -> query( $q );
+            $r_events = $s -> fetchAll( PDO::FETCH_ASSOC );
+            $l = count( $r_events );
+            $i = 0;
+            while( $i < $l ) {
+                $files = glob( "../cal/cal_ev_" . $r_events[$i]["id"] . "*.*");
+                $m = count( $files );
+                $j = 0;
+                while( $j < $m ) {
+                    unlink( $files[$j] );
+                    $j += 1;
+                }
+                $i += 1;
+            }
+            // 2. delete participants
+            $return -> user = $this -> getInformUser( $pdo, "", $informRole, $informUser, $group_id ) -> userAll;
+            $ids = assocArrToFlat( $r_events, "id" );
+            $q = "delete from event_participate where event_id in($ids)";
+            $pdo -> query( $q );
+            // 3. delete events
+            $q = "delete from event where id in ($ids)";
+            $pdo -> query( $q );            
+         } catch ( Exception $e ) {
+                $return -> success = false;    
+        }
+        return $return;    
+    }
+    public function exportEvEMail( $pdo ) {
+        $return = new \stdClass();
+        try{
+            require_once( "classes/InformUser.php" );
+            $iu = new \InformUser( $pdo, "email", 27, 0, 0, $_SESSION["user_id"], true, [ "tmp/export_events_" . $_SESSION["user_id"] . ".ics, DeineTerminDatei.ics" ] );
+            $content ="Als Anhang zu dieser E-Mail erhälst die die von dir exportierten Termine. Öffne deine Termin-App und lade diese Datei, damit du diese Termine übernehmen kannst.";
+            $title = "Deine Termine im Anhang";
+            $iu -> sendUserInfo( $title, $title, $content, $content );
+            $return -> success = true;    
+            $return -> message = "Die E-Mail wurde erfolgreich versand.";
+            
+        } catch (Exception $e ) {
+            $return -> success = false;    
+            $return -> message = "Beim Versenden der E-Mail ist folgender Fehler aufgetreten: " . $e -> getMessage();            
+        }
+        return $return;
+    }
     /* end CalEv */
     public function getMaxGroupId( $pdo ) {
         $query = "SELECT MAX(group_id) AS max_group_id FROM event";
@@ -942,23 +1043,6 @@ class CalendarEvent {
         } catch (Exception $e ) {
             $return -> success = false;    
             $return -> message = "Beim Löschen der Anzahl der Teilnahmer ist folgender Fehler aufgetreten: " . $e -> getMessage();            
-        }
-        return $return;
-    }
-    public function exportEvEMail( $pdo ) {
-        $return = new \stdClass();
-        try{
-            require_once( "classes/InformUser.php" );
-            $iu = new \InformUser( $pdo, "email", 27, 0, 0, $_SESSION["user_id"], true, [ "tmp/export_events_" . $_SESSION["user_id"] . ".ics, DeineTerminDatei.ics" ] );
-            $content ="Als Anhang zu dieser E-Mail erhälst die die von dir exportierten Termine. Öffne deine Termin-App und lade diese Datei, damit du diese Termine übernehmen kannst.";
-            $title = "Deine Termine im Anhang";
-            $iu -> sendUserInfo( $title, $title, $content, $content );
-            $return -> success = true;    
-            $return -> message = "Die E-Mail wurde erfolgreich versand.";
-            
-        } catch (Exception $e ) {
-            $return -> success = false;    
-            $return -> message = "Beim Versenden der E-Mail ist folgender Fehler aufgetreten: " . $e -> getMessage();            
         }
         return $return;
     }

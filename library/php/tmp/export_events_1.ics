@@ -1,0 +1,331 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//www.suchtselbsthilfe-regenbogen.de//Suchtselbsthilfe Regenbogen
+CALSCALE:GREGORIAN
+BEGIN:VTIMEZONE
+TZID:Europe/Berlin
+TZURL:http://tzurl.org/zoneinfo/Europe/Berlin
+X-LIC-LOCATION:Europe/Berlin
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19810329T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19961027T030000
+RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+END:STANDARD
+BEGIN:STANDARD
+TZOFFSETFROM:+005328
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:18930401T000000
+RDATE:18930401T000000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19160430T230000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19161001T010000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0300
+TZNAME:CEMT
+DTSTART:19450524T010000
+RDATE:19450524T010000
+RDATE:19470511T020000
+END:DAYLIGHT
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0300
+TZOFFSETTO:+0200
+TZNAME:CEST
+DTSTART:19450924T030000
+RDATE:19450924T030000
+RDATE:19470629T030000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0100
+TZNAME:CET
+DTSTART:19460101T000000
+RDATE:19460101T000000
+RDATE:19800101T000000
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:a638380d85807-496e5@www.suchtselbsthilfe-regenbogen.de-6f616a16c2
+DTSTART:20240830T130000
+DTEND:20240901T140000
+SUMMARY:Regenbogenfahrt/Workshop 2024
+DESCRIPTION:Dieses Jahr ist es wieder soweit, unsere Regenbogenfahrt findet wieder statt und wir fahren diesmal nach Benneckenstein in den Harz. Informationen zur Unterkunft und Umgebung können der angehangenen PDF Datei entnommen werden. Die Unterkunft ist für 40 Personen ausgelegt. Die Unterbringung in Einzelzimmer hängt von der Gesamtteilnehmerzahl ab, weshalb wir dies nicht garantieren können. 
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:fc0498fd5898b-b197e@www.suchtselbsthilfe-regenbogen.de-5cb965dc0f
+DTSTART:20240527T160000
+DTEND:20240527T170000
+SUMMARY:Trommelworkshop
+DESCRIPTION:Einmal im Monat läd uns Damien ein, gemeinsam zu trommeln. Wenn du also einfach nur Lust hast was Neues auszuprobieren und dich von der Welt des Rhythmus mitreißen lassen möchtest, dann bist du jederzeit willkommen. Die Rhythmen werden einfach gehalten sein, so dass jeder mit trommeln kann. Singen und Trommeln: meditativ – kraftvoll – heilsam. Sich erleben und ausdrücken im Klang der Stimme und der rhythmischen Kraft des Trommelspiels.
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:99530d0b19b5c-8dc3d@www.suchtselbsthilfe-regenbogen.de-e77883f319
+DTSTART:20240429T160000
+DTEND:20240429T170000
+SUMMARY:Trommelworkshop
+DESCRIPTION:Einmal im Monat läd uns Damien ein, gemeinsam zu trommeln. Wenn du also einfach nur Lust hast was Neues auszuprobieren und dich von der Welt des Rhythmus mitreißen lassen möchtest, dann bist du jederzeit willkommen. Die Rhythmen werden einfach gehalten sein, so dass jeder mit trommeln kann. Singen und Trommeln: meditativ – kraftvoll – heilsam. Sich erleben und ausdrücken im Klang der Stimme und der rhythmischen Kraft des Trommelspiels.
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:5dea634182d26-232e1@www.suchtselbsthilfe-regenbogen.de-f7d81e35f2
+DTSTART:20240624T160000
+DTEND:20240624T170000
+SUMMARY:Trommelworkshop
+DESCRIPTION:Einmal im Monat läd uns Damien ein, gemeinsam zu trommeln. Wenn du also einfach nur Lust hast was Neues auszuprobieren und dich von der Welt des Rhythmus mitreißen lassen möchtest, dann bist du jederzeit willkommen. Die Rhythmen werden einfach gehalten sein, so dass jeder mit trommeln kann. Singen und Trommeln: meditativ – kraftvoll – heilsam. Sich erleben und ausdrücken im Klang der Stimme und der rhythmischen Kraft des Trommelspiels.
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:38c17b1184ab4-cc3cf@www.suchtselbsthilfe-regenbogen.de-a0a9126c67
+DTSTART:20240325T160000
+DTEND:20240325T170000
+SUMMARY:Trommelworkshop
+DESCRIPTION:Einmal im Monat läd uns Damien ein, gemeinsam zu trommeln. Wenn du also einfach nur Lust hast was Neues auszuprobieren und dich von der Welt des Rhythmus mitreißen lassen möchtest, dann bist du jederzeit willkommen. Die Rhythmen werden einfach gehalten sein, so dass jeder mit trommeln kann. Singen und Trommeln: meditativ – kraftvoll – heilsam. Sich erleben und ausdrücken im Klang der Stimme und der rhythmischen Kraft des Trommelspiels.
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:fa15a6b95d803-16290@www.suchtselbsthilfe-regenbogen.de-350cf0668a
+DTSTART:20240729T160000
+DTEND:20240729T170000
+SUMMARY:Trommelworkshop
+DESCRIPTION:Einmal im Monat läd uns Damien ein, gemeinsam zu trommeln. Wenn du also einfach nur Lust hast was Neues auszuprobieren und dich von der Welt des Rhythmus mitreißen lassen möchtest, dann bist du jederzeit willkommen. Die Rhythmen werden einfach gehalten sein, so dass jeder mit trommeln kann. Singen und Trommeln: meditativ – kraftvoll – heilsam. Sich erleben und ausdrücken im Klang der Stimme und der rhythmischen Kraft des Trommelspiels.
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:5fe759ecf3ed1-bf428@www.suchtselbsthilfe-regenbogen.de-39b52c17f5
+DTSTART:20240315T090000
+DTEND:20240315T113000
+SUMMARY:Wandelhalle
+DESCRIPTION:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:f4aee66d9cc6d-6ace4@www.suchtselbsthilfe-regenbogen.de-b9f0f0da3e
+DTSTART:20240318T090000
+DTEND:20240318T113000
+SUMMARY:Wandelhalle
+DESCRIPTION:Suchtpräventionsprojekt mit abstinent lebenden suchtkranken Menschen. Melde dich gerne bei der Koordinatorin Laura Finke, falls du Interesse hast, dich ehrenamtlich in dem Projekt zu engagieren.
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:6abaffa1b6701-c4415@www.suchtselbsthilfe-regenbogen.de-9d8da6ebef
+DTSTART:20240320T090000
+DTEND:20240320T113000
+SUMMARY:Wandelhalle
+DESCRIPTION:
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:efd6ac74fdabe-ebda6@www.suchtselbsthilfe-regenbogen.de-f9be9d08fb
+DTSTART:20240322T130000
+DTEND:20240322T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:27b03cadbff1c-836b9@www.suchtselbsthilfe-regenbogen.de-a408b49002
+DTSTART:20240405T130000
+DTEND:20240405T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:08f33ea73ccc3-7b1e0@www.suchtselbsthilfe-regenbogen.de-bc12a773cf
+DTSTART:20240419T130000
+DTEND:20240419T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:23bce416f1eab-01f32@www.suchtselbsthilfe-regenbogen.de-eedd90133b
+DTSTART:20240503T130000
+DTEND:20240503T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:b701f8e8ed693-c7cd5@www.suchtselbsthilfe-regenbogen.de-7745bdca97
+DTSTART:20240517T130000
+DTEND:20240517T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:bde8675eeda99-dda5b@www.suchtselbsthilfe-regenbogen.de-be1523251e
+DTSTART:20240531T130000
+DTEND:20240531T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:39f378794a917-e8138@www.suchtselbsthilfe-regenbogen.de-2d85181bb1
+DTSTART:20240614T130000
+DTEND:20240614T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:c16713ef1fa7e-f6772@www.suchtselbsthilfe-regenbogen.de-72f2f79fe5
+DTSTART:20240628T130000
+DTEND:20240628T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:d9d3fdc4193cb-be334@www.suchtselbsthilfe-regenbogen.de-dd3df62a13
+DTSTART:20240712T130000
+DTEND:20240712T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:fd4d087f24352-51125@www.suchtselbsthilfe-regenbogen.de-5c7533f968
+DTSTART:20240726T130000
+DTEND:20240726T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:bc635801c42fc-936c3@www.suchtselbsthilfe-regenbogen.de-52f37df1bf
+DTSTART:20240809T130000
+DTEND:20240809T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:b1b52eb8afdb8-60670@www.suchtselbsthilfe-regenbogen.de-d5e924139d
+DTSTART:20240823T130000
+DTEND:20240823T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:3b1e7e264d14a-8efc1@www.suchtselbsthilfe-regenbogen.de-5aaea9e6b5
+DTSTART:20240906T130000
+DTEND:20240906T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:e131e063af2b0-f811d@www.suchtselbsthilfe-regenbogen.de-f87ebc2828
+DTSTART:20240920T130000
+DTEND:20240920T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:f65f25b4adb5d-b2e38@www.suchtselbsthilfe-regenbogen.de-ddf819f94e
+DTSTART:20241004T130000
+DTEND:20241004T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:bbbdd2aab4b49-eb143@www.suchtselbsthilfe-regenbogen.de-3796e396d5
+DTSTART:20241018T130000
+DTEND:20241018T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:758f659a3881e-61d73@www.suchtselbsthilfe-regenbogen.de-11f5fd29e3
+DTSTART:20241101T130000
+DTEND:20241101T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:fdf06cb76b1e3-2a45c@www.suchtselbsthilfe-regenbogen.de-21016dbee7
+DTSTART:20241115T130000
+DTEND:20241115T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:9270e035df3af-a0c67@www.suchtselbsthilfe-regenbogen.de-8f029d58cc
+DTSTART:20241129T130000
+DTEND:20241129T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:ef491a680a091-37aea@www.suchtselbsthilfe-regenbogen.de-93f686c75d
+DTSTART:20241213T130000
+DTEND:20241213T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:32dc1fbfe2ac7-c1817@www.suchtselbsthilfe-regenbogen.de-40bb365aae
+DTSTART:20241227T130000
+DTEND:20241227T140000
+SUMMARY:Projekttreffen Börno/Thiele
+DESCRIPTION:regelmäßiges Treffen zum Austausch über den Entwicklungsstand des Projektes inklusive Ticketbesprechung
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:182e1096bd5b0-297c8@www.suchtselbsthilfe-regenbogen.de-c07fbf8e7a
+DTSTART:20240314T180000
+DTEND:20240314T193000
+SUMMARY:Abendbrot
+DESCRIPTION:Einmal im Monat habt ihr die Möglichkeit, im Café Abendbrot zu essen für 2,50 €. Meldet euch dazu bitte an. An diesem Tag verlängern wir die Öffnungszeit auf 19.30 Uhr. 
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:f061e8974c0e8-b611d@www.suchtselbsthilfe-regenbogen.de-b9bd90588a
+DTSTART:20240401T130000
+DTEND:20240401T180000
+SUMMARY:Grillen zu Ostern
+DESCRIPTION:Die SHG7 wird für uns Grillen. Wir erheben einen Beitrag ab 3.00 €.Offener Erfahrungsaustausch für Betroffene und Angehörige. Wir freuen uns auf dich.
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20240314T000000
+UID:ff988093f69b2-c71cd@www.suchtselbsthilfe-regenbogen.de-eed00b7fcb
+DTSTART:20240317T000000
+DTEND:20240318T000000
+SUMMARY:aa
+DESCRIPTION:aa
+END:VEVENT
+END:VCALENDAR

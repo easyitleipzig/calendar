@@ -124,6 +124,15 @@ $event_string = substr( $event_string, 0, -1 );
                 $i += 1;
             }
             echo ";'\n";
+            echo "let optExportArt = '<option value=\"\" selected>Alle</option>";
+            $query = "SELECT * FROM event_format";
+            $stm = $db_pdo -> query( $query );
+            $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
+
+            for( $i = 0; $i < count( $result ); $i++ ) {
+                print_r( '<option value="fc-' . $result[$i]["id"] . '" class="fc-' . $result[$i]["id"] . '">' . $result[$i]["name"] . "</option>");
+            }
+            echo ";'\n";
     ?>
     const getTime = function( idTime, idMinutes ) {
         let content = "";
@@ -140,10 +149,6 @@ $event_string = substr( $event_string, 0, -1 );
 <a href="#" id="openMessage">openMessage</a>
 <a href="#" id="openMessageNews">openMessageNews</a>
 
-<div id="evRequest" style="display: none;">
-    <label>Anfrage</label>
-    <textarea id="contentRequest"></textarea>
-</div>
 <div id="editEvent" style="display: none;">
     <div class="accordion">          
         <div>
@@ -163,6 +168,8 @@ $event_string = substr( $event_string, 0, -1 );
                 <select id="category"></select>
                 <label>Ansprechpartner</label>
                 <select id='creator'></select>
+                <div id="dateTextDiv"></div>
+                <div id="deadlineTextDiv"></div>
             </div>
        </div>
        <div>
@@ -252,7 +259,7 @@ $event_string = substr( $event_string, 0, -1 );
     </div>
     <input type="file" id="loadAppendix" accept=".pdf,.jpg,.jpeg,.png,.gif" multiple>
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
-    <input type="checkbox" id="sendAppendix" title="Anhang mitsenden">senden
+    <input type="checkbox" id="sendAppendix" title="Anhang mitsenden"><label id="labSend">senden</label>
     <label>Linktext</label>
     <input id="innerUrlText" type="text">
     <div id="divAppendixLink">

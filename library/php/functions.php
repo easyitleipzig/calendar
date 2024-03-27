@@ -80,6 +80,9 @@ function splitUrl( $url = "" ) {
     $pieces = parse_url($url);
     $return -> scheme = $pieces['scheme']; // enthält "http"
     $return -> host = $pieces['host']; // enthält "www.example.com"
+    if( !isset( $pieces['path'] ) ) {
+        $pieces['path'] = "/";
+    }
     $return -> path = $pieces['path']; // enthält "/dir/dir/file.php"
     $tmp = explode( "/", $return -> path );
     $return -> fileName = $tmp[ count( $tmp ) - 1 ];
@@ -183,6 +186,9 @@ function formatFilesizeUnits($bytes) {
     }
     return $bytes;
 }
+function isDirEmpty($dir) {
+    return (count(scandir($dir)) == 2);
+}
 function deleteDirectory( $dir ) {
     if (!file_exists( $dir )) {
         return true;
@@ -242,6 +248,15 @@ function getFileExt( $fn ) {
     $l = count( $tmp );
     return $tmp[ $l - 1 ];
 }
+function getPathAndName( $name ) {
+    $res = new \stdClass();
+    $tmp = explode( "/", $name );
+    $res -> fName = $tmp[ count( $tmp ) - 1 ];
+    unset( $tmp[ count( $tmp ) - 1 ] );
+    $res -> path = implode( "/", $tmp );
+    return $res;
+}
+
 function getNextFileName( $path, $name, $type, $pattern = " - Kopie" ) {
     switch( $type ) {
         case "file":
@@ -253,8 +268,9 @@ function getNextFileName( $path, $name, $type, $pattern = " - Kopie" ) {
                 // file exists
                 $counter = 1;
                 $i = 1;
+                $x = 1;
                 do {
-                    $fn = $path . $fn . $pattern . "($counter)" . "." . $ext;
+                    $fn = $path . getFileWithoutExt( $name ) . $pattern . "($counter)" . "." . $ext;
                     if( !file_exists( $fn ) ) {
                        $x = 0; 
                    } else {
@@ -1602,9 +1618,7 @@ function getGermanDateFromMysql( $date, $widthMinutes = false ) {
     } else {
             $tmp = explode( " ", $date );
             $tmp = explode( "-", $tmp[0] );
-            if( count( $tmp ) > 0 ) {
-                return $tmp[2] . "." . $tmp[1] . "." .$tmp[0];
-            }
+            return $tmp[2] . "." . $tmp[1] . "." .$tmp[0];
     }
 }
 
@@ -2720,6 +2734,21 @@ function getRecordForId( $Id, $data ) {
     }
     return false;
 }
+function sendFailurMessage( $pdo, $fromRole, $toUser, $failureParts, $eventTitle ) {
+    $return = new \stdClass();
+    require_once( "classes/InformUser.php" );
+    $iu = new \InformUser( $pdo, "both", $fromRole, 0, 0, $toUser );
+    
+    $emailTitle = "Zustellungsfehler";
+    $c = "<p>Beim Versenden der Informations-E-Mail ´" . $titleEmail . "´ konnten folgende Nutzer nicht informiert werden:</p>";
+    $i = 0;
+    $l = count( $failureParts );
+    while( $i < $l ) {                                
+        $c .= "<div>" .  $failureParts[$i] -> name . "&#9;" .   $failureParts[$i] -> email . "</div>";
+        $i += 1;
+    }                               
+    $iu -> sendUserInfo( $emailTitle, $emailTitle, $c, $c );
+}
 function getDirContent($directory, $sorting_order=0) {
     if(!is_dir($directory)) {
         return false; 
@@ -2749,5 +2778,20 @@ function add_slashes_recursive( $variable )
             $variable[ $i ] = add_slashes_recursive( $value ) ;
 
     return $variable ;
+}
+function assocArrToFlat( $arr, $prop, $seperator = ",", $isString = true ) {
+    $tmpArr = [];
+    $l = count( $arr );
+    $i = 0;
+    while( $i < $l ) {
+        $tmpArr[] = $arr[$i][$prop];
+        $i += 1;
+    }
+    if( !$isString ) {
+        return $tmpArr;
+    } else {
+        $str = implode( $seperator, $tmpArr );
+        return $str;    
+    }
 }
 ?>

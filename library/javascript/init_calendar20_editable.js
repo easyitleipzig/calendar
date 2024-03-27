@@ -67,6 +67,9 @@ const init = function() {
         nj( "#participateAs" ).htm( optRoleUser );
         nj( "#informRole" ).htm( optInformRole );
         nj( "#informUser" ).htm( optInformUser );
+        nj( "#informUser" ).htm( optInformUser );
+        nj( "#exportArt" ).htm( optExportArt );
+
         // times
         nj( "#startMinutes").htm( getTime( "startHour", "valStartMinutes" ) );
         nj( "#endMinutes").htm( getTime( "endHour", "valEndMinutes" ) );
