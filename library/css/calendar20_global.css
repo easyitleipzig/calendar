@@ -14,6 +14,9 @@ body {
     display: inline-block;
     text-align: right;
 }
+#navBlender {
+    display: none;
+}
 @media (max-width: 575.98px) {
 	body {
 		padding: 0;
@@ -33,6 +36,18 @@ body {
 	height: 400px;
     width: 380px;
 }
+#divCalendar>article:has( div.ec-month-view), #divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
+    width: 330px
+}
+#divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
+    height: 1320px
+}
+.ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+    width: 275px;
+}
+.ec-header>.ec-days:nth-child(2)>.ec-lines:first-child {
+    width: 58px;
+}
 
 .ec {
 	height: 640px;
@@ -45,9 +60,12 @@ body {
     font-size: 8px;
     width: 40px;
 }
+
+/*
 #divCalendar>article {
-    width: 330px;
+    width: 340px;
 }
+*/
 #divCalendar {
     display: flex;
     flex-direction: column;
@@ -56,8 +74,11 @@ body {
     height: 1000px;
 }
 @media (min-width: 480px) {
-    #divCalendar>article {
-        width: 443px;
+    #divCalendar>article:has( div.ec-month-view), #divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
+        width: 445px
+    }
+    .ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+        width: 390px;
     }
     .col {
         flex: 1 1 0%;
@@ -70,6 +91,9 @@ body {
     .ec.ec-day-grid {
         height: 487px;
         width: 442px;
+    }
+    .ec-day {
+        font-size: 10px;
     }
     #divCalendar {
         display: flex;
@@ -77,16 +101,26 @@ body {
     }
 }
 @media (min-width: 576px) {
+    #divCalendar>article:has( div.ec-month-view), #divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
+        width: 528px;
+    }
+    .ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+        width: 450px;
+    }
     .col {
         flex: 1 1 0%;
         height: 506px;
     }
     .ec {
         height: 700px;
+        width: 515px;
     }
     .ec.ec-day-grid {
         height: 487px;
-        width: 442px;
+        width: 526px;    
+    }
+    .ec-header>.ec-days:nth-child(2)>.ec-lines:first-child {
+        width: 72px;
     }
     #divCalendar {
         display: flex;
@@ -94,52 +128,57 @@ body {
     }
 }
 @media (min-width: 800px) {
-    #divCalendar>article {
-        width: 445px;
+    #divCalendar>article:has( div.ec-month-view), #divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
+        width: 740px;
     }
-    .ec {
-        height: 800px;
+    #divCalendar>article:has( div.ec-month-view) {
+        height: 703px;
     }
-    .ec.ec-day-grid {
+    .ec, .ec.ec-day-grid {
         height: 700px;
-        width: 735px
+        width: 734px
     }
-    #divCal {
-                height: 700px;
-    }
-}
-@media (min-width: 992px) {
-    .ec {
-        height: 800px;
-    }
-    .ec.ec-day-grid {
-        height: 700px;
-    }
-    #divCal {
-                height: 700px;
+    .ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+        width: 668px;
     }
 }
 @media screen and (min-width: 1024px) {
-    section>article:first-child, section > article:nth-child(2) {
-        margin-top: 1em;
-        width: 736px;
-
+    #divCalendar>article:has( div.ec-month-view), #divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
+        width: 974px
     }
-    #divCalendar {
-        margin-left: 6em;
+    #divCalendar>article:has( div.ec-month-view) {
+        height: 705px;
+    }
+    .ec, .ec.ec-day-grid {
+        height: 700px;
+        width: 970px
+    }
+    .ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+        width: 903px;
     }
 }
-@media (min-width: 1200px) {
-	.ec.ec-day-grid {
-		height: 800px;
-	}
-    #divCal {
-        height: 800px;
+@media (min-width: 1280px) {
+    #divCalendar>article:has( div.ec-month-view), #divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
+        width: 1210px
+    }
+    .ec, .ec.ec-day-grid {
+        height: 700px;
+        width: 1205px;
+    }
+    .ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+        width: 1138px;
     }
 }
 @media (min-width: 1920px) {
-	.ec.ec-day-grid {
+	.ec, .ec.ec-day-grid {
 		height: 800px;
-		width: 1000px;
+		width: 913px;
 	}
+    #divCalendar {
+        flex-direction: row;    
+    }
+    .ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
+        width: 850px;
+    }
+}
 }
