@@ -231,7 +231,7 @@ class CalendarEvent {
                 $content = "Der Nutzer " . $r_user[0]["fullname"] . " hat für Termin ´" . $r_event[0]["title"] . "´ vom " . getGermanDateFromMysql( $r_event[0]["start_date"], false ) . " um " . $r_event[0]["start_time"] . " Uhr abgesagt.";
             }
             $pdo -> query( $q );
-            if( $participate === "1" && isset( $content ) ) $iu -> sendUserInfo( $title, $title, $content, $content );
+            /*if( $participate === "1" && isset( $content ) )*/ $iu -> sendUserInfo( $title, $title, $content, $content );
         } catch ( Exception $e ) {
                 $return -> success = false;    
                 $return -> message = "Beim Löschen der Teilnahme ist folgender Fehler aufgetreten:" . $e -> getMessage();

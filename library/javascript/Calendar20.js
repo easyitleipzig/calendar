@@ -382,7 +382,8 @@ class Calendar {
 							if( jsonobject.elId === "remindMe" && jsonobject.participate === "1" && jsonobject.remindMe === "" ) {
 								dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: "Die Erinnerung wurde erfolgreich gelöscht." } );
 							}
-
+							calendar.evCal.removeEventById( nj("#innerId").v() );
+							calendar.addEvent( calendar.buildEventFromDialog() );
 						} else {
 							dMNew.show({title:"Fehler", type: false, text: jsonobject.message })
 						}
@@ -519,11 +520,27 @@ class Calendar {
 			ev.extendedProps.place = nj( "#place" ).v();;
 			ev.extendedProps.class = "fc-" + nj( "#category" ).v();;
 			ev.extendedProps.registration_deadline = nj( "#deadline" ).v();;
+			ev.extendedProps.participate = nj( "#participate" ).chk();;
+			ev.extendedProps.participateAs = nj( "#participateAs" ).v();;
+			ev.extendedProps.remindMe = nj( "#remindMe" ).chk();;
+			ev.extendedProps.countPart = nj( "#countPart" ).v();;
 			ev.extendedProps.url = nj( "#Url" ).v();;
 			ev.extendedProps.inner_url = nj( "#newInnerUrl" ).v();;
 			ev.extendedProps.inner_url_text = nj( "#innerUrlText" ).v();;
 			ev.extendedProps.description = nj( "#description" ).v();
 			ev.extendedProps.notice = nj( "#notice" ).v();
+			ev.extendedProps.appendix = "";
+			let appendix = nj().els( "#editAppendix" ).childNodes;
+			console.log( appendix );
+			let l = appendix.length;
+			let i = 0;
+			while ( i < l ) {
+				ev.extendedProps.appendix += appendix.getAttribute( "href" ) + "|";
+				i += 1;
+			}
+			if( ev.extendedProps.appendix.length > 0 ) {
+				ev.extendedProps.appendix = ev.extendedProps.appendix.substring(0, ev.extendedProps.appendix.length - 1 );
+			}
 			return ev;
 		}
 		/**
@@ -642,7 +659,6 @@ class Calendar {
 				nj( "#place" ).v( 0 );
 				nj( "#category" ).v( 0 );
 				nj( "#creator" ).v( currentUserId );
-
 		}
 		/**
 		 * deleteAppendix
@@ -669,6 +685,10 @@ class Calendar {
 		 * 
 		*/
 		setParticipate = function( elId ) {
+			if( new Date() < new Date( nj( "#deadline" ).v() ) ) {
+				dMNew.show( {title: "Fehler", type: false, text: "Eine Anmeldung ist nicht mehr möglich, da der Anmeldeschluss überschritten ist." } );
+				return;
+			}
 			data = {};
 			data.command = "setParticipate";
 			data.pVar = this.opt.pVar;
@@ -679,7 +699,6 @@ class Calendar {
 			data.participateAs = nj( "#participateAs" ).v();
 			data.remindMe = nj( "#remindMe" ).chk();
 			data.countPart = nj( "#countPart" ).v();
-			console.log( data );
 			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
@@ -775,7 +794,6 @@ class Calendar {
 			if( data.event.start < new Date() ) {			
 				nj().els( dialog.opt.id + "_box div.d_HLTitle")[0].innerHTML = "Termin bearbeiten (gesperrt)";
 				dialog.options( "buttons", [{title: "Schließen", action: function( e ) {
-					console.log( e );
 					nj( e.target ).Dia().hide();	
 				} }] );
 			} else {
@@ -794,6 +812,7 @@ class Calendar {
 			nj( "#creator").v( event.extendedProps.creator )
 			let tmpTime = event.start.getMySQLDateString( true ).split( " " );
 			nj( "#startDate" ).v( tmpTime[0] );
+			console.log( nj( "#startDate" ).v() );
 			tmpTime = tmpTime[1].split( ":" );
 			nj( "#startHour" ).v( tmpTime[0] );
 			nj( "#valStartMinutes" ).v( tmpTime[1] );
@@ -812,7 +831,8 @@ class Calendar {
 			nj( "#Url").v( event.extendedProps.url );
 			nj( "#innerUrl").v( event.extendedProps.inner_url );
 			nj( "#innerUrlText").v( event.extendedProps.inner_url_text );
-
+			// set print part
+			nj( "#printPart" ).atr( "href", "intern.php" );
 			// set appendix
 			if( event.extendedProps.appendix !== "" ) {
 				app = event.extendedProps.appendix.split("|") ;
@@ -823,9 +843,15 @@ class Calendar {
 					tmp += "<a href='" + app[i] + "' target='_blank'>Anhang " + (i + 1 ) + "</a>&nbsp;"
 					i += 1;
 				}
-				console.log( tmp );
 				nj( "#editAppendix" ).htm( tmp );
 			}
+			console.log( new Date() < new Date( nj( "#startDate" ).v() ) );
+			if( new Date() < new Date( nj( "#startDate" ).v() ) ) {
+				nj( "#editEvent input[type=checkbox], #participateAs, #countPart").rAt( "disabled" );
+			} else {
+				nj( "#editEvent input[type=checkbox], #participateAs, #countPart").atr( "disabled", true );
+			}
+
 			// set behavior for participate
 			nj( "#participate, #participateAs, #remindMe, #countPart" ).on( "change", function( e ) {
 				e.stopImmediatePropagation();
@@ -835,7 +861,6 @@ class Calendar {
 				e.stopImmediatePropagation();
 				nj( this ).gRO().showDialogParticipate( nj( this ).gRO() );
 			});
-			console.log( event.extendedProps );
 			// additional Text for noteditable
 			nj().els( "#dateTextDiv" ).innerHTML = "beginnt am " + new Date( nj( "#startDate" ).v() ).getGermanDateString() + " um " + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() + " Uhr und endet am " + new Date( nj( "#endDate" ).v() ).getGermanDateString() + " um " + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v() + " Uhr";
 			if( event.extendedProps.registration_deadline !== "0000-00-00" ) {
@@ -995,10 +1020,8 @@ class Calendar {
 
 					} else {
 						nj( "#editEvent" ).aCl( "notEditable" );
-						nj( "#editEvent input:not([type=checkbox]):not([type=radio]):not(#countPart), #editEvent textarea" ).atr( "disabled", true );
+						nj( "#editEvent input:not([type=radio]), #editEvent textarea, #editEvent select" ).atr( "disabled", true );
 						this.divEvent.show( {variables: { event: info.event, calendar: this }, onShow: function(){
-								//let event = arguments[0].opt.variables.event;
-								console.log( this );
 								arguments[0].opt.variables.calendar.fillEditDialogForEdit( arguments[0].opt.variables, arguments[0] )
 							},
 						buttons: [
@@ -1293,7 +1316,9 @@ class Calendar {
 							    },
 						}
 			*/
-			this.evCal.addEvent( ev )
+			this.evCal.addEvent( ev );
+			console.log( this.evCal.getEvents()[this.evCal.getEvents().length - 1] );
+			nj( "#innerId" ).v( this.evCal.getEvents()[this.evCal.getEvents().length - 1].id );
 			/*
 			let hinweis = document.getElementById(ev.extendedProps.id);
     hinweis.classList.add("fc-1");

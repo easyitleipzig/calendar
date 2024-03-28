@@ -58,7 +58,7 @@ $event_string = substr( $event_string, 0, -1 );
         $i += 1;
     }
 ?>
-/* end event formats */
+/* end event formats */ 
     </style>
     <script>
         <?php
@@ -254,9 +254,7 @@ $event_string = substr( $event_string, 0, -1 );
     <input id="Url" type="text"><input id="invalidUrl" type=checkbox>
     <label>interner Link</label>
     <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
-    <div id="editAppendix">
-
-    </div>
+    <div id="editAppendix"></div>
     <input type="file" id="loadAppendix" accept=".pdf,.jpg,.jpeg,.png,.gif" multiple>
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
     <input type="checkbox" id="sendAppendix" title="Anhang mitsenden"><label id="labSend">senden</label>

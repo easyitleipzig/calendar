@@ -127,10 +127,24 @@
 .cEdit select[disabled] {
     color: black;
 } 
-.notEditable .accordion>div:nth-child(4), .notEditable #loadAppendix, .notEditable #deleteAppendix, .notEditable #sendAppendix, .notEditable #labSend, .notEditable #invalidUrl, #editEvent #invalidUrl {
+.notEditable .accordion>div:nth-child(4), .notEditable .accordion>div:nth-child(2), .notEditable #loadAppendix, .notEditable #deleteAppendix, .notEditable #sendAppendix, .notEditable #labSend, .notEditable #invalidUrl, #editEvent #invalidUrl {
     display: none;
 }
-
+.notEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(5),.notEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(8),.notEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(9),.notEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(15),.notEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(16),.notEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(6) {
+    display: none !important;
+}
+.cEdit>div>div:nth-child(5)>div:nth-child(3)>textarea:nth-child(2) {
+    width: 275px;
+    height: 150px;
+    resize: none;
+}
+.cEdit>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(4) {
+    width: 275px;
+}
+.notEditable .accordion input:checked~.panel { 
+    min-height: 370px;
+    max-height: 370px;
+}
 @media screen and (min-width: 300px) {
     
 }
