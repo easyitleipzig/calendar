@@ -511,7 +511,6 @@ class Calendar {
 			} else {
 				ev.start = nj( "#startDate" ).v() + "T" + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() ;	
 			}
-			
 			if( !ev.allDay ) ev.end = nj( "#endDate" ).v() + "T" + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v();
 			ev.title = nj( "#title" ).v();
 			ev.titleHTML = "";
@@ -531,7 +530,6 @@ class Calendar {
 			ev.extendedProps.notice = nj( "#notice" ).v();
 			ev.extendedProps.appendix = "";
 			let appendix = nj().els( "#editAppendix" ).childNodes;
-			console.log( appendix );
 			let l = appendix.length;
 			let i = 0;
 			while ( i < l ) {
@@ -790,7 +788,6 @@ class Calendar {
 		}
 		fillEditDialogForEdit = function( data, dialog ) {
 			let tmp, app, event = data.event;
-			console.log( data.event.start );
 			if( data.event.start < new Date() ) {			
 				nj().els( dialog.opt.id + "_box div.d_HLTitle")[0].innerHTML = "Termin bearbeiten (gesperrt)";
 				dialog.options( "buttons", [{title: "Schließen", action: function( e ) {
@@ -832,7 +829,14 @@ class Calendar {
 			nj( "#innerUrl").v( event.extendedProps.inner_url );
 			nj( "#innerUrlText").v( event.extendedProps.inner_url_text );
 			// set print part
-			nj( "#printPart" ).atr( "href", "intern.php" );
+			let href = "calendar20_showPart.php?cal=" + nj( "#Id" ).v();
+			nj( "#printPart" ).atr( "href", href );
+			// set headlines for paragraphs
+			if( !this.opt.type ) {
+				nj( "label[for=usual1]").txt("Details");
+				nj( "label[for=usual3]").txt("Anmeldung");
+				nj( "label[for=usual5]").txt("Inhalt");
+				}
 			// set appendix
 			if( event.extendedProps.appendix !== "" ) {
 				app = event.extendedProps.appendix.split("|") ;
@@ -845,16 +849,18 @@ class Calendar {
 				}
 				nj( "#editAppendix" ).htm( tmp );
 			}
-			console.log( new Date() < new Date( nj( "#startDate" ).v() ) );
 			if( new Date() < new Date( nj( "#startDate" ).v() ) ) {
 				nj( "#editEvent input[type=checkbox], #participateAs, #countPart").rAt( "disabled" );
 			} else {
 				nj( "#editEvent input[type=checkbox], #participateAs, #countPart").atr( "disabled", true );
 			}
-
 			// set behavior for participate
 			nj( "#participate, #participateAs, #remindMe, #countPart" ).on( "change", function( e ) {
 				e.stopImmediatePropagation();
+				if( "#" + this.id === "#remindMe" && !nj( "#participate").chk() ) {
+					nj( "#remindMe" ).chk( false );
+					return;
+				}
 				nj( this ).gRO().setParticipate( this.id );
 			} );
 			nj( "#showParticipants" ).on( "click", function( e ) {
