@@ -382,7 +382,9 @@ class Calendar {
 							if( jsonobject.elId === "remindMe" && jsonobject.participate === "1" && jsonobject.remindMe === "" ) {
 								dMNew.show( {title:"Teilnahme", type: jsonobject.success, text: "Die Erinnerung wurde erfolgreich gelöscht." } );
 							}
+							//calendar.evCal.re
 							calendar.evCal.removeEventById( nj("#innerId").v() );
+							//console.log( calendar.buildEventFromDialog() );
 							calendar.addEvent( calendar.buildEventFromDialog() );
 						} else {
 							dMNew.show({title:"Fehler", type: false, text: jsonobject.message })
@@ -507,11 +509,12 @@ class Calendar {
 			if( nj( "#innerId" ).v() !== "" && widthInnerId ) ev.id = nj( "#innerId" ).v();
 			ev.allDay = nj( "#allDay" ).chk();
 			if( ev.allDay ) {
-				ev.start = nj( "#startDate" ).v() + "T00:00Z";
+				ev.start = nj( "#startDate" ).v() + "T00:00";
 			} else {
 				ev.start = nj( "#startDate" ).v() + "T" + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() ;	
 			}
-			if( !ev.allDay ) ev.end = nj( "#endDate" ).v() + "T" + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v();
+			//if( !ev.allDay ) 
+			ev.end = nj( "#endDate" ).v() + "T" + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v();
 			ev.title = nj( "#title" ).v();
 			ev.titleHTML = "";
 			ev.extendedProps.id = nj( "#Id" ).v();;
@@ -946,7 +949,7 @@ class Calendar {
 		*/
 		onDateClick = function( info ) {
 			console.log( "onDateClick", this.opt.type );
-			if( this.opt.type !== "editable" ) return;
+			if( this.opt.type !== true ) return;
 			this.divEvent.show( {variables: { event: info, calendar: this }, onShow: function( e ){
 				console.log( this.variables.calendar );
 				this.variables.calendar.fillEditDialogForNew( arguments[0].opt.variables, arguments[0] )
@@ -1230,47 +1233,12 @@ class Calendar {
 		 * 
 		*/
 		refreshView = function( calArgs ) {
-			/*
-				calArgs: {
-					id: 	"#cal" 		// id of calendar
-					events: [ {....}, {....}, {....}, ],
-						// an event is a kind of
-						{
-						    "allDay": false,
-						    "start": "2023-09-04T14:00:00.000Z",
-						    "end": "2023-09-05T06:00:00.000Z",
-						    "title":{html: "<span id='ev_1234'><b>test</b></span>" },
-						    "display": "auto",
-						    "extendedProps": {
-						        "test": 1,
-								"id": 1234,
-								"participate": true,
-							    },
-							    "backgroundColor": "#B29DD9",
-						}
-						// end event object
-					view:
-				}
-
-
-
-
-			*/
-			let options = {};
-			options.view = 'dayGridMonth';
-			options.events = [];
-			this.opt.cal.destroy();
-			/* original
-
-			let ec = new EventCalendar(document.getElementById('ec'), {
-	    		view: 'timeGridWeek',
-	    		events: [
-	        		// your list of events
-	    		]
-			});
-
-			*/
-			this.opt.cal = new EventCalendar( nj().els( calArgs.id ), options);
+			this.removeAllEventsFromView();
+			let tmp = this.evCal.getView();
+			let res = {};
+			res.startStr = tmp.activeStart.getMySQLDateString( true );
+			res.endStr = tmp.activeEnd.getMySQLDateString( true );
+			this.getDaysForView( res );
 		}
 		/**
 		 * switchHeadline

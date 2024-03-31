@@ -170,6 +170,9 @@ body {
     }
 }
 @media (min-width: 1920px) {
+    #divCalendar>article:has( div.ec-month-view) {
+        height: 803px
+    }
 	.ec, .ec.ec-day-grid {
 		height: 800px;
 		width: 913px;
@@ -178,7 +181,7 @@ body {
         flex-direction: row;    
     }
     .ec-line:not(:first-child):after, .ec-body:not(.ec-compact) .ec-line:nth-child(even):after {
-        width: 850px;
+        width: 848px;
     }
 }
 }
