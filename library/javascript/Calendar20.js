@@ -191,7 +191,19 @@ class Calendar {
 			});
 			let appendixHasChanged = false;
 			nj( "body" ).sDs( "dvar", this.opt.pVar );
-			this.divEvent = new DialogDR( { dVar: this.opt.pVar +  ".divEvent", id: "#editEvent", height: this.opt.divEvHeight, width: this.opt.divEvWidth, autoOpen: false, modal: false, hasHelp: true, width: 320, afterShow: function(){ nj( this.id).Dia().options('center')} } );
+			this.divEvent = new DialogDR( 
+				{ 
+					dVar: this.opt.pVar +  ".divEvent", 
+					id: "#editEvent", 
+					height: this.opt.divEvHeight, 
+					width: this.opt.divEvWidth, 
+					autoOpen: false, 
+					modal: false, 
+					hasClose: false, 
+					hasHelp: true, 
+					width: 320, 
+					afterShow: function(){ nj( this.id).Dia().options('center')} 
+				} );
 			this.dPartic = new DialogDR( { dVar: this.opt.pVar + ".dPartic", id: "#dPartic", modal: false, variables: {calendar: this }, onShow: function() {
 				nj("#dPartic_box div" ).on( "mouseleave", function(e){ 
 					e.stopImmediatePropagation();
@@ -1060,9 +1072,11 @@ class Calendar {
 			nj( "#participateAs" ).v( event.extendedProps.participateAs );
 			nj( "#remindMe" ).chk( event.extendedProps.remindMe );
 			if( event.extendedProps.remindMe ) {
+				nj( "#buttRemindMe" ).rCl( "buttActive" );
 				nj( "#buttRemindMe" ).aCl( "buttInactive" );
 				nj( "#buttRemindMe" ).v( "Er. löschen" );
 			} else {
+				nj( "#buttRemindMe" ).rCl( "buttInactive" );
 				nj( "#buttRemindMe" ).aCl( "buttActive" );
 				nj( "#buttRemindMe" ).v( "Erinnern" );
 			}
@@ -1554,6 +1568,14 @@ class Calendar {
 			nj( "#valEndMinutes" ).on( "change", function() {
 				v = new Date( nj( "#endDate" ).v() + " " + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v() );
 				console.log( v );
+			});
+			nj( "#deleteDeadline" ).on( "click", function() {
+				nj( "#deadline" ).v( "0000-00-00" );
+			});
+			nj( "#deadline" ).on( "change", function() {
+				if( nj( "#deadline" ).v() === "") {
+					nj( "#deadline" ).v( "0000-00-00" );
+				}
 			});
 			nj( "#countPart" ).on( "blur", function() {
 				if( parseInt( nj( "#countPart" ).v() ) < 1 || parseInt( nj( "#countPart" ).v() ) > 40 ) {
