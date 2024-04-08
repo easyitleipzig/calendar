@@ -127,23 +127,44 @@
 .cEdit select[disabled] {
     color: black;
 } 
-.notEditable .accordion>div:nth-child(4), .notEditable .accordion>div:nth-child(2), .notEditable #loadAppendix, .notEditable #deleteAppendix, .notEditable #sendAppendix, .notEditable #labSend, .notEditable #invalidUrl, #editEvent #invalidUrl {
+.cNotEditable .accordion>div:nth-child(4), .cNotEditable .accordion>div:nth-child(2), .cNotEditable #divPart, .cNotEditable #loadAppendix, .cNotEditable #deleteAppendix, .cNotEditable #sendAppendix, .cNotEditable #labSend, .cNotEditable #invalidUrl, #editEvent #invalidUrl {
     display: none;
 }
-.notEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(5),.notEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(8),.notEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(9),.notEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(15),.notEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(16),.notEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(6) {
+.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(5),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(8),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(9),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(15),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(16),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(6) {
     display: none !important;
+}
+.cEditable {
+    
 }
 .cEdit>div>div:nth-child(5)>div:nth-child(3)>textarea:nth-child(2) {
     width: 275px;
     height: 150px;
     resize: none;
 }
-.cEdit>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(4) {
+.cEdit #dateTextDiv, .cEdit #deadlineTextDiv, .cEdit div.panel:nth-child(3)>label:nth-child(9), .cEdit div.panel:nth-child(3)>select:nth-child(10), .cEdit #Direktlink, .cEdit #repeatLabel, .cEdit #repeatToLabel, .cEdit #repeatTo, .cEdit #deleteRepeatTo, .cEdit #Url, .cEdit #directLinkLabel, .cEdit #appendixNames {
+    display: none !important;
+}
+.cEdit #informUser {
+    height: 203px;
+}
+.cEdit>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(4), .cEdit input[type=text], .cEdit select:not(#startHour):not(#valStartMinutes):not(#endHour):not(#valEndMinutes) {
     width: 275px;
 }
-.notEditable .accordion input:checked~.panel { 
+.cNotEditable .accordion input:checked~.panel { 
     min-height: 370px;
     max-height: 370px;
+}
+#evRequest>label {
+    display: block;
+}
+#evRequest>textarea {
+    width: 305px;
+    height: 260px;
+    resize: none;
+}
+input[id^=appendix_name_] {
+    margin-left: 2em;
+    width: 230px;
 }
 @media screen and (min-width: 300px) {
     

@@ -98,15 +98,14 @@ class News {
     public function setIsRead( $pdo, $id ) {
         $return = new \stdClass();
         try {
-            $query = "UPDATE news_user SET is_read = true WHERE id = $id";
+            
+            $query = "delete from news_user WHERE id = $id";
             $pdo -> query( $query );    
             $return -> success = true;
-            $return -> message = "Der Wert \"ist gelesen\" wurde erfolgreich aktualisiert.";
-            require_once( "functions.php" );
-            delteOrphansFromNews( $pdo );
+            $return -> message = "Die gelesene News wurde erfolgreich gelöscht.";
         } catch( Exception $e ) {
             $return -> success = false;
-            $return -> message = "Beim Lesen der News ist folgender Fehler aufgetreten:" . $e -> getMessage() . ".";
+            $return -> message = "Beim Löschen der News ist folgender Fehler aufgetreten:" . $e -> getMessage() . ".";
         }
         return $return;       
     }
@@ -163,7 +162,8 @@ class News {
         if( $dsPointer == "&nbsp;" ) {
             $condition = "news_user.id > 0 AND";
         }
-        $query = "SELECT news_user.id, `from_news`, news_user.to_user, news_user.is_read, news.title, news.content, news.curr_datetime, from_role, from_user FROM `news_user`, news WHERE $condition news.id = news_user.from_news AND news_user.is_read = false AND news_user.to_user = " . $_SESSION["user_id"] . " ORDER BY news_user.id $sort LIMIT 0, 1";    
+        $query = "SELECT news_user.id, `from_news`, news_user.to_user, news_user.is_read, news.title, news.content, news.curr_datetime, from_role, from_user FROM `news_user`, news 
+            WHERE $condition news.id = news_user.from_news AND news_user.to_user = " . $_SESSION["user_id"] . " ORDER BY news_user.id $sort LIMIT 0, 1";    
         $stm = $pdo -> query( $query );
         $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
         if( count( $result ) > 0 ) {
@@ -177,21 +177,19 @@ class News {
             $return -> content = $result[0]["content"];
             $return -> isRead = $result[0]["is_read"];
             $return -> currDateTime = date('d.m.Y H:i', strtotime( $result[0]["curr_datetime"] ) ) . " Uhr";
+            $return -> roleName = "";
+            $return -> userName = "";
             if( $result[0]["from_role"] != 0 ) {
                 $query = "SELECT role FROM role WHERE id = " . $result[0]["from_role"];
                 $stm = $pdo -> query( $query );
                 $result_role = $stm -> fetchAll(PDO::FETCH_ASSOC);
                 $return -> roleName = $result_role[0]["role"];
-            } else {
-                $return -> roleName = "&nbsp;";
             }
             if( $result[0]["from_user"] != 0 ) {
                 $query = "SELECT CONCAT( firstname, ' ', lastname) as name FROM user WHERE id = " . $result[0]["from_user"];
                 $stm = $pdo -> query( $query );
                 $result_user = $stm -> fetchAll(PDO::FETCH_ASSOC);
                 $return -> userName = $result_user[0]["name"];
-            } else {
-                $return -> userName = "&nbsp;";
             }
         } else {
             $return -> newsUserId = 0;            

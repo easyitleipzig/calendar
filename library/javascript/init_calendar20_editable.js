@@ -1,4 +1,5 @@
 // javascript
+/*
 const MAX_FILESIZE_APENDIX = 1000000;
 async function uploadAppendixFile( path, el, id ) {
     let formData = new FormData();
@@ -53,12 +54,8 @@ const uploadAppendix = function(evt) {
 }
 const dDia1 = new DialogDR( { dVar: "dDia1", id: "#dDia1", modal: false, hasMin: true, hasMax: true, hasInfo: true, hasHelp: true } );
 const dDia2 = new DialogDR( { dVar: "dDia2", id: "#dDia2", modal: false  } );
+*/
 const init = function() {
-    nj( "#openDialog1" ).on( "click", function(){dDia1.show() } );
-    nj( "#openDialog2" ).on( "click", function(){dDia2.show() } );
-    nj( "#openMessage" ).on( "click", function(){dMNew.show() } );
-    nj( "#openMessageNews" ).on( "click", function(){dMN.show() } );
-    //dM = new MessageDR();
     // set select options
         nj( "#place" ).htm( optPlace );
         nj( "#usePattern" ).htm( optPattern );
@@ -69,7 +66,6 @@ const init = function() {
         nj( "#informUser" ).htm( optInformUser );
         nj( "#informUser" ).htm( optInformUser );
         nj( "#exportArt" ).htm( optExportArt );
-
         // times
         nj( "#startMinutes").htm( getTime( "startHour", "valStartMinutes" ) );
         nj( "#endMinutes").htm( getTime( "endHour", "valEndMinutes" ) );
@@ -77,12 +73,12 @@ const init = function() {
     nj( "dPartic" ).on( "mouseleave", function() {
         console.log( this );
     });
-    nj( "#loadAppendix" ).on( "change", uploadAppendix );
-    cal.evCal.setOption( "datesSet", function ( info ) {
+/*    cal.evCal.setOption( "datesSet", function ( info ) {
         cal.removeAllEventsFromView();
         cal.getDaysForView( info )
     });
-    data = {};
+*/    cal.init();
+/*    data = {};
     data.command = "getEventsForView";
     data.pVar = "cal"; 
     data.startDate = cal.evCal.view.activeStart.addDays(1).toISOString().split("T")[0];
@@ -91,4 +87,5 @@ const init = function() {
     data.isFetch = true;
     console.log( data );
     nj().post("library/php/ajax_calendar_evcal.php", data, cal.evaluateCalData );   
+*/
 }

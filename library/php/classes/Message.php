@@ -83,15 +83,13 @@ class Message {
     public function setIsRead( $pdo, $id ) {
         $return = new \stdClass();
         try {
-            $query = "UPDATE message_user SET is_read = true WHERE id = $id";
+            $query = "delete from message_user WHERE id = $id";
             $pdo -> query( $query );    
             $return -> success = true;
-            $return -> message = "Der Wert \"ist gelesen\" wurde erfolgreich aktualisiert.";
-            require_once( "functions.php" );
-            delteOrphansFromMessage( $pdo );
+            $return -> message = "Die gelesene Meldung wurde erfolgreich gelöscht.";
         } catch( Exception $e ) {
             $return -> success = false;
-            $return -> message = "Beim Lesen der Meldung ist folgender Fehler aufgetreten:" . $e -> getMessage() . ".";
+            $return -> message = "Beim Löschen der Meldung ist folgender Fehler aufgetreten:" . $e -> getMessage() . ".";
         }
         return $return;       
     }
@@ -140,10 +138,12 @@ class Message {
         } else {
             $condition = "message_user.id < $dsPointer AND";   
         }
-        if( $dsPointer == "&nbsp;" ) {
+        if( $dsPointer == "&nbsp;" || $dsPointer == "" ) {
             $condition = "message_user.id > 0 AND";
         }
-        $query = "SELECT message_user.id, `from_message`, message_user.to_user, message_user.is_read, message.title, message.content, message.curr_datetime, from_role, from_user FROM `message_user`, message WHERE $condition message.id = message_user.from_message AND message_user.is_read = false AND message_user.to_user = " . $_SESSION["user_id"] . " ORDER BY message_user.id $sort LIMIT 0, 1";
+        $query = "SELECT message_user.id, `from_message`, message_user.to_user, message_user.is_read, message.title, message.content, message.curr_datetime, from_role, from_user FROM `message_user`, message 
+                    WHERE $condition message.id = message_user.from_message AND message_user.to_user = " . $_SESSION["user_id"] . " ORDER BY message_user.id $sort LIMIT 0, 1";
+        //var_dump( $dsPointer, $query );
         $stm = $pdo -> query( $query );
         $result = $stm -> fetchAll(PDO::FETCH_ASSOC);
         if( count( $result ) > 0 ) {
@@ -153,13 +153,14 @@ class Message {
             $return -> content = $result[0]["content"];
             $return -> isRead = $result[0]["is_read"];
             $return -> currDateTime = date('d.m.Y H:i', strtotime( $result[0]["curr_datetime"] ) ) . " Uhr";
+                $return -> roleName = "";
+                    $return -> userName = "";    
             if( $result[0]["from_role"] != 0 ) {
                 $query = "SELECT role FROM role WHERE id = " . $result[0]["from_role"];
                 $stm = $pdo -> query( $query );
                 $result_role = $stm -> fetchAll(PDO::FETCH_ASSOC);
                 $return -> roleName = $result_role[0]["role"];
             } else {
-                $return -> roleName = "&nbsp;";
             }
             if( isset( $result[0]["from_user"] ) && $result[0]["from_user"] != 0 ) {
                 $query = "SELECT CONCAT( firstname, ' ', lastname) as name FROM user WHERE id = " . $result[0]["from_user"];
@@ -168,7 +169,6 @@ class Message {
                 if( isset( $result_user[0]["name"] ) ) {
                     $return -> userName = $result_user[0]["name"];
                 } else {
-                    $return -> userName = "&nbsp;";    
                 }
             }
         } else {

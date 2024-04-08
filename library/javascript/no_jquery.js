@@ -171,10 +171,29 @@ var nj = function ( p ) {
         }
     }
     _ds = function( v ) {
-            return this.e.dataset[v];    
+        if( NodeList.prototype.isPrototypeOf( this.e ) ) {
+            let l = this.e.length;
+            let i = 0;
+            while( i < l ) {
+                    return this.e[i].dataset[v];
+                    i += 1;
+                }
+        } else {
+            return this.e.dataset[v];
+        }
     }
     _sDs = function( ds, v ) {
-            return this.e.dataset[ds] = v;    
+        if( NodeList.prototype.isPrototypeOf( this.e ) ) {
+            let l = this.e.length;
+            let i = 0;
+            while( i < l ) {
+                    this.e[i].dataset[ds] = v;
+                    i += 1;
+                }
+            return;
+        } else {
+            return this.e.dataset[ds] = v;
+        }
     }
     //set selected values
     _sSV = function( v, clearField ) {

@@ -648,12 +648,44 @@ var validateEmail = function( email ) {
     }
 }
 var validatePhone = function( phone ) {
-    var phoneformat = /^-?\d+$/;
+    let phoneformat = /^-?\d+$/;
     return phone.match( phoneformat );
 }
 function validateTime( inputField ) {
-    var isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(inputField.value);
-    return isValid;
+    let timeFormat = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/;
+    if( inputField.match( timeFormat ) === null ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+function validateDate( date ) {
+    let tmp = date.split( "." );
+    if( tmp.length > 1 ) {
+        date = tmp[2] + "-" + tmp[1] + "-" + tmp[0];
+    }
+    console.log( date );
+    if( new Date( date ) == "Invalid Date" ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+function validatePostalCode( plc ) {
+    var plcformat = /^[0-9]{5}?$/;
+    if( plc.match( plcformat ) === null ) {
+        return false;
+    } else {
+        return true;
+    }
+}
+function validateURL( url ) {
+    try {
+        const fccUrl = new URL( url );
+        return true;        
+    } catch {
+        return false;
+    }
 }
 var getFileName = function( fn ) {
     let tmp = fn.split( "/" );
@@ -669,13 +701,6 @@ var replaceDoubleQuota = function() {
         nj( this ).replaceAll( '"', "“" );
     })
 }
-/*
-function setEndOfContenteditable(elem) {
-    let sel = window.getSelection();
-    //sel.selectAllChildren(elem);
-    sel.collapseToEnd();
-}
-*/
 const removeTagFromElTxt = function( txt, tag ) {
     let s = txt.indexOf( "<" + tag );
     let sEnd = txt.indexOf( ">", s ) + 1;
@@ -753,4 +778,4 @@ var getPathAndName = function( str ) {
     res.name = tmp.pop();
     res.path = tmp.join("/");
     return res;
-}
+} 

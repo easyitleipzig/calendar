@@ -1,6 +1,6 @@
 <?php
 session_start();
-$_SESSION["user_id"] = 1;
+if( !isset( $_SESSION["user_id"] ) ) $_SESSION["user_id"] = 1;
 error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('Europe/Berlin');
 $settings = parse_ini_file( 'ini/settings.ini', TRUE );
@@ -194,7 +194,7 @@ $event_string = substr( $event_string, 0, -1 );
                 </div>
                  <label>Anmeldeschluss</label>
                 <input id="deadline" type="date" class="date">&nbsp;<input type="button" id="deleteDeadline" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anmeldeschluss löschen"><br>
-                <label>Wiederholen</label>
+                <label id="repeatLabel">Wiederholen</label>
                 <select id="repeat">
                     <option value="0" selected=""></option>
                     <option value="1">täglich</option>
@@ -206,7 +206,7 @@ $event_string = substr( $event_string, 0, -1 );
                     <option value="2">1./3./5. Wochentag des Monats</option>
                     <option value="3">2./4. Wochentag des Monats</option>
                 </select>
-                <label>Wiederholen bis</label>
+                <label id="repeatToLabel">Wiederholen bis</label>
                 <input type="date" id="repeatTo" class="date"> <input type="button" id="deleteRepeatTo" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Wiederholung löschen">
           </div>
         </div>
@@ -218,6 +218,10 @@ $event_string = substr( $event_string, 0, -1 );
                 <select id="participateAs"></select>
                 <div>
                     Teilnehmen&nbsp;&nbsp;<input id="participate" type="checkbox" style="margin-top: 0.5em">&nbsp;&nbsp;erinnere mich&nbsp;&nbsp;<input id="remindMe" type="checkbox" style="margin-top: 0.5em">
+                </div>
+                <div id="divButtPart">
+                    <input type="button" id="buttPart" value="Teilnehmen">
+                    <input type="button" id="buttRemindMe" value="Erinnerung">
                 </div>
                 <div id="divCountPart">
                     Anzahl Teilnehmer&nbsp;&nbsp;<input id="countPart" type="number" min="1" step="1" value="1">
@@ -250,14 +254,15 @@ $event_string = substr( $event_string, 0, -1 );
     <textarea id="Description" placeholder="Beschreibung eingeben" maxlength="512"></textarea>
     <label>Notiz</label>
     <input id="Notice" type="text">
-    <label>Direktlink</label>
+    <label id="directLinkLabel">Direktlink</label>
     <input id="Url" type="text"><input id="invalidUrl" type=checkbox>
-    <label>interner Link</label>
-    <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
+    <input id="appendixNames" type="text">
     <div id="editAppendix"></div>
     <input type="file" id="loadAppendix" accept=".pdf,.jpg,.jpeg,.png,.gif" multiple>
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
     <input type="checkbox" id="sendAppendix" title="Anhang mitsenden"><label id="labSend">senden</label>
+    <label>interner Link</label>
+    <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
     <label>Linktext</label>
     <input id="innerUrlText" type="text">
     <div id="divAppendixLink">
@@ -326,8 +331,11 @@ $event_string = substr( $event_string, 0, -1 );
 <script>
 <?php
     echo "var currentUserId = " . $_SESSION['user_id'] . ";\n";
+    echo "var diffDeadline = " . $settings['calendar_editable']["deadline_in_future"] . ";\n";
+    echo "var repeatDateDength = " . $settings['calendar_editable']["repeat_date_length"] . ";\n";
 ?>
 var cal = new Calendar({pVar: "cal", evCalId: "#divCal", type: true } );
+const calVar = cal;
 (function() {  
     init();
 })();

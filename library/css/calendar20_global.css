@@ -17,6 +17,7 @@ body {
 #navBlender {
     display: none;
 }
+/*
 @media (max-width: 575.98px) {
 	body {
 		padding: 0;
@@ -35,6 +36,19 @@ body {
 	flex: 1 1 0%;
 	height: 400px;
     width: 380px;
+}
+*/
+#buttPart.buttActive, #buttRemindMe.buttActive {
+    color: white;
+    background-color: #BCCF2A;    
+}
+#buttPart.buttInactive, #buttRemindMe.buttInactive {
+    color: white;
+    background-color: #E84E1B;    
+}
+#divButtPart {
+    margin-bottom: 1em;
+    margin-top: 1em;
 }
 #divCalendar>article:has( div.ec-month-view), #divCalendar>article:has( div.ec-week-view), #divCalendar>article:has( div.ec-day-view) {
     width: 330px

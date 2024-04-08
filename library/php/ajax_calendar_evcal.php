@@ -2,6 +2,7 @@
 define( "PATH_TO_APPENDIX", "library/cal/" );
 // ajax file for calendar.php and calendar_editable.php
 session_start();
+if( !isset( $_SESSION["user_id"] ) ) $_SESSION["user_id"] = 1;
 error_reporting( E_ALL ^E_NOTICE );
 date_default_timezone_set('Europe/Berlin');
 // fetch call to $_POST variables
@@ -192,7 +193,12 @@ switch( $_POST["command"]) {
                             $return -> pVar = $_POST["pVar"];
                             require_once( "classes/CalendarEventEvCal.php" );
                             $ev = new \CalendarEvent();
-                            $event = json_decode( $_POST["pVar"] );
+                            $event = json_decode( $_POST["event"] );
+                            if( $event -> extendedProps -> id === "new" ) {
+                                $res = $ev -> newEvent( $db_pdo, $event -> extendedProps -> groupId, $event -> title, explode( "T", $event -> start)[0], explode( "T", $event -> end)[0], explode( "T", $event -> start)[1], explode( "T", $event -> end)[0], $event -> extendedProps -> url, $event -> extendedProps -> description, $event -> extendedProps -> notice, $event -> extendedProps -> repeat, $event -> extendedProps -> repeatTo, $event -> extendedProps -> place, str_replace( "fc-", "", $event -> extendedProps -> class ), $event -> extendedProps ->  registration_deadline, $event -> extendedProps -> inner_url, $event -> extendedProps -> inner_url_text, $event -> extendedProps -> creator, $event -> extendedProps -> appendixNames );
+                            } else {
+                                //$ev ->
+                            }
                             print_r( json_encode( $return ));        
     break;                           
     case "showDialogParticipate":
@@ -210,7 +216,7 @@ switch( $_POST["command"]) {
     case "setParticipate":
                             require_once( "classes/CalendarEventEvCal.php");
                             $ev = new \CalendarEvent();
-                            $result = $ev -> setParticipate( $db_pdo, $_POST["id"], $_POST["userId"], $_POST["participate"], $_POST["participateAs"], $_POST["remindMe"], $_POST["countPart"] );
+                            $result = $ev -> setParticipate( $db_pdo, $_POST["id"], $_POST["userId"], $_POST["participate"], $_POST["participateAs"], $_POST["remindMe"], $_POST["countPart"], $_POST["elId"] );
                             $return -> pVar = $_POST["pVar"];
                             $return -> participate = $_POST["participate"];             
                             $return -> remindMe = $_POST["remindMe"];             
@@ -253,7 +259,7 @@ switch( $_POST["command"]) {
                             if( $_POST["deleteSerie"] === "" ) {
                                 $res = $ev -> removeSingleEvent( $db_pdo, $_POST["id"], $_POST["informRole"], $_POST["informUser"] );
                             } else {
-                                $res = $ev -> removeGroupEvent( $db_pdo, $r_event[0]["group_id"], $_POST["informRole"], $_POST["informUser"] );                                
+                                $res = $ev -> removeGroupEvent( $db_pdo, $r_event[0]["group_id"], $_POST["id"], $_POST["informRole"], $_POST["informUser"] );                                
                             }
                             $return -> success = $res -> success;
                             require_once( "classes/InformUser.php" );
@@ -283,7 +289,7 @@ switch( $_POST["command"]) {
                             $return -> mailSuccess = $res -> mailSuccess;            
                             print_r( json_encode( $return ));    
     break;
-   case "exportEvents":
+    case "exportEvents":
                             require_once( "classes/CalendarEvent.php");
                             $ev = new \CalendarEvent();
                             $dates = new \stdClass();
@@ -376,7 +382,6 @@ switch( $_POST["command"]) {
                             $result = new \stdClass();
                             $result -> data = $data;
                             $result -> success = true;
-                            //$result = $ev -> getEvents( $db_pdo, $dates, $whereStr );
                             if( count( $result -> data ) != 0 ) {
                                 if( $result -> success ) {
                                     $result = buildExportEventFile( $db_pdo, $result, $_POST["system"], $_POST["type"], $_POST["art"], $_SESSION["user_id"], $_POST["reminder"], $_POST["reminder_intervall"] );
@@ -395,14 +400,24 @@ switch( $_POST["command"]) {
     case "sendEventsEmail":
                             require_once( "classes/CalendarEventEvCal.php");
                             $ev = new \CalendarEvent();                            
-                            $return -> result = $ev -> exportEvEMail( $db_pdo );
-                            $return -> success = $return -> result -> success;
-                            $return -> message = $return -> result -> message;
+                            $res = $ev -> exportEvEMail( $db_pdo );
+                            $return -> success = $res -> success;
+                            $return -> message = $res -> message;
                             //$return -> data = $return -> data;
                             print_r( json_encode( $return ));    
                             
     break;
+    case "changeDateTime":
+                            require_once( "classes/CalendarEventEvCal.php");
+                            $return -> pVar = $_POST["pVar"];
+                            $ev = new \CalendarEvent();
+                            $res = $ev -> changeDateTime( $db_pdo, $_POST["eventId"], $_POST["startDate"], $_POST["startTime"], $_POST["endDate"], $_POST["endTime"] );               
+                            $return -> success = $res -> success;
+                            $return -> message = $res -> message;
+                            print_r( json_encode( $return ));  
+    break;
     /* end events evcal */
+/*
     case "updateEventEvCal":
                                 require_once( "classes/CalendarEvent.php");
                                 $ev = new \CalendarEvent();
@@ -411,21 +426,6 @@ switch( $_POST["command"]) {
                                 $return -> message = "Der Termin wurden erfolgreich aktualisiert.";                                
                                 print_r( json_encode( $return ));    
     break;
-/* not more nessecary becaus of setParticipate
-    case "setRemindMe":
-                            $query = "UPDATE event_participate SET remind_me = " . $_POST["value"] . ",  role_id = " . $_POST["participateAs"] . " WHERE event_id = " . $_POST["eventId"] . " AND user_id = " . $_POST["userId"];
-                            try {
-                                $db_pdo -> query( $query );            
-                                $return -> success = true;
-                                $return -> message = "Die Erinnerung wurde erfolgreich gespeichert.";                                
-                            } catch ( Exception $e ) {
-                                $return -> success = false;
-                                $return -> message = "Beim Speichern der Erinnerung ist folgender Fehler aufgetreten: " . $e -> getMessage();
-                            }
-                            
-                            print_r( json_encode( $return ));    
-    break;
-*/
      case "getPlaces":
                             require_once( "classes/CalendarEvent.php");
                             $ev = new \CalendarEvent();
@@ -711,5 +711,6 @@ switch( $_POST["command"]) {
                             $return = informUserAboutDeletion( $db_pdo, $_POST["Id"] );                          
                             print_r( json_encode( $return ));                                                        
     break;
+    */
 }  
 ?>

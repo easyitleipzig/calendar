@@ -1,5 +1,6 @@
 <?php
 session_start();
+if( !isset( $_SESSION["user_id"] ) ) $_SESSION["user_id"] = 1;
 require_once("functions.php");
 $filename = $_POST["filename"];
 if( $_POST["id"] === "new" ) {
