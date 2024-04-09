@@ -253,6 +253,7 @@ $event_string = substr( $event_string, 0, -1 );
      <label>Beschreibung</label>
     <textarea id="Description" placeholder="Beschreibung eingeben" maxlength="512"></textarea>
     <label>Notiz</label>
+    <label>Notiz</label>
     <input id="Notice" type="text">
     <label id="directLinkLabel">Direktlink</label>
     <input id="Url" type="text"><input id="invalidUrl" type=checkbox>
@@ -261,10 +262,12 @@ $event_string = substr( $event_string, 0, -1 );
     <input type="file" id="loadAppendix" accept=".pdf,.jpg,.jpeg,.png,.gif" multiple>
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
     <input type="checkbox" id="sendAppendix" title="Anhang mitsenden"><label id="labSend">senden</label>
-    <label>interner Link</label>
-    <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
-    <label>Linktext</label>
-    <input id="innerUrlText" type="text">
+    <div id="divInnerLink">
+        <label>interner Link</label>
+        <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
+        <label>Linktext</label>
+        <input id="innerUrlText" type="text">
+    </div>
     <div id="divAppendixLink">
     
         <a href="#" id="appendixLink">www</a>

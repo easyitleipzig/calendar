@@ -248,10 +248,12 @@ catch( \PDOException $e ) {
     <input type="file" id="loadAppendix" accept=".pdf,.jpg,.jpeg,.png,.gif" multiple>
     <input type="button" id="deleteAppendix" class="cbDelete cbSizeMiddle" value="&nbsp;" title="Anhang löschen">
     <input type="checkbox" id="sendAppendix" title="Anhang mitsenden"><label id="labSend">senden</label>
-    <label>interner Link</label>
-    <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
-    <label>Linktext</label>
-    <input id="innerUrlText" type="text">
+    <div id="divInnerLink">
+        <label>interner Link</label>
+        <input id="innerUrl" type="text" placeholder="Link eingeben" maxlength="255">
+        <label>Linktext</label>
+        <input id="innerUrlText" type="text">
+    </div>
     <div id="divAppendixLink">
     
         <a href="#" id="appendixLink">www</a>
