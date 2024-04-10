@@ -433,6 +433,14 @@ class Calendar {
 	        			i += 1;
 	        		}
 		        break;
+		        case "saveEventByJson":
+	        		if( jsonobject.success ) {
+	        			dMNew.show( {title:"Termin anlegen", type: true, text: jsonobject.message } );
+	        			calendar.refreshView();
+	        		} else {
+	        			dMNew.show( {title:"Fehler", type: false, text: jsonobject.message } );
+	        		}
+		        break;
 		    	case "showParticipants":
 			    	if( jsonobject.data.length > 0 ) {
 				    	tmp = "";
@@ -485,7 +493,6 @@ class Calendar {
 						} 
 					break;
 					case "setParticipate":
-						//if( jsonobject.elId === "")
 						if( jsonobject.success ) {
 							if( jsonobject.elId === "participate" && jsonobject.participate === "1" ) {
 								if( nj( "#groupId" ).v() !== "0" ) jsonobject.message += " Bei diesem Termin handelt es sich um einen Serientermin. Du musst deine Teilnahme für jeden Termin einzeln setzen."
@@ -611,10 +618,35 @@ class Calendar {
 	                    }
 
 					break;
+			        case "usePattern":
+			                if( jsonobject.success ) {
+			                    nj( "#title" ).v( jsonobject.data[0].title );    
+			                    nj( "#creator" ).v( jsonobject.data[0].creator );
+			                    let tmpDate = new Date( nj( "#startDate" ).v() );
+			                    nj( "#endDate" ).v( tmpDate.addDays( parseInt( jsonobject.data[0].day_diff ) ).getMySQLDateString() );
+			                    if( jsonobject.data[0].deadline_diff != "0" ) {
+			                        nj( "#deadline" ).v( tmpDate.addDays( parseInt( jsonobject.data[0].deadline_diff ) ).getMySQLDateString() );
+			                    }
+			                    nj( "#startHour" ).v( jsonobject.data[0].start_time.split(":")[0] );                    
+			                    nj( "#valStartMinutes" ).v( jsonobject.data[0].start_time.split(":")[1] );                    
+			                    nj( "#endHour" ).v( jsonobject.data[0].end_time.split(":")[0] );                    
+			                    nj( "#valEndMinutes" ).v( jsonobject.data[0].end_time.split(":")[1] );                    
+
+			                    nj( "#Description" ).v( jsonobject.data[0].description );                    
+			                    nj( "#informRole" ).v( jsonobject.data[0].inform_role );                    
+			                    nj( "#place" ).v( jsonobject.data[0].place );
+			                    nj( "#category" ).v( jsonobject.data[0].class );
+			                    nj( "#innerUrl" ).v( jsonobject.data[0].url_landing_page );
+			                    nj( "#innerUrlText" ).v( jsonobject.data[0].url_text );
+			                } else {
+				                dMNew.show( { title: "Fehler", type: false, text: jsonobject.message } );
+			                }
+			        break;
 			}
 			tmp = NOT_TRACK_ACTIONS.split( "," );
 			if( tmp.indexOf( jsonobject.command ) === -1 ) {
 				tmp = jsonobject.command;
+				data = {};
 				data.command = "trackAction";
 				data.trackingPage = currentTrackId;
 				data.pathname = window.location.pathname.substr( 1, window.location.pathname.length - 1 );
@@ -815,53 +847,9 @@ class Calendar {
 			data.pVar = this.opt.pVar;
 			data.event = JSON.stringify( event );
 			data.saveSerieEvent = saveSerieEvent;
-			//nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
+			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
 
 		}
-		/**
-		 * saveEvent
-		 * 
-		 * save event to database
-		 * 
-		 * return result
-		 * 
-		saveEvent = function() {
-			data = {};
-		    data.command = "saveEvent";
-		    data.id = nj( "#Id").v();
-		    data.group_id = nj( "#groupId").v();
-		    data.title = nj( "#title").v();
-		    data.place = nj( "#place").v();
-		    data.format = nj( "#category").v();
-		    data.creator = nj( "#creator").v();
-		    data.informRole = nj( "#informRole").v();
-		    data.informUser = nj( "#informUser").gSV();
-		    data.fromDate = nj( "#startDate").v();
-		    data.toDate = nj( "#endDate").v();
-		    data.fromTime = nj( "#startHour").v() + ":" + nj( "#valStartMinutes").v();
-		    data.toTime = nj( "#endHour").v() + ":" + nj( "#valEndMinutes").v();
-		    data.deadline = nj( "#deadline").v();
-			data.participateAs = nj( "#participateAs" ).v();
-			data.participate = nj( "#participate" ).chk();
-			data.countPart = nj( "#countPart" ).v();
-			data.informRole = nj( "#informRole" ).v();
-			data.informUser = nj( "#informUser" ).v();
-		    data.url = nj( "#Url").v();
-		    data.description = nj( "#Description").v().replace(/\n|\r/g, " * ");;
-		    data.notice = nj( "#Notice").v();
-		    data.innerUrl = nj( "#innerUrl").v();
-		    data.innerUrlText = nj( "#innerUrlText").v();
-		    if( nj( "#innerUrl").v() != "" && nj( "#editSendAppendix" ).chk() ) {
-		    	data.sendAppendix = true;
-		    } else {
-		    	data.sendAppendix = false;
-		    }
-		    data.countPart = nj( "#count_part" ).v();
-			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalendar );
-			
-		}
-		*/
-
 		/**
 		 * setEventNewValues
 		 * 
@@ -879,6 +867,7 @@ class Calendar {
 				nj( "#allDay" ).chk( event.allDay )
 				nj( "#innerId" ).v( "" )
 				nj( "#groupId" ).v( 0 )
+				nj( "#usePattern" ).v( "0" )
 				nj( "#title" ).v( "" );
 				nj( "#place" ).v( 0 );
 				nj( "#category" ).v( 0 );
@@ -1190,7 +1179,7 @@ class Calendar {
 		*/
 		onDateClick = function( info ) {
 			if( this.opt.type !== true ) return;
-			this.divEvent.show( {variables: { event: info, calendar: this }, onShow: function( e ){
+			this.divEvent.show( {variables: { event: info, calendar: this }, onShow: function(){
 				this.variables.calendar.fillEditDialogForNew( arguments[0].opt.variables, arguments[0] )
 			}});
 		}
@@ -1205,10 +1194,11 @@ class Calendar {
 		 * 
 		*/
 		onEventClick = function( info ) {
-			if( info.jsEvent.ctrlKey ) {
+						console.log( this );
+			if( info.jsEvent.altKey ) {
 				dMNew.show({ title: "Termin löschen", type: "question", text: "Willst Du diesen Termin löschen?", width: 220, buttons: [ { title: "Ja", action: function () {dMNew.hide();} }, { title: "Nein", action: function () {dMNew.hide();} } ] } );
 			} else {
-				if( info.jsEvent.altKey ) {
+				if( info.jsEvent.shiftKey ) {
 					// show appendix
 					window.open( info.event.extendedProps.inner_url, "_blank" );
 				} else {
@@ -1645,6 +1635,12 @@ class Calendar {
 				}
 				nj( "#remindMe" ).tri( "change" );
 			});
+			nj( "#usePattern" ).on( "change", function() {
+				console.log( this );
+				data.command = "usePattern";
+				data.id = nj( "#usePattern" ).v();
+				nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, nj( this ).gRO().evaluateCalData );
+			} );
 		}
 		/**
 		 * addEvent

@@ -352,7 +352,7 @@ class CalendarEvent {
                 }                
 */
             $return -> success = true;    
-            $return -> message = "Der Termin wurde erfolgreich gespeichert.";
+            $return -> message = "Der Termin wurde erfolgreich angelegt.";
         } catch ( Exception $e ) {
                 $return -> success = false;
                 if( $e -> getCode() == "23000" ) {

@@ -127,7 +127,7 @@
 .cEdit select[disabled] {
     color: black;
 } 
-.cNotEditable .accordion>div:nth-child(4), .cNotEditable .accordion>div:nth-child(2), .cNotEditable #divPart, .cNotEditable #loadAppendix, .cNotEditable #deleteAppendix, .cNotEditable #sendAppendix, .cNotEditable #labSend, .cNotEditable #invalidUrl, #editEvent #invalidUrl {
+.cNotEditable .accordion>div:nth-child(4), .cNotEditable .accordion>div:nth-child(2), .cNotEditable #divPart, .cNotEditable #loadAppendix, .cNotEditable #deleteAppendix, .cNotEditable #sendAppendix, .cNotEditable #labSend, .cNotEditable #invalidUrl, .cNotEditable #divInnerLink, #editEvent #invalidUrl {
     display: none;
 }
 .cNotEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(5),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(8),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(9),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>label:nth-child(15),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(16),.cNotEditable>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(6) {
@@ -137,7 +137,7 @@
     
 }
 .cEdit>div>div:nth-child(5)>div:nth-child(3)>textarea:nth-child(2) {
-    width: 275px;
+    width: 265px;
     height: 150px;
     resize: none;
 }
@@ -148,7 +148,7 @@
     height: 203px;
 }
 .cEdit>div>div:nth-child(5)>div:nth-child(3)>input:nth-child(4), .cEdit input[type=text], .cEdit select:not(#startHour):not(#valStartMinutes):not(#endHour):not(#valEndMinutes) {
-    width: 275px;
+    width: 265px;
 }
 .cNotEditable .accordion input:checked~.panel { 
     min-height: 370px;

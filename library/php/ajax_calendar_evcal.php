@@ -199,6 +199,9 @@ switch( $_POST["command"]) {
                             } else {
                                 //$ev ->
                             }
+                            $return -> type = $event -> extendedProps -> id;
+                            $return -> success = $res -> success;
+                            $return -> message = $res -> message;
                             print_r( json_encode( $return ));        
     break;                           
     case "showDialogParticipate":
@@ -415,6 +418,19 @@ switch( $_POST["command"]) {
                             $return -> success = $res -> success;
                             $return -> message = $res -> message;
                             print_r( json_encode( $return ));  
+    break;
+    case "usePattern":
+                            $query = "select * from event_pattern where id = " . $_POST["id"];
+                            try {
+                                $stm = $db_pdo -> query( $query );            
+                                $return -> data = $stm -> fetchAll(PDO::FETCH_ASSOC);
+                                $return -> success = true;
+                                $return -> message = "Die Vorlage wurde erfolgreich gelesen.";                                
+                            } catch ( Exception $e ) {
+                                $return -> success = false;
+                                $return -> message = "Beim Lesen der Vorlage ist folgender Fehler aufgetreten: " . $e -> getMessage();
+                            }
+                            print_r( json_encode( $return ));                                                        
     break;
     /* end events evcal */
 /*
