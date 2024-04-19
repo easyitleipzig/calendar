@@ -189,7 +189,7 @@ class Calendar {
 
 
 			});
-			let appendixHasChanged = false;
+			this.appendixHasChanged = false;
 			nj( "body" ).sDs( "dvar", this.opt.pVar );
 			this.divEvent = new DialogDR( 
 				{ 
@@ -318,10 +318,6 @@ class Calendar {
 
 		}
 		// end constructor
-		// variables declaration
-		appendixHasChanged = false;
-		// end variables declaration
-
 		// start functions
 		uploadAppendixFile = async function ( path, el, id ) {
 		    let formData = new FormData();
@@ -339,7 +335,7 @@ class Calendar {
 		    })
 		  .then( data => { 
 		    let tmp = "";
-		    console.log( el.length );
+		    this.appendixHasChanged = true;
 		    if( id === "new") {
 		        l = el.length;
 
@@ -437,6 +433,7 @@ class Calendar {
 	        		if( jsonobject.success ) {
 	        			dMNew.show( {title:"Termin anlegen", type: true, text: jsonobject.message } );
 	        			calendar.refreshView();
+	        			calendar.appendixHasChanged = false;
 	        		} else {
 	        			dMNew.show( {title:"Fehler", type: false, text: jsonobject.message } );
 	        		}
@@ -846,6 +843,7 @@ class Calendar {
 			data.command = "saveEventByJson";
 			data.pVar = this.opt.pVar;
 			data.event = JSON.stringify( event );
+			data.appendixHasChanged = this.appendixHasChanged;
 			data.saveSerieEvent = saveSerieEvent;
 			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
 
