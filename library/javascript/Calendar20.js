@@ -189,7 +189,7 @@ class Calendar {
 
 
 			});
-			this.appendixHasChanged = false;
+			let appendixHasChanged = false;
 			nj( "body" ).sDs( "dvar", this.opt.pVar );
 			this.divEvent = new DialogDR( 
 				{ 
@@ -318,6 +318,10 @@ class Calendar {
 
 		}
 		// end constructor
+		// variables declaration
+		appendixHasChanged = false;
+		// end variables declaration
+
 		// start functions
 		uploadAppendixFile = async function ( path, el, id ) {
 		    let formData = new FormData();
@@ -335,7 +339,7 @@ class Calendar {
 		    })
 		  .then( data => { 
 		    let tmp = "";
-		    this.appendixHasChanged = true;
+		    console.log( el.length );
 		    if( id === "new") {
 		        l = el.length;
 
@@ -419,9 +423,10 @@ class Calendar {
 		        throw "kein JSON-Objekt übergeben";
 		    }
 		    if( typeof jsonobject.pVar !== "undefined" ) calendar = window[ jsonobject.pVar ]
-		    console.log( jsonobject, calendar );
+		    console.log( jsonobject, calendar, window.clientX, window.clientY );
 			switch( jsonobject.command ) {
 		        case "getEventsForView":
+		        	dMNew.hide();
 	        		l = jsonobject.data.length;
 	        		i = 0;
 	        		while ( i < l ) {
@@ -433,7 +438,6 @@ class Calendar {
 	        		if( jsonobject.success ) {
 	        			dMNew.show( {title:"Termin anlegen", type: true, text: jsonobject.message } );
 	        			calendar.refreshView();
-	        			calendar.appendixHasChanged = false;
 	        		} else {
 	        			dMNew.show( {title:"Fehler", type: false, text: jsonobject.message } );
 	        		}
@@ -843,7 +847,6 @@ class Calendar {
 			data.command = "saveEventByJson";
 			data.pVar = this.opt.pVar;
 			data.event = JSON.stringify( event );
-			data.appendixHasChanged = this.appendixHasChanged;
 			data.saveSerieEvent = saveSerieEvent;
 			nj().post("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );   
 
@@ -1104,7 +1107,7 @@ class Calendar {
 				nj( "#editEvent input[type=checkbox], #participateAs, #countPart").atr( "disabled", true );
 			}
 			// additional Text for cNotEditable
-			nj().els( "#dateTextDiv" ).innerHTML = "beginnt am " + new Date( nj( "#startDate" ).v() ).getGermanDateString() + " um " + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() + " Uhr und endet am " + new Date( nj( "#endDate" ).v() ).getGermanDateString() + " um " + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v() + " Uhr";
+			nj().els( "#dateTextDiv" ).innerHTML = "<strong>beginnt am</strong> " + new Date( nj( "#startDate" ).v() ).getGermanDateString() + " um " + nj( "#startHour" ).v() + ":" + nj( "#valStartMinutes" ).v() + " Uhr und <strong>endet am</strong> " + new Date( nj( "#endDate" ).v() ).getGermanDateString() + " um " + nj( "#endHour" ).v() + ":" + nj( "#valEndMinutes" ).v() + " Uhr";
 			if( event.extendedProps.registration_deadline !== "0000-00-00" ) {
 				nj().els( "#deadlineTextDiv" ).innerHTML = "Anmeldeschluss: " + new Date( event.extendedProps.registration_deadline ).getGermanDateString()
 			}
@@ -1120,6 +1123,7 @@ class Calendar {
 		 * return object { start: startdate, end: enddate}
 		*/
 		getDaysForView = function( info ) {
+			dMNew.show( { title: "Termine laden", type: "wait", text: "Termine werden geladen. Bitte warten.", buttons:[] } );
 			data = {};
 			data.command = "getEventsForView"; 
 			data.pVar = this.opt.pVar;
@@ -1290,8 +1294,9 @@ class Calendar {
 			data.command = "showParticipants";
 			data.pVar = this.opt.pVar;
 			data.event_id = info.event.extendedProps.id;
-			data.x = info.jsEvent.screenX;
-			data.y = info.jsEvent.screenY;
+			console.log( info.jsEvent );
+			data.x = info.jsEvent.clientX;
+			data.y = info.jsEvent.clientY + 120;
 			nj().fetchPostNew("library/php/ajax_calendar_evcal.php", data, this.evaluateCalData );
 		}
 		/**
@@ -1453,12 +1458,6 @@ class Calendar {
 		/**
 		 * refreshView
 		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
 		*/
 		refreshView = function( calArgs ) {
 			this.removeAllEventsFromView();
@@ -1602,6 +1601,7 @@ class Calendar {
 				nj( this ).gRO().showDialogParticipate( nj( this ).gRO() );
 			});
 			nj( "#buttPart" ).on( "click", function() {
+				console.log( this );
 				if( new Date() > new Date( nj( "#deadline" ).v() ).addDays( 1 ) ) {
 					dMNew.show( {title: "Fehler", type: false, text: "Eine Änderung der Abmeldung ist nicht mehr möglich, da der Anmeldeschluss überschritten ist." } );
 				} else {
@@ -1662,6 +1662,7 @@ class Calendar {
 		*/
 		init = function() {
 			this.initDialogBehavior();
+			dMNew.show( { title: "Termine laden", type: "wait", text: "Termine werden geladen. Bitte warten.", buttons:[] } );
 		    data = {};
 		    data.command = "getEventsForView";
 		    data.pVar = this.opt.pVar; 
